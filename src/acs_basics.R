@@ -301,5 +301,3 @@ ggplot() +
                         breaks = seq(min_nohealthins, max_nohealthins, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins.png", plot = last_plot())
 
-# Checking that everything is okay
-
