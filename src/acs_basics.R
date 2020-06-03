@@ -267,10 +267,10 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_unempl.png", plo
 
 # At or Below 100 percent poverty level
 # only at tract level
-min_inpov <- floor(min(acs_bgrp$inpov))
-max_inpov <- ceiling(max(acs_bgrp$inpov))
+min_inpov <- floor(min(acs_tract$inpov))
+max_inpov <- ceiling(max(acs_tract$inpov))
 ggplot() +
-  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = inpov)) +
+  geom_sf(data = acs_tract, size = 0.2, aes(fill = inpov)) +
   labs(title = "Percent population under 100 percent poverty Level \nby Census block group, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
