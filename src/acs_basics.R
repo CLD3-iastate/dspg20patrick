@@ -2,12 +2,16 @@
 # install.packages("tidyverse")
 # install.packages("viridis")
 # install.packages("sf")
+# install.packages("ggthemes")
+# install.packages("RColorBrewer")
+# install.packages("ggplot2")
 library(tidycensus)
 library(tidyverse)
 library(viridis)
 library(sf)
 library(ggthemes)
 library(RColorBrewer)
+library(ggplot2)
 
 
 ######## Pull ACS 2014/18 data for basic Patrick County sociodemographics #################
@@ -48,7 +52,7 @@ Sys.getenv("CENSUS_API_KEY")
 
 # Select variables
 acsvars <- c(
-  # age 65 + 
+  # age 65 +
   "B01001_020", "B01001_021", "B01001_022", "B01001_023", "B01001_024", "B01001_025",
   "B01001_044", "B01001_045", "B01001_046", "B01001_047", "B01001_048", "B01001_049",
   "B01001_001",
@@ -69,8 +73,8 @@ acsvars <- c(
   # In poverty
   "B17001_002", "B17001_001",
   # Without health insurance
-  "B27001_005", "B27001_008", "B27001_011", "B27001_014", "B27001_017", "B27001_020", "B27001_023", 
-  "B27001_026", "B27001_029", "B27001_033", "B27001_036", "B27001_039", "B27001_042", "B27001_045", 
+  "B27001_005", "B27001_008", "B27001_011", "B27001_014", "B27001_017", "B27001_020", "B27001_023",
+  "B27001_026", "B27001_029", "B27001_033", "B27001_036", "B27001_039", "B27001_042", "B27001_045",
   "B27001_048", "B27001_051", "B27001_054", "B27001_057", "B27001_001"
  )
 
@@ -170,5 +174,120 @@ ggplot() +
                     limits = c(min_age65, max_age65), 
                     breaks = seq(min_age65, max_age65, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_age65.png", plot = last_plot())
+
+# Age 18 and under
+min_under18 <- floor(min(acs_bgrp$under18))
+max_under18 <- ceiling(max(acs_bgrp$under18))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = under18)) +
+  labs(title = "Percent population age 18 and under\nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_under18, max_under18), 
+                        breaks = seq(min_under18, max_under18, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_under18.png", plot = last_plot())
+
+# Hispanic
+# only at tract level
+min_hispanic <- floor(min(acs_tract$hispanic))
+max_hispanic <- ceiling(max(acs_tract$hispanic))
+ggplot() +
+  geom_sf(data = acs_tract, size = 0.2, aes(fill = hispanic)) +
+  labs(title = "Percent population hispanic \nby Census tract, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_hispanic, max_hispanic), 
+                        breaks = seq(min_hispanic, max_hispanic, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_hispanic.png", plot = last_plot())
+
+# Black
+min_black <- floor(min(acs_bgrp$black))
+max_black <- ceiling(max(acs_bgrp$black))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = black)) +
+  labs(title = "Percent population black \nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_black, max_black), 
+                        breaks = seq(min_black, max_black, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_black.png", plot = last_plot())
+
+# Age 15 and older and without a BA
+min_noba <- floor(min(acs_bgrp$noba))
+max_noba <- ceiling(max(acs_bgrp$noba))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = noba)) +
+  labs(title = "Percent population 15 and over without a bachelor's \nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_noba, max_noba), 
+                        breaks = seq(min_noba, max_noba, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_noba.png", plot = last_plot())
+
+# Unemployed in LF
+min_unempl <- floor(min(acs_bgrp$unempl))
+max_unempl <- ceiling(max(acs_bgrp$unempl))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = unempl)) +
+  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_unempl, max_unempl), 
+                        breaks = seq(min_unempl, max_unempl, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_unempl.png", plot = last_plot())
+
+# At or Below 100 percent poverty level
+# only at tract level
+min_inpov <- floor(min(acs_bgrp$inpov))
+max_inpov <- ceiling(max(acs_bgrp$inpov))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = inpov)) +
+  labs(title = "Percent population at or beneath 100 Percent Poverty Level \nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_inpov, max_inpov), 
+                        breaks = seq(min_inpov, max_inpov, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_inpov.png", plot = last_plot())
+
+# No health insurance
+# only at tract level
+min_nohealthins <- floor(min(acs_tract$nohealthins))
+max_nohealthins <- ceiling(max(acs_tract$nohealthins))
+ggplot() +
+  geom_sf(data = acs_tract, size = 0.2, aes(fill = nohealthins)) +
+  labs(title = "Percent population without health insurance \nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_nohealthins, max_nohealthins), 
+                        breaks = seq(min_nohealthins, max_nohealthins, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins.png", plot = last_plot())
 
 
