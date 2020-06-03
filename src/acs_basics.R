@@ -1,9 +1,12 @@
 # install.packages("tidycensus")
 # install.packages("tidyverse")
 # install.packages("viridis")
+# install.packages("sf")
 library(tidycensus)
 library(tidyverse)
 library(viridis)
+library(sf)
+
 
 
 ######## Pull ACS 2014/18 data for basic Patrick County sociodemographics #################
@@ -13,11 +16,9 @@ library(viridis)
 # API key ------------------------------------------------------------------------
 #
 
-# installing it means you never have to retype this, I believe
-census_api_key("ac2c12d089ea55018c59548c149fbe915463bebe")
-
-# readRenviron("~/.Renviron")
-# Sys.getenv("CENSUS_API_KEY")
+# installed census api key
+readRenviron("~/.Renviron")
+Sys.getenv("CENSUS_API_KEY")
 
 
 #
@@ -115,8 +116,107 @@ acsdata <- data %>% transmute(
                  B27001_048E + B27001_051E + B27001_054E + B27001_057E) / B27001_001E * 100
   )
 
+# Data at the Block Level ---------------------------------------------------------
+# I keep getting errors that data is not avaiable at the block level. It says I can pull using
+# get_decennial but that didn't work either. I tried using "acs" and also "150" instead of blocks.
+# Perhaps there is something I am missing.
+data_block <- get_acs(geography = "block", state = 51, county = 141,
+                variables = acsvars,
+                year = 2018, survey = "acs5",
+                cache_table = TRUE, output = "wide", geometry = TRUE,
+                keep_geo_vars = TRUE)
 
-#
+# Calculate at Block Level ---------------------------------------------------------
+acsdata_block <- data_block %>% transmute(
+  STATEFP = STATEFP,
+  COUNTYFP = COUNTYFP,
+  TRACTCE = TRACTCE,
+  GEOID = GEOID,
+  NAME.x = NAME.x,
+  NAME.y = NAME.x,
+  ALAND = ALAND,
+  AWATER = AWATER,
+  geometry = geometry,
+  age65 = (B01001_020E + B01001_021E + B01001_022E + B01001_023E + B01001_024E + B01001_025E +
+             B01001_044E + B01001_045E + B01001_046E + B01001_047E + B01001_048E + B01001_049E) / B01001_001E * 100,
+  under18 = (B01001_003E + B01001_004E + B01001_005E + B01001_006E +
+               B01001_027E + B01001_028E + B01001_029E + B01001_030E) / B01001_001E * 100,
+  hispanic = B03001_003E / B02001_001E * 100,
+  black = B02001_003E / B02001_001E * 100,
+  noba = (B15003_002E + B15003_003E + B15003_004E + B15003_005E + B15003_006E + B15003_007E + B15003_008E +
+            B15003_009E + B15003_010E + B15003_011E + B15003_012E + B15003_013E + B15003_014E + B15003_015E +
+            B15003_016E + B15003_017E + B15003_018E + B15003_019E + B15003_020E + B15003_021E) / B15003_001E * 100,
+  unempl = B23025_005E / B23025_002E * 100,
+  inpov = B17001_002E / B17001_001E * 100,
+  nohealthins = (B27001_005E + B27001_008E + B27001_011E + B27001_014E + B27001_017E + B27001_020E + B27001_023E + 
+                   B27001_026E + B27001_029E + B27001_033E + B27001_036E + B27001_039E + B27001_042E + B27001_045E +
+                   B27001_048E + B27001_051E + B27001_054E + B27001_057E) / B27001_001E * 100
+)
+# Plots at Tract Level -------------------------------------------------------------
+# I know there's probably an easy loop to write to create and save, so please let me know!
+# I did not include legend titles because I was having trouble changing the text
+# These also don't include the outlines of the individual tracts or mention that 
+# they're at  the tract level
+
+age65plot <- ggplot(acsdata, aes(fill = age65, color = age65)) +
+  geom_sf()
+print(age65plot +
+  ggtitle("Percent of Population Aged 65 or Older") +
+  theme(legend.title = element_blank()))
+ggsave("age65plot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+under18plot <- ggplot(acsdata, aes(fill = under18, color = under18)) +
+  geom_sf()
+print(under18plot +
+        ggtitle("Percent of Population 18 or Older") +
+        theme(legend.title = element_blank()))
+ggsave("under18plot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+hispanicplot <- ggplot(acsdata, aes(fill = hispanic, color = hispanic)) +
+  geom_sf()
+print(hispanicplot +
+        ggtitle("Percent of Population Hispanic") +
+        theme(legend.title = element_blank()))
+ggsave("hispanicplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+blackplot <- ggplot(acsdata, aes(fill = black, color = black)) +
+  geom_sf()
+print(blackplot + 
+        ggtitle("Percent of Population Black") +
+        theme(legend.title = element_blank()))
+ggsave("blackplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+nobaplot <- ggplot(acsdata, aes(fill = noba, color = noba)) +
+  geom_sf()
+print(nobaplot +
+  ggtitle("Percent of Population Over 25 Without a Bachelor's Degree") +
+  theme(legend.title = element_blank()))
+ggsave("nobaplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+unemplplot <- ggplot(acsdata, aes(fill = unempl, color = unempl)) +
+  geom_sf()
+print(unemplplot +
+  ggtitle("Percent of Population Unemployed in the Labor Force") +
+  theme(legend.title = element_blank()))
+ggsave("unemplplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+inpovplot <- ggplot(acsdata, aes(fill = inpov, color = inpov)) +
+  geom_sf()
+print(inpovplot +
+  ggtitle("Percent of Population Under 100 Percent of the Poverty Level") +
+  theme(legend.title = element_blank()))
+ggsave("inpovplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+nohealthinsplot <- ggplot(acsdata, aes(fill = nohealthins, color = nohealthins)) +
+  geom_sf()
+print(nohealthinsplot +
+  ggtitle("Percent of Population Without Health Insurance") +
+  theme(legend.title = element_blank()))
+ggsave("nohealthinsplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
+
+# Plots at Block Level -------------------------------------------------------------
+# Here lies the empty grave of what soon will be plots at the block level
+
 # Write out ------------------------------------------------------------------------
 #
 
