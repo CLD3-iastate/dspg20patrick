@@ -6,7 +6,8 @@ library(tidycensus)
 library(tidyverse)
 library(viridis)
 library(sf)
-
+library(ggthemes)
+library(RColorBrewer)
 
 
 ######## Pull ACS 2014/18 data for basic Patrick County sociodemographics #################
@@ -31,25 +32,21 @@ Sys.getenv("CENSUS_API_KEY")
 # % population age 65+
 # B01001_020:25 (male), B01001_044:49 (female) / B01001_001    
 # % population age <=18
-# B01001_003:006 (male), B01001_027:30 (female) / B01001_001    -----> (UNDER 18)
+# B01001_003:006 (male), B01001_027:30 (female) / B01001_001
 # % population Hispanic or Latino
 # B03001_003 / B02001_001
 # % population Black
 # B02001_003 / B02001_001
 # % population over age 25 without a BA degree
-# B15003_002:021 / B15003_001            -----> (you want the general-most table)
+# B15003_002:021 / B15003_001
 # % population in labor force that is unemployed
-# B23025_005 / B23025_002                -----> (you want the general-most table)
+# B23025_005 / B23025_002
 # % population living under 100% poverty line
-# B17001_002 / B17001_001                -----> (you want the table with the general-most universe)
-# % population without health insurance  -----> (you want the table with the general-most universe)
+# B17001_002 / B17001_001
+# % population without health insurance
 # (005 + 008 + 011 + 014 + 017 + 020 + 023 + 026 + 029 + 033 + 036 + 039 + 042 + 045 + 048 + 051 + 054 + 057) /  B27001_001
 
-
-#
-# Get data ------------------------------------------------------------------------
-#
-
+# Select variables
 acsvars <- c(
   # age 65 + 
   "B01001_020", "B01001_021", "B01001_022", "B01001_023", "B01001_024", "B01001_025",
@@ -78,19 +75,29 @@ acsvars <- c(
  )
 
 
-# Get data from 2014/18 5-year estimates for Patrick County (51141)
-data <- get_acs(geography = "tract", state = 51, county = 141,
+#
+# Get data ------------------------------------------------------------------------
+#
+
+# Get data from 2014/18 5-year estimates for Patrick County (51141) at tract level 
+data_tract <- get_acs(geography = "tract", state = 51, county = 141,
                 variables = acsvars,
                 year = 2018, survey = "acs5",
                 cache_table = TRUE, output = "wide", geometry = TRUE,
                 keep_geo_vars = TRUE)
 
+# Get data from 2014/18 5-year estimates for Patrick County (51141) at block group level
+data_bgrp <- get_acs(geography = "block group", state = 51, county = 141,
+                     variables = acsvars,
+                     year = 2018, survey = "acs5",
+                     cache_table = TRUE, output = "wide", geometry = TRUE,
+                     keep_geo_vars = TRUE)
 
 #
 # Calculate ------------------------------------------------------------------------
 #
 
-acsdata <- data %>% transmute(
+acs_tract <- data_tract %>% transmute(
   STATEFP = STATEFP,
   COUNTYFP = COUNTYFP,
   TRACTCE = TRACTCE,
@@ -116,21 +123,11 @@ acsdata <- data %>% transmute(
                  B27001_048E + B27001_051E + B27001_054E + B27001_057E) / B27001_001E * 100
   )
 
-# Data at the Block Level ---------------------------------------------------------
-# I keep getting errors that data is not avaiable at the block level. It says I can pull using
-# get_decennial but that didn't work either. I tried using "acs" and also "150" instead of blocks.
-# Perhaps there is something I am missing.
-data_block <- get_acs(geography = "block", state = 51, county = 141,
-                variables = acsvars,
-                year = 2018, survey = "acs5",
-                cache_table = TRUE, output = "wide", geometry = TRUE,
-                keep_geo_vars = TRUE)
-
-# Calculate at Block Level ---------------------------------------------------------
-acsdata_block <- data_block %>% transmute(
+acs_bgrp <- data_bgrp %>% transmute(
   STATEFP = STATEFP,
   COUNTYFP = COUNTYFP,
   TRACTCE = TRACTCE,
+  BLKGRPCE = BLKGRPCE,
   GEOID = GEOID,
   NAME.x = NAME.x,
   NAME.y = NAME.x,
@@ -152,72 +149,26 @@ acsdata_block <- data_block %>% transmute(
                    B27001_026E + B27001_029E + B27001_033E + B27001_036E + B27001_039E + B27001_042E + B27001_045E +
                    B27001_048E + B27001_051E + B27001_054E + B27001_057E) / B27001_001E * 100
 )
-# Plots at Tract Level -------------------------------------------------------------
-# I know there's probably an easy loop to write to create and save, so please let me know!
-# I did not include legend titles because I was having trouble changing the text
-# These also don't include the outlines of the individual tracts or mention that 
-# they're at  the tract level
 
-age65plot <- ggplot(acsdata, aes(fill = age65, color = age65)) +
-  geom_sf()
-print(age65plot +
-  ggtitle("Percent of Population Aged 65 or Older") +
-  theme(legend.title = element_blank()))
-ggsave("age65plot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
 
-under18plot <- ggplot(acsdata, aes(fill = under18, color = under18)) +
-  geom_sf()
-print(under18plot +
-        ggtitle("Percent of Population 18 or Older") +
-        theme(legend.title = element_blank()))
-ggsave("under18plot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-hispanicplot <- ggplot(acsdata, aes(fill = hispanic, color = hispanic)) +
-  geom_sf()
-print(hispanicplot +
-        ggtitle("Percent of Population Hispanic") +
-        theme(legend.title = element_blank()))
-ggsave("hispanicplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-blackplot <- ggplot(acsdata, aes(fill = black, color = black)) +
-  geom_sf()
-print(blackplot + 
-        ggtitle("Percent of Population Black") +
-        theme(legend.title = element_blank()))
-ggsave("blackplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-nobaplot <- ggplot(acsdata, aes(fill = noba, color = noba)) +
-  geom_sf()
-print(nobaplot +
-  ggtitle("Percent of Population Over 25 Without a Bachelor's Degree") +
-  theme(legend.title = element_blank()))
-ggsave("nobaplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-unemplplot <- ggplot(acsdata, aes(fill = unempl, color = unempl)) +
-  geom_sf()
-print(unemplplot +
-  ggtitle("Percent of Population Unemployed in the Labor Force") +
-  theme(legend.title = element_blank()))
-ggsave("unemplplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-inpovplot <- ggplot(acsdata, aes(fill = inpov, color = inpov)) +
-  geom_sf()
-print(inpovplot +
-  ggtitle("Percent of Population Under 100 Percent of the Poverty Level") +
-  theme(legend.title = element_blank()))
-ggsave("inpovplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-nohealthinsplot <- ggplot(acsdata, aes(fill = nohealthins, color = nohealthins)) +
-  geom_sf()
-print(nohealthinsplot +
-  ggtitle("Percent of Population Without Health Insurance") +
-  theme(legend.title = element_blank()))
-ggsave("nohealthinsplot.jpg", plot = last_plot(), path = "/sfs/qumulo/qhome/mes5bu/git/dspg20patrick/output")
-
-# Plots at Block Level -------------------------------------------------------------
-# Here lies the empty grave of what soon will be plots at the block level
-
-# Write out ------------------------------------------------------------------------
+#
+# Plots ------------------------------------------------------------------------
 #
 
-# When we have a data folder.
+# Age 65 and over
+min_age65 <- floor(min(acs_bgrp$age65))
+max_age65 <- ceiling(max(acs_bgrp$age65))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = age65)) +
+  labs(title = "Percent population age 65 and over\nby Census block group, 2014/18") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                    limits = c(min_age65, max_age65), 
+                    breaks = seq(min_age65, max_age65, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_age65.png", plot = last_plot())
+
+
