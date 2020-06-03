@@ -101,6 +101,7 @@ data_bgrp <- get_acs(geography = "block group", state = 51, county = 141,
 # Calculate ------------------------------------------------------------------------
 #
 
+# Tract level 
 acs_tract <- data_tract %>% transmute(
   STATEFP = STATEFP,
   COUNTYFP = COUNTYFP,
@@ -127,6 +128,8 @@ acs_tract <- data_tract %>% transmute(
                  B27001_048E + B27001_051E + B27001_054E + B27001_057E) / B27001_001E * 100
   )
 
+# Block group (note: variables with estimate = 0 will have NAs in the final calculation. Disregard these
+# for now and use tract-level values for plotting.)
 acs_bgrp <- data_bgrp %>% transmute(
   STATEFP = STATEFP,
   COUNTYFP = COUNTYFP,
@@ -164,7 +167,8 @@ min_age65 <- floor(min(acs_bgrp$age65))
 max_age65 <- ceiling(max(acs_bgrp$age65))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = age65)) +
-  labs(title = "Percent population age 65 and over\nby Census block group, 2014/18") +
+  labs(title = "Percent population age 65 and over\nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -180,7 +184,8 @@ min_under18 <- floor(min(acs_bgrp$under18))
 max_under18 <- ceiling(max(acs_bgrp$under18))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = under18)) +
-  labs(title = "Percent population age 18 and under\nby Census block group, 2014/18") +
+  labs(title = "Percent population age 18 and under\nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -197,7 +202,8 @@ min_hispanic <- floor(min(acs_tract$hispanic))
 max_hispanic <- ceiling(max(acs_tract$hispanic))
 ggplot() +
   geom_sf(data = acs_tract, size = 0.2, aes(fill = hispanic)) +
-  labs(title = "Percent population hispanic \nby Census tract, 2014/18") +
+  labs(title = "Percent population hispanic \nby Census tract, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -213,7 +219,8 @@ min_black <- floor(min(acs_bgrp$black))
 max_black <- ceiling(max(acs_bgrp$black))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = black)) +
-  labs(title = "Percent population black \nby Census block group, 2014/18") +
+  labs(title = "Percent population black \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -229,7 +236,8 @@ min_noba <- floor(min(acs_bgrp$noba))
 max_noba <- ceiling(max(acs_bgrp$noba))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = noba)) +
-  labs(title = "Percent population 15 and over without a bachelor's \nby Census block group, 2014/18") +
+  labs(title = "Percent population 25 and over without a Bachelor's \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -245,7 +253,8 @@ min_unempl <- floor(min(acs_bgrp$unempl))
 max_unempl <- ceiling(max(acs_bgrp$unempl))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = unempl)) +
-  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18") +
+  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -262,7 +271,8 @@ min_inpov <- floor(min(acs_bgrp$inpov))
 max_inpov <- ceiling(max(acs_bgrp$inpov))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = inpov)) +
-  labs(title = "Percent population at or beneath 100 Percent Poverty Level \nby Census block group, 2014/18") +
+  labs(title = "Percent population under 100 percent poverty Level \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
@@ -279,7 +289,8 @@ min_nohealthins <- floor(min(acs_tract$nohealthins))
 max_nohealthins <- ceiling(max(acs_tract$nohealthins))
 ggplot() +
   geom_sf(data = acs_tract, size = 0.2, aes(fill = nohealthins)) +
-  labs(title = "Percent population without health insurance \nby Census block group, 2014/18") +
+  labs(title = "Percent population without health insurance \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
