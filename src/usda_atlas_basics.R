@@ -20,11 +20,18 @@ library(data.table)
 
 
 #
-# API key ------------------------------------------------------------------------
+# Tigris Work ------------------------------------------------------------------------
 #
 
 setwd("~/git/dspg2020patrick")
-data <- fread("atlas_patrick_county.csv")
+usda_data <- fread("atlas_patrick_county.csv")
 
-data <- data %>%
-  rename(GEOID = )
+usda_data <- usda_data %>%
+  rename(GEOID = CensusTract)
+
+# load in tigris county tract shape files
+tract_data <- tracts(51, 141, cb = FALSE, year = 2017)
+
+# I used geo_join from tigris to merge the usda_data and tract_data
+# It is still in list form
+geo_data <- geo_join(tract_data, usda_data, by = "GEOID")
