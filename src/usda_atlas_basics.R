@@ -23,7 +23,6 @@ library(data.table)
 # Tigris Work ------------------------------------------------------------------------
 #
 
-setwd("~/git/dspg2020patrick")
 usda_data <- fread("atlas_patrick_county.csv")
 
 usda_data <- usda_data %>%
@@ -32,6 +31,10 @@ usda_data <- usda_data %>%
 # load in tigris county tract shape files
 tract_data <- tracts(51, 141, cb = FALSE, year = 2017)
 
+# I'll work on this in a short bit
+tract_data <- sf::st_sf(tract_data)
+
 # I used geo_join from tigris to merge the usda_data and tract_data
 # It is still in list form
-geo_data <- geo_join(tract_data, usda_data, by = "GEOID")
+geo_data <- usda_data %>%
+  left_join(tract_data)
