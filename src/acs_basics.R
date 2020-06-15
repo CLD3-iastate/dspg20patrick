@@ -472,7 +472,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                                   scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
                                                         limits = c(min_satellite, max_satellite), 
                                                         breaks = seq(min_satellite, max_satellite, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_.png", plot = last_plot())
+                                ggsave(path = "./output/acs/", device = "png", filename = "plot_satellite.png", plot = last_plot())
 # cellular
                 min_cellular <- floor(min(acs_bgrp$cellular))
                 max_cellular <- ceiling(max(acs_bgrp$cellular))
