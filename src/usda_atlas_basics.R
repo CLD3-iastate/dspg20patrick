@@ -38,3 +38,23 @@ tract_data <- st_as_sf(tract_data)
 # It is still in list form
 usda_geo_data <- usda_data %>%
   left_join(tract_data)
+
+# USDA plots -----------------------------------------------------------------------
+
+# var needs to be replaced with the column we care about
+# Mo will fill this in with a finished example soon
+min_var <- floor(min(usda_geo_data$var))
+max_var <- ceiling(max(usda_geo_data$var))
+ggplot() +
+  geom_sf(data = usda_geo_data, size = 0.2, aes(fill = var)) +
+  labs(title = "Title",
+       caption = "Caption") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                        limits = c(min_var, max_var), 
+                        breaks = seq(min_var, max_var, length.out = 5))
+ggsave(path = "./output/usda/", device = "png", filename = "plot_var.png", plot = last_plot())
