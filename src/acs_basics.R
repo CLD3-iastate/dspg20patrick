@@ -355,15 +355,12 @@ ggplot() +
 ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins.png", plot = last_plot())
 
 
-# nocomputer, laptop, smartphone, tablet, othercomputer, nointernet, satellite, cellular, dialup, broadband,
-# nohealthins2, publicins, privateins, snap
-
 # No Computer
 min_nocomputer <- floor(min(acs_bgrp$nocomputer))
 max_nocomputer <- ceiling(max(acs_bgrp$nocomputer))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nocomputer)) +
-  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+  labs(title = "Percent population without a computer \nby Census block group, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -380,7 +377,7 @@ min_laptop <- floor(min(acs_bgrp$laptop))
 max_laptop <- ceiling(max(acs_bgrp$laptop))
 ggplot() +
                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = laptop)) +
-                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                  labs(title = "Percent population with a laptop \nby Census block group, 2014/18",
                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                   theme_map() +
                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -397,7 +394,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_smartphone <- ceiling(max(acs_bgrp$smartphone))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = smartphone)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with a smartphone \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -414,7 +411,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_tablet <- ceiling(max(acs_bgrp$tablet))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = tablet)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with a tablet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -430,7 +427,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_othercomputer <- ceiling(max(acs_bgrp$othercomputer))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = othercomputer)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population another form of \na computer by Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -446,7 +443,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_nointernet <- ceiling(max(acs_bgrp$nointernet))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nointernet)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population without internet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -462,7 +459,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_satellite <- ceiling(max(acs_bgrp$satellite))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = satellite)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with satellite internet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -478,7 +475,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_cellular <- ceiling(max(acs_bgrp$cellular))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = cellular)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with cellular internet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -494,7 +491,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_dialup <- ceiling(max(acs_bgrp$dialup))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = dialup)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with dial-up internet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -510,7 +507,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_broadband <- ceiling(max(acs_bgrp$broadband))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = broadband)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with broaband internet \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -526,7 +523,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_nohealthins2 <- ceiling(max(acs_bgrp$nohealthins2))
                                 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nohealthins2)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population without health insurance \nby Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -543,7 +540,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_privateins <- ceiling(max(acs_tract$privateins))
                                 ggplot() +
                                   geom_sf(data = acs_tract, size = 0.2, aes(fill = privateins)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with private health insurance \nby Census tract, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -560,7 +557,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
                 max_publicins <- ceiling(max(acs_tract$publicins))
                                 ggplot() +
                                   geom_sf(data = acs_tract, size = 0.2, aes(fill = publicins)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent popularion with public health insurance \nby Census tracr, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -576,7 +573,7 @@ ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plo
 max_snap <- ceiling(max(acs_bgrp$snap))
 ggplot() +
                                   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = snap)) +
-                                  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+                                  labs(title = "Percent population with public assistance \nor snap benefits by Census block group, 2014/18",
                                        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
                                   theme_map() +
                                   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
