@@ -38,7 +38,70 @@ Sys.getenv("CENSUS_API_KEY")
 # % individuals 65+ without health insurance of all individuals 65+
 # B27001_026 (M 65-74 no HI) + B27001_029 (M 75+ no HI ) + B27001_054 (F 65-74 no HI) + B27001_057 (F 75+ no HI) /  B27001_052 (total F 65-74) + B27001_055 (total F 75+) + (B27001_024 (total M 65-74) + B27001_027 (total M 75+))
 
-#HARDSHIP
+#HEALTH STATUS
+# % males 65+ with vision difficulty of all males 65+
+# B18103_016 (M 65-74 visdiff) + B18103_019 (M 75+ visdiff) / B18103_015 (total M 65-74) + B18103_018 (total M 75+)
+
+# % females 65+ with vision difficulty of all females 65+
+# B18103_035 (F 65-74 visdiff) + B18103_038 (F 75+ visdiff) / B18103_034 (total F 65-74) + B18103_037 (total F 75+)
+
+#% individuals 65+ with vision difficulty of all individuals 65+
+# B18103_016 (M 65-74 visdiff) + B18103_019 (M 75+ visdiff) + B18103_035 (F 65-74 visdiff) + B18103_038 (F 75+ visdiff) / B18103_015 (total M 65-74) + B18103_018 (total M 75+) + B18103_034 (total F 65-74) + B18103_037 (total F 75+)
+
+#% males 65+ with hearing difficulty of all males 65+
+# B18102_016 (M 65-74 hdiff) + B18102_019 (M 75+ hdiff) / B18102_015 (total M 65-74) + B18102_018 (total M 75+)
+
+#% females 65+ with hearing difficulty of all females 65+
+# B18102_035 (F 65-74 hdiff) + B18102_038 (F 75+ hdiff) / B18102_034 (total F 65-74) + B18102_037 (total F 75+)
+
+#% individuals 65+ with hearing difficulty of all individuals 65+
+# B18102_016 (M 65-74 hdiff) + B18102_019 (M 75+ hdiff) + B18102_035 (F 65-74 hdiff) + B18102_038 (F 75+ hdiff) / B18102_015 (total M 65-74) + B18102_018 (total M 75+) + B18102_034 (total F 65-74) + B18102_037 (total F 75+)
+
+#% males 65+ with cognitive difficulty of all males 65+
+# B18104_013 (M 65-74 cdiff) + B18104_016 (M 75+ cdiff) / B18104_012 (total M 65-74) + B18104_015 (total M 75+)
+
+#% females 65+ with cognitive difficulty of all females 65+
+# B18104_029 (F 65-74 cdiff) + B18104_032 (F 75+ cdiff) / B18104_028 (total F 65-74) + B18104_031 (total F 75+)
+
+#% individuals 65+ with cognitive difficulty of all individuals 65+
+# B18104_013 (M 65-74 cdiff) + B18104_016 (M 75+ cdiff) + B18104_029 (F 65-74 cdiff) + B18104_032 (F 75+ cdiff) / B18104_012 (total M 65-74) + B18104_015 (total M 75+) + B18104_028 (total F 65-74) + B18104_031 (total F 75+)
+
+#% males 65+ with ambulatory difficulty of all males 65+
+# B18105_013 (M 65-74 adiff) + B18105_016 (M 75+ adiff) / B18105_012 (total M 65-74) + B18105_015 (total M 75+)
+
+#% females 65+ with ambulatory difficulty of all females 65+
+# B18105_029 (F 65-74 adiff) + B18105_032 (F 75+ adiff) / B18105_028 (total F 65-74) + B18105_031 (total F 75+)
+
+#% individuals 65+ with ambulatory difficulty of all individuals 65+
+# B18105_013 (M 65-74 adiff) + B18105_016 (M 75+ adiff) + B18105_029 (F 65-74 adiff) + B18105_032 (F 75+ adiff) / B18105_012 (total M 65-74) + B18105_015 (total M 75+) + B18105_028 (total F 65-74) + B18105_031 (total F 75+)
+
+#% males 65+ with self-care difficulty of all males 65+
+# B18106_013 (M 65-74 scdiff) + B18106_016 (M 75+ scdiff) / B18106_012 (total M 65-74) + B18106_015 (total M 75+)
+
+#% females 65+ with self-care difficulty of all females 65+
+# B18106_029 (F 65-74 scdiff) + B18106_032 (F 75+ scdiff) / B18106_028 (total F 65-74) + B18106_031 (total F 75+)
+
+#% individuals 65+ with self-care difficulty of all individuals 65+
+# B18106_013 (M 65-74 scdiff) + B18106_016 (M 75+ scdiff) + B18106_029 (F 65-74 scdiff) + B18106_032 (F 75+ scdiff) / B18106_012 (total M 65-74) + B18106_015 (total M 75+) + B18106_028 (total F 65-74) + B18106_031 (total F 75+)
+
+#% males 65+ with independent living difficulty of all males 65+
+# B18107_010 (M 65-74 ildiff) + B18107_013 (M 75+ ildiff) / B18107_009 (total M 65-74) + B18107_012 (total M 75+)
+
+#% females 65+ with independent living difficulty of all females 65+
+# B18107_023 (F 65-74 ildiff) + B18107_026 (F 75+ ildiff) / B18107_022 (total F 65-74) + B18107_025 (total F 75+)
+
+#% individuals 65+ with independent living difficulty of all individuals 65+
+# B18107_010 (M 65-74 ildiff) + B18107_013 (M 75+ ildiff) + B18107_023 (F 65-74 ildiff) + B18107_026 (F 75+ ildiff) / B18107_009 (total M 65-74) + B18107_012 (total M 75+) + B18107_022 (total F 65-74) + B18107_025 (total F 75+)
+
+#% males 65+ with disability of all males 65+
+# B18101_016 (M 65-74 dis + B1801_019 (M 75+ dis) / B18101_015 (total M 65-74) + BB18101_018 (total M 75+)
+
+#% females 65+ with disability of all females 65+
+# B1801_035 (F 65-74 dis) + B1801_038 (F 75+ dis) / B1801_034 (total F 65-74) + B18101_037 (total F 75+)
+
+#% individuals 65+ with disability of all individuals 65+
+# B18101_016 (M 65-74 dis + B1801_019 (M 75+ dis) + B1801_035 (F 65-74 dis) + B1801_038 (F 75+ dis) / B18101_015 (total M 65-74) + BB18101_018 (total M 75+) + B1801_034 (total F 65-74) + B18101_037 (total F 75+)
+
 #% households with at least one 60+ household member receiving SNAP of all households with at least one 60+ member
 #B22001_003 (At least one 60+, SNAP) / B22001_006 + B22001_003 (Total household with at least one 60+)
 
@@ -86,6 +149,8 @@ acs_older_vars <- c(
   "B27001_024","B27001_026","B27001_027", "B27001_029",
   # HI females 65+
   "B27001_052","B27001_054","B27001_055" ,"B27001_057",
+  # HEALTH STATUS
+  "B18103_015", "B18103_016", "B18103_018", "B18103_019", "B18103_034", "B18103_035","B18103_037", "B18103_038", "B18102_015", "B18102_016", "B18102_018", "B18102_019", "B18102_034", "B18102_035", "B18102_037", "B18102_038", "B18104_012", "B18104_013", "B18104_015", "B18104_016", "B18104_028", "B18104_029", "B18104_031", "B18104_032", "B18105_012", "B18105_013", "B18105_015", "B18105_016", "B18105_028", "B18105_029", "B18105_031", "B18105_032", "B18106_012", "B18106_013", "B18106_015", "B18106_016", "B18106_028", "B18106_029", "B18106_031", "B18106_032", "B18107_009", "B18107_010", "B18107_012", "B18107_013", "B18107_22", "B18107_23", "B18107_25", "B18107_26", "B18101_015", "B18101_016", "B18101_018", "B1801_019", "B1801_034", "B1801_035", "B18101_037", "B1801_038",
   #SNAP Hardship
   "B22001_003","B22001_006",
   #BELOW POVERTY
