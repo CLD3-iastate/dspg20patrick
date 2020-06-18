@@ -38,6 +38,7 @@ Sys.getenv("CENSUS_API_KEY")
 # % individuals 65+ without health insurance of all individuals 65+
 # B27001_026 (M 65-74 no HI) + B27001_029 (M 75+ no HI ) + B27001_054 (F 65-74 no HI) + B27001_057 (F 75+ no HI) /  B27001_052 (total F 65-74) + B27001_055 (total F 75+) + (B27001_024 (total M 65-74) + B27001_027 (total M 75+))
 
+
 #HEALTH STATUS
 # % males 65+ with vision difficulty of all males 65+
 # B18103_016 (M 65-74 visdiff) + B18103_019 (M 75+ visdiff) / B18103_015 (total M 65-74) + B18103_018 (total M 75+)
@@ -102,6 +103,7 @@ Sys.getenv("CENSUS_API_KEY")
 #% individuals 65+ with disability of all individuals 65+
 # B18101_016 (M 65-74 dis + B1801_019 (M 75+ dis) + B1801_035 (F 65-74 dis) + B1801_038 (F 75+ dis) / B18101_015 (total M 65-74) + BB18101_018 (total M 75+) + B1801_034 (total F 65-74) + B18101_037 (total F 75+)
 
+#HARDSHIP
 #% households with at least one 60+ household member receiving SNAP of all households with at least one 60+ member
 #B22001_003 (At least one 60+, SNAP) / B22001_006 + B22001_003 (Total household with at least one 60+)
 
@@ -151,6 +153,7 @@ acs_older_vars <- c(
   "B27001_052","B27001_054","B27001_055" ,"B27001_057",
   # HEALTH STATUS
   "B18103_015", "B18103_016", "B18103_018", "B18103_019", "B18103_034", "B18103_035","B18103_037", "B18103_038", "B18102_015", "B18102_016", "B18102_018", "B18102_019", "B18102_034", "B18102_035", "B18102_037", "B18102_038", "B18104_012", "B18104_013", "B18104_015", "B18104_016", "B18104_028", "B18104_029", "B18104_031", "B18104_032", "B18105_012", "B18105_013", "B18105_015", "B18105_016", "B18105_028", "B18105_029", "B18105_031", "B18105_032", "B18106_012", "B18106_013", "B18106_015", "B18106_016", "B18106_028", "B18106_029", "B18106_031", "B18106_032", "B18107_009", "B18107_010", "B18107_012", "B18107_013", "B18107_22", "B18107_23", "B18107_25", "B18107_26", "B18101_015", "B18101_016", "B18101_018", "B1801_019", "B1801_034", "B1801_035", "B18101_037", "B1801_038",
+=======
   #SNAP Hardship
   "B22001_003","B22001_006",
   #BELOW POVERTY
@@ -267,3 +270,25 @@ acs_older_tract <- older_data_tract %>% transmute(
                          limits = c(min_healthins, max_healthins),
                          breaks = seq(min_healthins, max_healthins, length.out = 5))
  ggsave(path = "./output/acs/", device = "png", filename = "plot_age65_nohi.png", plot = last_plot())
+
+ acs_plot <- function(acs_variables, plot_title, file_name, ...){
+   ggplot() +
+     geom_sf(data = acs_older_tract, size = 0.2, aes(fill = acs_variables)) +
+     labs(title = sprintf("%s \nby Census tract group, 2014/18", plot_title),
+          caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+     theme_map() +
+     theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+           legend.title = element_text(size = 11, face = "bold"),
+           legend.text = element_text(size = 11),
+           legend.position = "right") +
+     scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                           limits = c(floor(min(acs_variables)), ceiling(max(acs_variables))),
+                           breaks = seq(floor(min(acs_variables)), ceiling(max(acs_variables)), length.out = 5))
+   ggsave(path = "./output/acs/", device = "png", filename = sprintf("plot_age65_%s.png", file_name), plot = last_plot())
+
+ }
+acs_plot(acs_older_tract$allnohealthins, "Percent individuals 65+ without health insurance of all individuals 65+", "healthins")
+acs_plot(acs_older_tract$snap, "Percent households with at least one 60+ household member receiving SNAP of all households with at least one 60+ member", "snap")
+acs_plot(acs_older_tract$allbp, "Percent individuals 65+ with income below poverty level of all individuals 65+", "belowpov" )
+acs_plot(acs_older_tract$sixty, "Percent households with one or more 60+ member of all households", "households")
+acs_plot(acs_older_tract$alllf,"Percent individuals 65+ in labor force of all individuals 65+", "laborforce")
