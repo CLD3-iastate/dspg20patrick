@@ -186,11 +186,10 @@ acs_older_tract <- older_data_tract %>% transmute(
  # Plots ------------------------------------------------------------------------
  #
 
-
- acs_plot <- function(acs_variables, ...){
+ acs_plot <- function(acs_variables, plot_title, file_name, ...){
    ggplot() +
      geom_sf(data = acs_older_tract, size = 0.2, aes(fill = acs_variables)) +
-     labs(title = "Percent population age 65 and over with no health insurance\nby Census tract group, 2014/18",
+     labs(title = sprintf("%s \nby Census tract group, 2014/18", plot_title),
           caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
      theme_map() +
      theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -200,25 +199,12 @@ acs_older_tract <- older_data_tract %>% transmute(
      scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
                            limits = c(floor(min(acs_variables)), ceiling(max(acs_variables))),
                            breaks = seq(floor(min(acs_variables)), ceiling(max(acs_variables)), length.out = 5))
-   ggsave(path = "./output/acs/", device = "png", filename = paste("plot_age65_", acs_variables, ".png"), plot = last_plot())
+   ggsave(path = "./output/acs/", device = "png", filename = sprintf("plot_age65_%s.png", file_name), plot = last_plot())
 
  }
+acs_plot(acs_older_tract$allnohealthins, "Percent individuals 65+ without health insurance of all individuals 65+", "healthins")
+acs_plot(acs_older_tract$snap, "Percent households with at least one 60+ household member receiving SNAP of all households with at least one 60+ member", "snap")
+acs_plot(acs_older_tract$allbp, "Percent individuals 65+ with income below poverty level of all individuals 65+", "belowpov" )
+acs_plot(acs_older_tract$sixty, "Percent households with one or more 60+ member of all households", "households")
+acs_plot(acs_older_tract$alllf,"Percent individuals 65+ in labor force of all individuals 65+", "laborforce")
 
-
-
- # Age 65 and over
- min_healthins <- floor(min(acs_older_tract$allnohealthins))
- max_healthins <- ceiling(max(acs_older_tract$allnohealthins))
- ggplot() +
-   geom_sf(data = acs_older_tract, size = 0.2, aes(fill = allnohealthins)) +
-   labs(title = "Percent population age 65 and over with no health insurance\nby Census tract group, 2014/18",
-        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-   theme_map() +
-   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-         legend.title = element_text(size = 11, face = "bold"),
-         legend.text = element_text(size = 11),
-         legend.position = "right") +
-   scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                         limits = c(min_healthins, max_healthins),
-                         breaks = seq(min_healthins, max_healthins, length.out = 5))
- ggsave(path = "./output/acs/", device = "png", filename = "plot_age65_nohi.png", plot = last_plot())
