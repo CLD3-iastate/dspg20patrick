@@ -292,7 +292,7 @@ ggsave(path = "./output/usda/", device = "png", filename = "plot_lahunv1share.pn
 
 # lakids1share - change scale
 min_lakids1share <- floor(min(usda_geo_data$lakids1share))
-max_lakids1share <- ceiling(max(usda_geo_data$lakids1share))
+max_lakids1share <- round(max(usda_geo_data$lakids1share))
 ggplot() +
   geom_sf(data = usda_geo_data, size = 0.2, aes(fill = lakids1share)) +
   labs(title = "Percentage of children with low food access at 1 mile",
@@ -326,7 +326,7 @@ ggsave(path = "./output/usda/", device = "png", filename = "plot_lalowi1share.pn
 
 # lapop1share - change scale
 min_lapop1share <- floor(min(usda_geo_data$lapop1share))
-max_lapop1share <- ceiling(max(usda_geo_data$lapop1share))
+max_lapop1share <- round(max(usda_geo_data$lapop1share))
 ggplot() +
   geom_sf(data = usda_geo_data, size = 0.2, aes(fill = lapop1share)) +
   labs(title = "Percentage of population with \nlow food access at 1 mile",
@@ -343,7 +343,7 @@ ggsave(path = "./output/usda/", device = "png", filename = "plot_lapop1share.png
 
 # laseniors1share - change scale
 min_laseniors1share <- floor(min(usda_geo_data$laseniors1share))
-max_laseniors1share <- ceiling(max(usda_geo_data$laseniors1share))
+max_laseniors1share <- round(max(usda_geo_data$laseniors1share))
 ggplot() +
   geom_sf(data = usda_geo_data, size = 0.2, aes(fill = laseniors1share)) +
   labs(title = "Percentage of seniors with \nlow food access at 1 mile",
@@ -358,5 +358,39 @@ ggplot() +
                         breaks = seq(min_laseniors1share, max_laseniors1share, length.out = 5))
 ggsave(path = "./output/usda/", device = "png", filename = "plot_laseniors1share.png", plot = last_plot())
 
-
-
+# USDA Map Function ------------------------------------------------------------------
+# usda_one_plot <- function(usda_variables, plot_title, file_name, ...){
+#   ggplot() +
+#     geom_sf(data = usda_geo_data, size = 0.2, aes(fill = usda_variables)) +
+#     labs(title = sprintf("%s at the 1 mile", plot_title),
+#          caption = "Source: USDA Food Access Research Atlas, 2017.") +
+#     theme_map() +
+#     theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+#           legend.title = element_text(size = 11, face = "bold"),
+#           legend.text = element_text(size = 11),
+#           legend.position = "right") +
+#     scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+#                           limits = c(floor(min(usda_variables)), round(max(usda_variables))),
+#                           breaks = seq(floor(min(usda_variables)), drounf(max(usda_variables)), length.out = 5))
+#   ggsave(path = "./output/usda/", device = "png", filename = sprintf("plot_%s.png", file_name), plot = last_plot())
+#   
+# }
+# usda_one_plot(usda_geo_data$laseniors1share, "Percent individuals 65+ without health insurance of all individuals 65+", "healthins")
+#
+# usda_ten_plot <- function(usda_variables, plot_title, file_name, ...){
+#   ggplot() +
+#     geom_sf(data = usda_geo_data, size = 0.2, aes(fill = usda_variables)) +
+#     labs(title = sprintf("%s at the 10 mile", plot_title),
+#          caption = "Source: USDA Food Access Research Atlas, 2017.") +
+#     theme_map() +
+#     theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+#           legend.title = element_text(size = 11, face = "bold"),
+#           legend.text = element_text(size = 11),
+#           legend.position = "right") +
+#     scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+#                           limits = c(floor(min(usda_variables)), round(max(usda_variables))),
+#                           breaks = seq(floor(min(usda_variables)), drounf(max(usda_variables)), length.out = 5))
+#   ggsave(path = "./output/usda/", device = "png", filename = sprintf("plot_%s.png", file_name), plot = last_plot())
+#   
+# }
+# usda_one_plot(usda_geo_data$laseniors1share, "Percent individuals 65+ without health insurance of all individuals 65+", "healthins")
