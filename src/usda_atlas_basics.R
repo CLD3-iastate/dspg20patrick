@@ -57,7 +57,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Share", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "", low = "#fff7ec", high = "#7F0000",
                         limits = c(min_LAhalfand10, max_LAhalfand10), 
                         breaks = seq(min_LAhalfand10, max_LAhalfand10, length.out = 5))
 ggsave(path = "./output/usda/", device = "png", filename = "plot_LAhalfand10.png", plot = last_plot())
