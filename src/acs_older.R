@@ -95,10 +95,10 @@ Sys.getenv("CENSUS_API_KEY")
 # B18107_010 (M 65-74 ildiff) + B18107_013 (M 75+ ildiff) + B18107_023 (F 65-74 ildiff) + B18107_026 (F 75+ ildiff) / B18107_009 (total M 65-74) + B18107_012 (total M 75+) + B18107_022 (total F 65-74) + B18107_025 (total F 75+)
 
 #% males 65+ with disability of all males 65+
-# B18101_016 (M 65-74 dis + B1801_019 (M 75+ dis) / B18101_015 (total M 65-74) + BB18101_018 (total M 75+)
+# B18101_016 (M 65-74 dis + B18101_019 (M 75+ dis) / B18101_015 (total M 65-74) + B18101_018 (total M 75+)
 
 #% females 65+ with disability of all females 65+
-# B1801_035 (F 65-74 dis) + B1801_038 (F 75+ dis) / B1801_034 (total F 65-74) + B18101_037 (total F 75+)
+# B18101_035 (F 65-74 dis) + B18101_038 (F 75+ dis) / B18101_034 (total F 65-74) + B18101_037 (total F 75+)
 
 #% individuals 65+ with disability of all individuals 65+
 # B18101_016 (M 65-74 dis + B1801_019 (M 75+ dis) + B1801_035 (F 65-74 dis) + B1801_038 (F 75+ dis) / B18101_015 (total M 65-74) + BB18101_018 (total M 75+) + B1801_034 (total F 65-74) + B18101_037 (total F 75+)
@@ -199,6 +199,28 @@ acs_older_tract <- older_data_tract %>% transmute(
   malesnohealthins = (B27001_026E + B27001_029E) / (B27001_024E + B27001_027E) * 100,
   femalesnohealthins = (B27001_054E + B27001_057E) / (B27001_052E + B27001_055E) * 100,
   allnohealthins = (B27001_026E + B27001_029E + B27001_054E + B27001_057E) / (B27001_052E + B27001_055E + B27001_024E + B27001_027E ) * 100,
+  #HEALTH STATUS
+  malevisdiff = (B18103_016 + B18103_019) / (B18103_015 + B18103_018) * 100,
+  femalevisdiff = (B18103_035 + B18103_038) / (B18103_034 + B18103_037),
+  allvisdiff = (B18103_016 + B18103_019 + B18103_035 + B18103_038) / (B18103_015 + B18103_018 + B18103_034 + B18103_037) * 100,
+  malehdiff = (B18102_016 + B18102_019) / (B18102_015 + B18102_018) * 100,
+  femalehdiff = (B18102_035 + B18102_038) / (B18102_034 + B18102_037) * 100,
+  allhdiff = (B18102_016 + B18102_019 + B18102_035 + B18102_038) / (B18102_015 + B18102_018 + B18102_034 + B18102_037) * 100,
+  malecdiff = (B18104_013 + B18104_016) / (B18104_012 + B18104_015) * 100,
+  femalecdiff = (B18104_029 + B18104_032) / (B18104_028 + B18104_031) * 100,
+  allcdiff = (B18104_013 + B18104_016 + B18104_029 + B18104_032) / (B18104_012 + B18104_015 + B18104_028 + B18104_031) * 100,
+  maleadiff = (B18105_013 + B18105_016) / (B18105_012 + B18105_015) * 100,
+  femaleadiff = (B18105_029 + B18105_032) / (B18105_028 + B18105_031) * 100,
+  alladiff = (B18105_013 + B18105_016 + B18105_029 + B18105_032) / (B18105_012 + B18105_015 + B18105_028 + B18105_031) * 100,
+  malescdiff = (B18106_013 + B18106_016) / (B18106_012 + B18106_015) * 100,
+  femalescdiff = (B18106_029 + B18106_032) / (B18106_028 + B18106_031) * 100,
+  allscdiff = (B18106_013 + B18106_016 + B18106_029 + B18106_032) / (B18106_012 + B18106_015 + B18106_028 + B18106_031) * 100,
+  maleildiff = (B18107_010 + B18107_013) / (B18107_009 + B18107_012) * 100,
+  femaleildiff = (B18107_023 + B18107_026) / (B18107_022 + B18107_025) * 100,
+  allildiff = (B18107_010 + B18107_013 + B18107_023 + B18107_026) / (B18107_009 + B18107_012 + B18107_022 + B18107_025) * 100,
+  maledis = (B18101_016 + B18101_019) / (B18101_015 + B18101_018) * 100,
+  femaledis = (B18101_035 + B18101_038) / (B18101_034 + B18101_037) * 100,
+  alldis = (B18101_016 + B18101_019 + B18101_035 + B18101_038) / (B18101_015 + B18101_018 + B18101_034 + B18101_037) * 100,
   #HARDSHIPS
   snap = B22001_003E / (B22001_006E + B22001_003E) * 100,
   malesbp = (B17001_015E + B17001_016E) / (B17001_015E + B17001_016E + B17001_044E +B17001_045E) * 100,
@@ -233,6 +255,28 @@ acs_older_tract <- older_data_tract %>% transmute(
    malenohealthins = (B27001_026E + B27001_029E) / (B27001_024E + B27001_027E) * 100,
    femalenohealthins = (B27001_054E + B27001_057E) / (B27001_052E + B27001_055E) * 100,
    allnohealthins = (B27001_026E + B27001_029E + B27001_054E + B27001_057E) / (B27001_052E + B27001_055E + B27001_024E + B27001_027E ) * 100,
+   #HEALTH STATUS
+   malevisdiff = (B18103_016 + B18103_019) / (B18103_015 + B18103_018) * 100,
+   femalevisdiff = (B18103_035 + B18103_038) / (B18103_034 + B18103_037) * 100,
+   allvisdiff = (B18103_016 + B18103_019 + B18103_035 + B18103_038) / (B18103_015 + B18103_018 + B18103_034 + B18103_037) * 100,
+   malehdiff = (B18102_016 + B18102_019) / (B18102_015 + B18102_018) * 100,
+   femalehdiff = (B18102_035 + B18102_038) / (B18102_034 + B18102_037) * 100,
+   allhdiff = (B18102_016 + B18102_019 + B18102_035 + B18102_038) / (B18102_015 + B18102_018 + B18102_034 + B18102_037) * 100,
+   malecdiff = (B18104_013 + B18104_016) / (B18104_012 + B18104_015) * 100,
+   femalecdiff = (B18104_029 + B18104_032) / (B18104_028 + B18104_031) * 100,
+   allcdiff = (B18104_013 + B18104_016 + B18104_029 + B18104_032) / (B18104_012 + B18104_015 + B18104_028 + B18104_031) * 100,
+   maleadiff = (B18105_013 + B18105_016) / (B18105_012 + B18105_015) * 100,
+   femaleadiff = (B18105_029 + B18105_032) / (B18105_028 + B18105_031) * 100,
+   alladiff = (B18105_013 + B18105_016 + B18105_029 + B18105_032) / (B18105_012 + B18105_015 + B18105_028 + B18105_031) * 100,
+   malescdiff = (B18106_013 + B18106_016) / (B18106_012 + B18106_015) * 100,
+   femalescdiff = (B18106_029 + B18106_032) / (B18106_028 + B18106_031) * 100,
+   allscdiff = (B18106_013 + B18106_016 + B18106_029 + B18106_032) / (B18106_012 + B18106_015 + B18106_028 + B18106_031) * 100,
+   maleildiff = (B18107_010 + B18107_013) / (B18107_009 + B18107_012) * 100,
+   femaleildiff = (B18107_023 + B18107_026) / (B18107_022 + B18107_025) * 100,
+   allildiff = (B18107_010 + B18107_013 + B18107_023 + B18107_026) / (B18107_009 + B18107_012 + B18107_022 + B18107_025) * 100,
+   maledis = (B18101_016 + B18101_019) / (B18101_015 + B18101_018) * 100,
+   femaledis = (B18101_035 + B18101_038) / (B18101_034 + B18101_037) * 100,
+   alldis = (B18101_016 + B18101_019 + B18101_035 + B18101_038) / (B18101_015 + B18101_018 + B18101_034 + B18101_037) * 100,
    #HARDSHIPS
    snap = B22001_003E / (B22001_006E + B22001_003E) * 100,
    malesbp = (B17001_015E + B17001_016E) / (B17001_015E + B17001_016E + B17001_044E +B17001_045E) * 100,
@@ -291,4 +335,10 @@ acs_plot(acs_older_tract$allnohealthins, "Percent individuals 65+ without health
 acs_plot(acs_older_tract$snap, "Percent households with at least one 60+ household member receiving SNAP of all households with at least one 60+ member", "snap")
 acs_plot(acs_older_tract$allbp, "Percent individuals 65+ with income below poverty level of all individuals 65+", "belowpov" )
 acs_plot(acs_older_tract$sixty, "Percent households with one or more 60+ member of all households", "households")
-acs_plot(acs_older_tract$alllf,"Percent individuals 65+ in labor force of all individuals 65+", "laborforce")
+acs_plot(acs_older_tract$allvisdiff, "Percent individuals 65+ with vision difficulty of all individuals 65+", "visdiff")
+acs_plot(acs_older_tract$allhdiff, "Percent individuals 65+ with hearing difficulty of all individuals 65+", "hdiff")
+acs_plot(acs_older_tract$allcdiff, "Percent individuals 65+ with cognitive difficulty of all individuals 65+", "cdiff")
+acs_plot(acs_older_tract$alladiff, "Percent individuals 65+ with ambulatory difficulty of all individuals 65+", "adiff")
+acs_plot(acs_older_tract$allscdiff, "Percent individuals 65+ with self-care difficulty of all individuals 65+", "scdiff")
+acs_plot(acs_older_tract$allildiff, "Percent individuals 65+ with independent living difficulty of all individuals 65+", "ildiff")
+acs_plot(acs_older_tract$alldis, "Percent individuals 65+ with disability of all individuals 65+", "dis")
