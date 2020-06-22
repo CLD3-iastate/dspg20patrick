@@ -124,7 +124,7 @@ acs_tract <- data_tract %>% transmute(
   TRACTCE = TRACTCE,
   GEOID = GEOID,
   NAME.x = NAME.x,
-  NAME.y = NAME.x,
+  NAME.y = NAME.y,
   ALAND = ALAND,
   AWATER = AWATER,
   geometry = geometry,
@@ -171,7 +171,7 @@ acs_bgrp <- data_bgrp %>% transmute(
   BLKGRPCE = BLKGRPCE,
   GEOID = GEOID,
   NAME.x = NAME.x,
-  NAME.y = NAME.x,
+  NAME.y = NAME.y,
   ALAND = ALAND,
   AWATER = AWATER,
   geometry = geometry,
@@ -210,7 +210,6 @@ acs_bgrp <- data_bgrp %>% transmute(
 )
 
 
-
 #
 # Plots ------------------------------------------------------------------------
 #
@@ -227,7 +226,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                     limits = c(min_age65, max_age65), 
                     breaks = seq(min_age65, max_age65, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_age65.png", plot = last_plot())
@@ -244,7 +243,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_under18, max_under18), 
                         breaks = seq(min_under18, max_under18, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_under18.png", plot = last_plot())
@@ -255,14 +254,14 @@ min_hispanic <- floor(min(acs_tract$hispanic))
 max_hispanic <- ceiling(max(acs_tract$hispanic))
 ggplot() +
   geom_sf(data = acs_tract, size = 0.2, aes(fill = hispanic)) +
-  labs(title = "Percent population hispanic \nby Census tract, 2014/18",
+  labs(title = "Percent population Hispanic \nby Census tract, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_hispanic, max_hispanic), 
                         breaks = seq(min_hispanic, max_hispanic, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_hispanic.png", plot = last_plot())
@@ -272,19 +271,19 @@ min_black <- floor(min(acs_bgrp$black))
 max_black <- ceiling(max(acs_bgrp$black))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = black)) +
-  labs(title = "Percent population black \nby Census block group, 2014/18",
+  labs(title = "Percent population Black \nby Census block group, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_black, max_black), 
                         breaks = seq(min_black, max_black, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_black.png", plot = last_plot())
 
-# Age 15 and older and without a BA
+# Age 25 and older and without a BA
 min_noba <- floor(min(acs_bgrp$noba))
 max_noba <- ceiling(max(acs_bgrp$noba))
 ggplot() +
@@ -296,7 +295,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_noba, max_noba), 
                         breaks = seq(min_noba, max_noba, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_noba.png", plot = last_plot())
@@ -306,14 +305,14 @@ min_unempl <- floor(min(acs_bgrp$unempl))
 max_unempl <- ceiling(max(acs_bgrp$unempl))
 ggplot() +
   geom_sf(data = acs_bgrp, size = 0.2, aes(fill = unempl)) +
-  labs(title = "Percent population unemployed in the labor force \nby Census block group, 2014/18",
+  labs(title = "Percent labor force population unemployed\nby Census block group, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_unempl, max_unempl), 
                         breaks = seq(min_unempl, max_unempl, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_unempl.png", plot = last_plot())
@@ -324,14 +323,14 @@ min_inpov <- floor(min(acs_tract$inpov))
 max_inpov <- ceiling(max(acs_tract$inpov))
 ggplot() +
   geom_sf(data = acs_tract, size = 0.2, aes(fill = inpov)) +
-  labs(title = "Percent population under 100 percent poverty Level \nby Census block group, 2014/18",
+  labs(title = "Percent population in poverty \nby Census block group, 2014/18",
        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
   theme_map() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_inpov, max_inpov), 
                         breaks = seq(min_inpov, max_inpov, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_inpov.png", plot = last_plot())
@@ -349,7 +348,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_nohealthins, max_nohealthins), 
                         breaks = seq(min_nohealthins, max_nohealthins, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins.png", plot = last_plot())
@@ -367,7 +366,7 @@ ggplot() +
         legend.title = element_text(size = 11, face = "bold"),
         legend.text = element_text(size = 11),
         legend.position = "right") +
-  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                         limits = c(min_nocomputer, max_nocomputer), 
                         breaks = seq(min_nocomputer, max_nocomputer, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_nocomputer.png", plot = last_plot())
@@ -384,205 +383,214 @@ ggplot() +
                         legend.title = element_text(size = 11, face = "bold"),
                         legend.text = element_text(size = 11),
                         legend.position = "right") +
-                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
+                  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
                                         limits = c(min_laptop, max_laptop), 
                                         breaks = seq(min_laptop, max_laptop, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_laptop.png", plot = last_plot())
                 
 # smartphone
-                min_smartphone <- floor(min(acs_bgrp$smartphone))
-                max_smartphone <- ceiling(max(acs_bgrp$smartphone))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = smartphone)) +
-                                  labs(title = "Percent population with a smartphone \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_smartphone, max_smartphone), 
-                                                        breaks = seq(min_smartphone, max_smartphone, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_smartphone.png", plot = last_plot())
-                
+min_smartphone <- floor(min(acs_bgrp$smartphone))
+max_smartphone <- ceiling(max(acs_bgrp$smartphone))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = smartphone)) +
+  labs(title = "Percent population with a smartphone \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_smartphone, max_smartphone), 
+                        breaks = seq(min_smartphone, max_smartphone, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_smartphone.png", plot = last_plot())
+
 # tablet
-                min_tablet <- floor(min(acs_bgrp$tablet))
-                max_tablet <- ceiling(max(acs_bgrp$tablet))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = tablet)) +
-                                  labs(title = "Percent population with a tablet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_tablet, max_tablet), 
-                                                        breaks = seq(min_tablet, max_tablet, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_tablet.png", plot = last_plot())
+min_tablet <- floor(min(acs_bgrp$tablet))
+max_tablet <- ceiling(max(acs_bgrp$tablet))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = tablet)) +
+  labs(title = "Percent population with a tablet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_tablet, max_tablet), 
+                        breaks = seq(min_tablet, max_tablet, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_tablet.png", plot = last_plot())
+
 # othercomputer
-                min_othercomputer <- floor(min(acs_bgrp$othercomputer))
-                max_othercomputer <- ceiling(max(acs_bgrp$othercomputer))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = othercomputer)) +
-                                  labs(title = "Percent population another form of \na computer by Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_othercomputer, max_othercomputer), 
-                                                        breaks = seq(min_othercomputer, max_othercomputer, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_othercomputer.png", plot = last_plot())
+min_othercomputer <- floor(min(acs_bgrp$othercomputer))
+max_othercomputer <- ceiling(max(acs_bgrp$othercomputer))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = othercomputer)) +
+  labs(title = "Percent population another form of \na computer by Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_othercomputer, max_othercomputer), 
+                        breaks = seq(min_othercomputer, max_othercomputer, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_othercomputer.png", plot = last_plot())
+
 # nointernet
-                min_nointernet <- floor(min(acs_bgrp$nointernet))
-                max_nointernet <- ceiling(max(acs_bgrp$nointernet))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nointernet)) +
-                                  labs(title = "Percent population without internet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_nointernet, max_nointernet), 
-                                                        breaks = seq(min_nointernet, max_nointernet, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_nointernet.png", plot = last_plot())
+min_nointernet <- floor(min(acs_bgrp$nointernet))
+max_nointernet <- ceiling(max(acs_bgrp$nointernet))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nointernet)) +
+  labs(title = "Percent population without internet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_nointernet, max_nointernet), 
+                        breaks = seq(min_nointernet, max_nointernet, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_nointernet.png", plot = last_plot())
+
 # satellite
-                min_satellite <- floor(min(acs_bgrp$satellite))
-                max_satellite <- ceiling(max(acs_bgrp$satellite))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = satellite)) +
-                                  labs(title = "Percent population with satellite internet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_satellite, max_satellite), 
-                                                        breaks = seq(min_satellite, max_satellite, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_satellite.png", plot = last_plot())
+min_satellite <- floor(min(acs_bgrp$satellite))
+max_satellite <- ceiling(max(acs_bgrp$satellite))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = satellite)) +
+  labs(title = "Percent population with satellite internet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_satellite, max_satellite), 
+                        breaks = seq(min_satellite, max_satellite, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_satellite.png", plot = last_plot())
+
 # cellular
-                min_cellular <- floor(min(acs_bgrp$cellular))
-                max_cellular <- ceiling(max(acs_bgrp$cellular))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = cellular)) +
-                                  labs(title = "Percent population with cellular internet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_cellular, max_cellular), 
-                                                        breaks = seq(min_cellular, max_cellular, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_cellular.png", plot = last_plot())
+min_cellular <- floor(min(acs_bgrp$cellular))
+max_cellular <- ceiling(max(acs_bgrp$cellular))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = cellular)) +
+  labs(title = "Percent population with cellular internet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_cellular, max_cellular), 
+                        breaks = seq(min_cellular, max_cellular, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_cellular.png", plot = last_plot())
+
 # dialup
-                min_dialup <- floor(min(acs_bgrp$dialup))
-                max_dialup <- ceiling(max(acs_bgrp$dialup))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = dialup)) +
-                                  labs(title = "Percent population with dial-up internet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_dialup, max_dialup), 
-                                                        breaks = seq(min_dialup, max_dialup, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_dialup.png", plot = last_plot())
+min_dialup <- floor(min(acs_bgrp$dialup))
+max_dialup <- ceiling(max(acs_bgrp$dialup))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = dialup)) +
+  labs(title = "Percent population with dial-up internet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_dialup, max_dialup), 
+                        breaks = seq(min_dialup, max_dialup, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_dialup.png", plot = last_plot())
+
 # broadband
-                min_broadband <- floor(min(acs_bgrp$broadband))
-                max_broadband <- ceiling(max(acs_bgrp$broadband))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = broadband)) +
-                                  labs(title = "Percent population with broaband internet \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_broadband, max_broadband), 
-                                                        breaks = seq(min_broadband, max_broadband, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_broadband.png", plot = last_plot())
+min_broadband <- floor(min(acs_bgrp$broadband))
+max_broadband <- ceiling(max(acs_bgrp$broadband))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = broadband)) +
+  labs(title = "Percent population with broadband internet \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_broadband, max_broadband), 
+                        breaks = seq(min_broadband, max_broadband, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_broadband.png", plot = last_plot())
+
 # nohealthins2
-                min_nohealthins2 <- floor(min(acs_bgrp$nohealthins2))
-                max_nohealthins2 <- ceiling(max(acs_bgrp$nohealthins2))
-                                ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nohealthins2)) +
-                                  labs(title = "Percent population without health insurance \nby Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_nohealthins2, max_nohealthins2), 
-                                                        breaks = seq(min_nohealthins2, max_nohealthins2, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins2.png", plot = last_plot())
+min_nohealthins2 <- floor(min(acs_bgrp$nohealthins2))
+max_nohealthins2 <- ceiling(max(acs_bgrp$nohealthins2))
+ggplot() +
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = nohealthins2)) +
+  labs(title = "Percent population without health insurance \nby Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_nohealthins2, max_nohealthins2), 
+                        breaks = seq(min_nohealthins2, max_nohealthins2, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins2.png", plot = last_plot())
+
 # privateins
 # only at the tract level
-                min_privateins <- floor(min(acs_tract$privateins))
-                max_privateins <- ceiling(max(acs_tract$privateins))
-                                ggplot() +
-                                  geom_sf(data = acs_tract, size = 0.2, aes(fill = privateins)) +
-                                  labs(title = "Percent population with private health insurance \nby Census tract, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_privateins, max_privateins), 
-                                                        breaks = seq(min_privateins, max_privateins, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_privateins.png", plot = last_plot())
+min_privateins <- floor(min(acs_tract$privateins))
+max_privateins <- ceiling(max(acs_tract$privateins))
+ggplot() +
+  geom_sf(data = acs_tract, size = 0.2, aes(fill = privateins)) +
+  labs(title = "Percent population with private health insurance \nby Census tract, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_privateins, max_privateins), 
+                        breaks = seq(min_privateins, max_privateins, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_privateins.png", plot = last_plot())
+
 # publicins
 # only at the tract level
-                min_publicins <- floor(min(acs_tract$publicins))
-                max_publicins <- ceiling(max(acs_tract$publicins))
-                                ggplot() +
-                                  geom_sf(data = acs_tract, size = 0.2, aes(fill = publicins)) +
-                                  labs(title = "Percent popularion with public health insurance \nby Census tracr, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_publicins, max_publicins), 
-                                                        breaks = seq(min_publicins, max_publicins, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_publicins.png", plot = last_plot())
+min_publicins <- floor(min(acs_tract$publicins))
+max_publicins <- ceiling(max(acs_tract$publicins))
+ggplot() +
+  geom_sf(data = acs_tract, size = 0.2, aes(fill = publicins)) +
+  labs(title = "Percent popularion with public health insurance \nby Census tracr, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_publicins, max_publicins), 
+                        breaks = seq(min_publicins, max_publicins, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_publicins.png", plot = last_plot())
+
 # snap
- min_snap <- floor(min(acs_bgrp$snap))
+min_snap <- floor(min(acs_bgrp$snap))
 max_snap <- ceiling(max(acs_bgrp$snap))
 ggplot() +
-                                  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = snap)) +
-                                  labs(title = "Percent population with public assistance \nor snap benefits by Census block group, 2014/18",
-                                       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-                                  theme_map() +
-                                  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-                                        legend.title = element_text(size = 11, face = "bold"),
-                                        legend.text = element_text(size = 11),
-                                        legend.position = "right") +
-                                  scale_fill_continuous(name = "Percent", low = "#fff7ec", high = "#7F0000",
-                                                        limits = c(min_snap, max_snap), 
-                                                        breaks = seq(min_snap, max_snap, length.out = 5))
-                                ggsave(path = "./output/acs/", device = "png", filename = "plot_snap.png", plot = last_plot())
+  geom_sf(data = acs_bgrp, size = 0.2, aes(fill = snap)) +
+  labs(title = "Percent population with public assistance \nor snap benefits by Census block group, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#fee6ce", high = "#e6550d",
+                        limits = c(min_snap, max_snap), 
+                        breaks = seq(min_snap, max_snap, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_snap.png", plot = last_plot())
 
- 
