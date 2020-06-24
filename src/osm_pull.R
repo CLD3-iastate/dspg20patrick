@@ -18,14 +18,22 @@ q <- opq(bbox = bb) %>%
 r <- opq(bbox = bb) %>%
   add_osm_feature(key = 'highway', value = c('primary', 'secondary', 'tertiary'))
 
+medical <- st_as_sf(q)
+
 medical <- osmdata_sf(q)
+medical <- st_geometry(q)
 roads <- osmdata_sf(r)
 
 # ggmaps ---------------------------------------------
 
 mad_map <- get_map(bb, maptype = "toner-background")
 
-ggmap(mad_map)+
+m <- leaflet(q) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers()
+m  # Print the map
+
+ggplot()+
   geom_sf(data = medical$osm_points,
           inherit.aes = FALSE,
           colour = "#238443",

@@ -1,11 +1,5 @@
 library(tidyverse)
-library(viridis)
 library(sf)
-library(ggthemes)
-library(RColorBrewer)
-library(ggplot2)
-library(tigris)
-library(data.table)
 library(leaflet)
 
 ##################### DHS Leaflet Plots #####################
