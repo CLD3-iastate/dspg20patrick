@@ -2,6 +2,7 @@ library(osmdata)
 library(sf)
 library(sp)
 library(leaflet)
+library(ggmap)
 
 ############################# OSM Data #############################
 
@@ -17,18 +18,27 @@ q <- opq(bbox = bb) %>%
 r <- opq(bbox = bb) %>%
   add_osm_feature(key = 'highway', value = c('primary', 'secondary', 'tertiary'))
 
-# gets shape file for pull
-osm <- osmdata_sp(q)
-osm_2 <- osmdata_sp(r)
+medical <- osmdata_sf(q)
+roads <- osmdata_sf(r)
 
-# basic plots the osm_lines
-# sp::plot(va$osm_points)
-# sp::plot(va_2$osm_lines)
+# ggmaps ---------------------------------------------
 
-# leaflet plots ---------------------------------------------
+mad_map <- get_map(bb, maptype = "toner-background")
 
-osm_plot <- leaflet(data = va) %>% # create leaflet object
-  addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-  addMarkers()
-osm_plot
+ggmap(mad_map)+
+  geom_sf(data = medical$osm_points,
+          inherit.aes = FALSE,
+          colour = "#238443",
+          fill = "#004529",
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  geom_sf(data = roads$osm_lines,
+          inherit.aes = FALSE,
+          colour = "#238443",
+          fill = "#004529",
+          alpha = .5,
+          size = .5,
+          shape = 21)+
+  labs(x = "", y = "")
 
