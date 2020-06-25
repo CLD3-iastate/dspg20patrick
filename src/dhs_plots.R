@@ -1,16 +1,11 @@
 library(tidyverse)
-library(viridis)
 library(sf)
-library(sp)
-library(ggthemes)
-library(RColorBrewer)
-library(ggplot2)
-library(tigris)
-library(data.table)
 library(osmdata)
 library(leaflet)
+library(sp)
 
-##################### DHS Leaflet Plots #####################
+
+###### DHS Leaflet Plots #####################
 #FIPS CODE: a vector containing the subsect fips code
 fips <- c("51141", "37169", "37171", "51035", "51063", "51067", "51089")
 

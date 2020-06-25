@@ -2,6 +2,7 @@ library(osmdata)
 library(sf)
 library(sp)
 library(leaflet)
+library(foreign)
 
 ############################# OSM Data #############################
 
@@ -13,22 +14,22 @@ bb <- getbb('patrick county, virginia')
 q <- opq(bbox = bb) %>%
   add_osm_feature(key = 'amenity', value = c('pharmacy', 'hospital', 'clinic', 'doctors', 'dentist',
                                              'nursing_home', 'social_facility', 'ambulance_station'))
+osmdata_xml(q, '~/git/dspg2020patrick/data/working/patrick.osm')
   
-r <- opq(bbox = bb) %>%
-  add_osm_feature(key = 'highway', value = c('primary', 'secondary', 'tertiary'))
+# r <- opq(bbox = bb) %>%
+#   add_osm_feature(key = 'highway', value = c('primary', 'secondary', 'tertiary'))
+# osmdata_xml(r, 'patrick_02.osm')
 
-# gets shape file for pull
-osm <- osmdata_sp(q)
-osm_2 <- osmdata_sp(r)
+medical <- osmdata_sf(q, '~/git/dspg2020patrick/data/working/patrick.osm')$osm_points
 
-# basic plots the osm_lines
-# sp::plot(va$osm_points)
-# sp::plot(va_2$osm_lines)
 
-# leaflet plots ---------------------------------------------
+# leaflet ---------------------------------------------
 
-osm_plot <- leaflet(data = va) %>% # create leaflet object
-  addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
+osm_medical_map <- leaflet(data=medical) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
   addMarkers()
-osm_plot
+osm_medical_map # Print the map
+
+dbf <- read.dbf("~/git/dspg2020patrick/data/original/dhs-traumalevel/08_trauma.dbf", as.is = FALSE)
+
 
