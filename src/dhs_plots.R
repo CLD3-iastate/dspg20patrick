@@ -82,10 +82,11 @@ hospitals <- sf::read_sf("./data/original/dhs-hospitals/Hospitals.shp") %>%
 # coordinates of patrick county 36.6886° N, 80.3213° W
 bb <- getbb('patrick county, virginia')
 
-
 hospitals_plot <- leaflet(data = hospitals) %>% # create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-  addMarkers()
+  addMarkers() %>%
+  fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>%
+  addMeasure()
 
 #add bounding box for location
 #call plot
