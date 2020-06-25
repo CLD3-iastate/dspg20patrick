@@ -1,19 +1,13 @@
 library(tidyverse)
 library(sf)
+library(osmdata)
 library(leaflet)
+library(sp)
 
-##################### DHS Leaflet Plots #####################
+
+###### DHS Leaflet Plots #####################
 #FIPS CODE: a vector containing the subsect fips code
 fips <- c("51141", "37169", "37171", "51035", "51063", "51067", "51089")
-
-#ZIP CODES: a vector containg the subset zipcodes
-#some files do not have FIPS code, looked up the counties on ZILLOW, verify?
-zips <- c(24185, 24082, 24133, 24053, 24120, 24171, 24177, 24076, 27042,
-          27046, 27053, 27016, 27021, 27022, 27031, 27030, 27041, 27043,
-          27047,27049, 27007, 28676, 28683, 27017, 28621, 27024,24325,
-          24328,24333,24330,24343,24351,24350,24352,24105,24312,24381,
-          24317,24079,24091,24380,24072, 24184,24088,24092,24055,24102,24101,
-          24151,24112,24067,24176,24078,24089,24148,24165,24168 )
 
 #Defining a function that transforms shp file to sf file
 #takes in folder, file as argument to give correct path of file
@@ -46,16 +40,22 @@ vet_plot
 dialysis <- #read in the csv data
   read_csv("./data/original/dhs-dialysis/kidney-dialysis.csv") %>%
   #separate comma separted coordinates from one column to two columns
-  separate(CalcLocation, c("x","y"), sep = ",") %>%
+  separate(CalcLocation, c("lat","long"), sep = ",") %>%
+  filter(State == "VA") %>%
   #transform data frame into a sf file, did c("y", "x") because c("x","y") = Antartica
-  st_as_sf(coords = c("y", "x")) %>%
-  #only keep data in desired location
-    subset(Zip %in% zips)
+  st_as_sf(coords = c("long","lat")) %>%
+  #labeling the projection to be same as the others
+  st_set_crs("+proj=longlat +datum=WGS84")
+
+
 
 # dialysis leaflet plots ---------------------------------------------------------
 dialysis_plot <- leaflet(data = dialysis) %>% #create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
+  #bbox() %>%
   addMarkers()
+
+#use bbox on leaflet to create boundaries
 
 #  sf::st_transform('+proj=longlat +datum=WGS84')
 
@@ -72,14 +72,22 @@ emsstations_plot
 #hopsital--------------------------------------------------------------------
 #read shp hospital file
 hospitals <- sf::read_sf("./data/original/dhs-hospitals/Hospitals.shp") %>%
- # only keep data in the places we want, used zip because FIPS n.a
-  subset(ZIP %in% zips) %>%
+  filter(STATE == "VA") %>%
+ # only keep data in the places we want, used zip because FIPS n.a%
   sf::st_transform('+proj=longlat +datum=WGS84')
 
 #hospital leaflet plot-----------------------------------------------------------------
+#create boundary box for locations of interest
+# search for your place of interest
+# coordinates of patrick county 36.6886° N, 80.3213° W
+bb <- getbb('patrick county, virginia')
+
+
 hospitals_plot <- leaflet(data = hospitals) %>% # create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
   addMarkers()
+
+#add bounding box for location
 #call plot
 hospitals_plot
 
