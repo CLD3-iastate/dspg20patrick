@@ -50,14 +50,20 @@ dialysis <- #read in the csv data
 
 
 # dialysis leaflet plots ---------------------------------------------------------
+#create boundary box for locations of interest
+# search for your place of interest
+# coordinates of patrick county 36.6886° N, 80.3213° W
+bb <- getbb('patrick county, virginia')
+
 dialysis_plot <- leaflet(data = dialysis) %>% #create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-  #bbox() %>%
-  addMarkers()
+  addMarkers() %>%
+  fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>% #add bounding box
+  addMeasure()
 
-#use bbox on leaflet to create boundaries
+#call dialysis plot
+dialysis_plot
 
-#  sf::st_transform('+proj=longlat +datum=WGS84')
 
 #emsstations sf file---------------------------------------------------------------
 emsstations <- shp_to_sf("emsstations","emsstations")
@@ -77,18 +83,16 @@ hospitals <- sf::read_sf("./data/original/dhs-hospitals/Hospitals.shp") %>%
   sf::st_transform('+proj=longlat +datum=WGS84')
 
 #hospital leaflet plot-----------------------------------------------------------------
-#create boundary box for locations of interest
-# search for your place of interest
-# coordinates of patrick county 36.6886° N, 80.3213° W
-bb <- getbb('patrick county, virginia')
+
 
 hospitals_plot <- leaflet(data = hospitals) %>% # create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
   addMarkers() %>%
+  #add bounding box for location
   fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>%
   addMeasure()
 
-#add bounding box for location
+
 #call plot
 hospitals_plot
 
