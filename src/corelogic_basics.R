@@ -24,19 +24,19 @@ patrick <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_2_51 WHERE fi
 
 # Less info:
 # Get data from _1_51 files ("latest tax data" files split by state, 51 is VA), PC VA FIPS is 51141
-patrick <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_1_51 WHERE fips_code = '51141'") # 21,422, 149 vars
+# patrick <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_1_51 WHERE fips_code = '51141'") # 21,422, 149 vars
 
 # Sanity check:
 # Get data from the 01-09 files (dump split into tables); Fairfax County, PC VA FIPS is 51141
-p1 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_01 WHERE fips_code = '51141'") # 21,422
-p2 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_02 WHERE fips_code = '51141'") # 21,329
-p3 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_03 WHERE fips_code = '51141'") # 21,255
-p4 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_04 WHERE fips_code = '51141'") # 21,221
-p5 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_05 WHERE fips_code = '51141'") # 21,213
-p6 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_06 WHERE fips_code = '51141'") # 21,204
-p7 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_07 WHERE fips_code = '51141'") # 21,065
-p8 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_08 WHERE fips_code = '51141'") # 21,077
-p9 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_09 WHERE fips_code = '51141'") # 20,693
+# p1 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_01 WHERE fips_code = '51141'") # 21,422
+# p2 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_02 WHERE fips_code = '51141'") # 21,329
+# p3 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_03 WHERE fips_code = '51141'") # 21,255
+# p4 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_04 WHERE fips_code = '51141'") # 21,221
+# p5 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_05 WHERE fips_code = '51141'") # 21,213
+# p6 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_06 WHERE fips_code = '51141'") # 21,204
+# p7 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_07 WHERE fips_code = '51141'") # 21,065
+# p8 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_08 WHERE fips_code = '51141'") # 21,077
+# p9 <- dbGetQuery(conn, "SELECT * FROM corelogic_sdad.tax_hist_09 WHERE fips_code = '51141'") # 20,693
 
 
 #
@@ -102,9 +102,8 @@ table(patrick$county_use_description, useNA = "always")
 # Clean residential & plot ---------------------------------------------------------------------------------------------
 #
 
-sum(is.na(residential$parcel_level_longitude)) # 268
-sum(is.na(residential$parcel_level_latitude)) # 268
-
+sum(is.na(patrick$parcel_level_longitude)) # 344
+sum(is.na(patrick$parcel_level_latitude)) # 344
 
 residential <- patrick %>% filter(!is.na(parcel_level_longitude) &
                                   !is.na(parcel_level_latitude))
@@ -114,11 +113,17 @@ residential <- residential %>% filter(county_use_description == "COMMERCIAL AND 
                                   county_use_description == "SINGLE FAM RESIDENTIAL-SUBURB" |
                                   county_use_description == "SINGLE FAM RESIDENTIAL-URBAN")
 
-test <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
+
+# Test plot
+residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
+plot(st_geometry(residential_sf), pch = 21, cex = 0.3)
 
 
-plot(st_geometry(test), pch = 21, cex = 0.3)
+#
+# Write out ---------------------------------------------------------------------------------------------
+#
 
-
+write.csv(residential, "./data/working/corelogic/residential.csv")
+st_write(residential_sf, "./data/working/corelogic/residential.shp", driver = "ESRI Shapefile")
 
 
