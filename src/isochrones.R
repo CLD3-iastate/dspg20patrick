@@ -101,3 +101,5 @@ mapshot(m2, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_os
 # readRenviron("~/.Renviron")
 # mapzen_api <- Sys.getenv("MAPZENAPI")
 
+# residential coverage -------------------------------------------------------
+
