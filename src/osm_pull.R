@@ -2,6 +2,7 @@ library(osmdata)
 library(sf)
 library(sp)
 library(leaflet)
+library(tidyverse)
 library(foreign)
 
 ############################# OSM Data #############################
@@ -23,6 +24,13 @@ osmdata_xml(q, '~/git/dspg2020patrick/data/working/patrick.osm')
 medical <- osmdata_sf(q, '~/git/dspg2020patrick/data/working/patrick.osm')$osm_points
 
 
+r <- opq(bbox = bb) %>%
+  add_osm_feature(key = 'shop', value = c('convenience', 'supermarket', 'greengrocer', 'farm',
+                                          'health_food'))
+osmdata_xml(r, '~/git/dspg2020patrick/data/working/patrick_food.osm')
+food <- osmdata_sf(r, '~/git/dspg2020patrick/data/working/patrick_food.osm')$osm_points
+
+
 # leaflet ---------------------------------------------
 
 osm_medical_map <- leaflet(data=medical) %>%
@@ -30,6 +38,10 @@ osm_medical_map <- leaflet(data=medical) %>%
   addMarkers()
 osm_medical_map # Print the map
 
-dbf <- read.dbf("~/git/dspg2020patrick/data/original/dhs-traumalevel/08_trauma.dbf", as.is = FALSE)
+osm_food_map <- leaflet(data=food) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers()
+osm_food_map # Print the map
+
 
 
