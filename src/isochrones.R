@@ -15,6 +15,7 @@ library(mapview)
 library(osrm)
 library(rmapzen)
 library(rgdal)
+library(raster)
 # webshot::install_phantomjs()
 
 fips <- c(
@@ -41,65 +42,71 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 # #call plot
 # emsstations_plot
 
+# residential coverage -------------------------------------------------------
+residential <- read_sf("./data/working/corelogic/residential.csv")
+residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
+st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
+points_in_poly <- st_intersection(residential_sf, traveltime10)
+
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
 traveltime_api <- Sys.getenv("TRAVELAPI")
 traveltime_id <- Sys.getenv("TRAVELID")
 
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+
 
 for(i in 1:nrow(emsstations)){
+  i=1
   traveltime10 <- traveltime_map(appId= traveltime_id,
                                 apiKey = traveltime_api,
                                 location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
-                                traveltime=600,
+                                traveltime=480,
                                 type="driving",
                                 departure="2020-08-07T08:00:00+01:00")
   traveltime15 <- traveltime_map(appId= traveltime_id,
                                  apiKey = traveltime_api,
                                  location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
-                                 traveltime=900,
+                                 traveltime=600,
                                  type="driving",
                                  departure="2020-08-07T08:00:00+01:00")
   traveltime20 <- traveltime_map(appId= traveltime_id,
                                  apiKey = traveltime_api,
                                  location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
-                                 traveltime=1200,
+                                 traveltime=720,
                                  type="driving",
                                  departure="2020-08-07T08:00:00+01:00")
-  m1 = mapview(traveltime10,  col.regions = c("grey"))
+  residential = mapview(st_geometry(residential_sf), cex =.5, layer.name = "residential areas", color = colors[5])
+  m1 = mapview(traveltime10, layer.name = "8 minute isochrone", col.regions = colors[1])
+  m2 = mapview(traveltime15, layer.name = "10 minute isochrone", col.regions = colors[2])
+  m3 = mapview(traveltime20, layer.name = "12 minute isochrone", col.regions = colors[3])
   # add the second layer on top
-  m1 = m1 + traveltime15 + traveltime20
+  m1 = m1 + m2 + m3 + residential
   mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
-
+# loop only looped through first 5, probably bc too many requests
 # osrm ------------------------------------------------------------------------
 
-for(i in 1:nrow(emsstations)){
-iso <- osrmIsochrone(loc = c(emsstations$LONGITUDE[i], emsstations$LATITUDE[i]), breaks = seq(from = 10,to = 20, by = 5))
+# for(i in 1:nrow(emsstations)){
+# iso <- osrmIsochrone(loc = c(emsstations$LONGITUDE[i], emsstations$LATITUDE[i]), breaks = seq(from = 10,to = 20, by = 5))
+# 
+# iso@data$drive_times <- factor(paste(iso@data$min, "to", iso@data$max, "min"))
+# # color palette for each area
+# factpal <- colorFactor(rev(heat.colors(3)), iso@data$drive_times)
+# 
+# # draw map
+# m2 <- leaflet() %>% 
+#   setView(emsstations$LONGITUDE[i], emsstations$LATITUDE[i], zoom = 11) %>%
+#   addProviderTiles("CartoDB.Positron", group="Greyscale") %>% 
+#   addMarkers(lng = emsstations$LONGITUDE[i], emsstations$LATITUDE[i], popup = "EMS Station Isochrone") %>% 
+#   addPolygons(fill=TRUE, stroke=TRUE, color = "black",
+#               fillColor = ~factpal(iso@data$drive_times),
+#               weight=0.5, fillOpacity=0.2,
+#               data = iso, popup = iso@data$drive_times,
+#               group = "Drive Time") %>% 
+#   # Legend
+#   addLegend("bottomright", pal = factpal, values = iso@data$drive_time,   title = "Drive Time")
+# mapshot(m2, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_osrm_",i, ".png", sep = ""))
+# }
 
-iso@data$drive_times <- factor(paste(iso@data$min, "to", iso@data$max, "min"))
-# color palette for each area
-factpal <- colorFactor(rev(heat.colors(3)), iso@data$drive_times)
-
-# draw map
-m2 <- leaflet() %>% 
-  setView(emsstations$LONGITUDE[i], emsstations$LATITUDE[i], zoom = 11) %>%
-  addProviderTiles("CartoDB.Positron", group="Greyscale") %>% 
-  addMarkers(lng = emsstations$LONGITUDE[i], emsstations$LATITUDE[i], popup = "EMS Station Isochrone") %>% 
-  addPolygons(fill=TRUE, stroke=TRUE, color = "black",
-              fillColor = ~factpal(iso@data$drive_times),
-              weight=0.5, fillOpacity=0.2,
-              data = iso, popup = iso@data$drive_times,
-              group = "Drive Time") %>% 
-  # Legend
-  addLegend("bottomright", pal = factpal, values = iso@data$drive_time,   title = "Drive Time")
-mapshot(m2, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_osrm_",i, ".png", sep = ""))
-}
-# mapzen --------------------------------------------------------------------
-
-# it may cost money so i'm going to wait on this
-# readRenviron("~/.Renviron")
-# mapzen_api <- Sys.getenv("MAPZENAPI")
-
-# residential coverage -------------------------------------------------------
 
