@@ -2,7 +2,7 @@
 ### Patrick County Project (2020) {style=text-align:center}
 ###
 ##### **SDAD: [Teja Pristavec (Lead)](https://biocomplexity.virginia.edu/teja-pristavec), [Brandon Kramer](https://biocomplexity.virginia.edu/brandon-kramer), and [Sallie Keller](https://biocomplexity.virginia.edu/sallie-keller)** {style=text-align:center}
-##### **DSPG: [Morgan Stockham](https://sites.google.com/view/morganstockham/home), Tasfia Chowdhury, and [Isabel Gomez](http://linkedin.com/in/igomez-3099)** {style=text-align:center}
+##### **DSPG: [Morgan Stockham](https://sites.google.com/view/morganstockham/home), [Tasfia Chowdhury](https://github.com/tmchowdh), and [Isabel Gomez](http://linkedin.com/in/igomez-3099)** {style=text-align:center}
 ###
 
 **Project summary.** This exploratory project aims to provide actionable insights for Patrick County, VA in addressing barriers to health care access and use for its residents. We will work closely with the County stakeholders to identify priority focus areas (e.g., broadband or transportation infrastructure in the county as related to (tele)health provider access; characterizing the health network in the county as compared to similar rural counties; identifying health provider options and attracting medical professionals to the area). We will identify and use appropriate local, state, and federal data sources to deliver information relevant for decision-makers working to repair the county’s health care system. This effort is part of our [tri-state Gates-funded project](https://dspg.dev8.uvaits.virginia.edu/economic-mobility) addressing barriers to economic mobility in cooperation with extension professionals.  
