@@ -15,7 +15,6 @@ library(mapview)
 library(osrm)
 library(rmapzen)
 library(rgdal)
-library(raster)
 # webshot::install_phantomjs()
 
 fips <- c(
@@ -46,7 +45,6 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 residential <- read_sf("./data/working/corelogic/residential.csv")
 residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
 st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
-points_in_poly <- st_intersection(residential_sf, traveltime10)
 
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
@@ -57,7 +55,6 @@ colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a
 
 
 for(i in 1:nrow(emsstations)){
-  i=1
   traveltime10 <- traveltime_map(appId= traveltime_id,
                                 apiKey = traveltime_api,
                                 location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
@@ -84,7 +81,8 @@ for(i in 1:nrow(emsstations)){
   m1 = m1 + m2 + m3 + residential
   mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
-# loop only looped through first 5, probably bc too many requests
+
+# points_in_poly <- st_intersection(residential_sf, traveltime10)
 # osrm ------------------------------------------------------------------------
 
 # for(i in 1:nrow(emsstations)){
