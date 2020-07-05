@@ -80,6 +80,13 @@ for(i in 1:nrow(emsstations)){
   # add the second layer on top
   m1 = m1 + m2 + m3 + residential
   mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
+
+  pp_10 <- st_intersection(residential_sf, traveltime10)
+  pp_15 <- st_intersection(residential_sf, traveltime15)
+  pp_20 <- st_intersection(residential_sf, traveltime20)
+  
+  pp_ems <- list()
+  pp_ems[[i]] <- c(pp_10, pp_15, pp_20)
 }
 
 # points_in_poly <- st_intersection(residential_sf, traveltime10)
