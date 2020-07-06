@@ -1,6 +1,10 @@
 library(tidygeocoder)
 library(dplyr)
 library(readxl)
+library(sf)
+library(leaflet)
+library(disco)
+library(RColorBrewer)
 
 
 #
@@ -35,8 +39,29 @@ groceries$geo_method[16] <- "manual"
 
 
 #
+# Plot --------------------------------------------------
+#
+
+# Groceries
+pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = groceries$type)
+leaflet(groceries) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
+  addLegend("bottomleft", 
+            pal = pal, 
+            values =  ~type,
+            title = "Type", 
+            opacity = 1)
+
+# Wifi
+leaflet(wifi) %>%
+  addTiles() %>%
+  addCircleMarkers(stroke = FALSE, fillOpacity = 1, radius = 6)
+
+
+#
 # Write out --------------------------------------------------
 #
 
-write.csv(groceries, "./data/working/patrick_groceries.csv", col.names = TRUE)
-write.csv(wifi, "./data/working/patrick_wifi.csv", col.names = TRUE)
+write.csv(groceries, "./data/working/geocode/patrick_groceries.csv", col.names = TRUE)
+write.csv(wifi, "./data/working/geocode/patrick_wifi.csv", col.names = TRUE)
