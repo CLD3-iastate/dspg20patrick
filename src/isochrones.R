@@ -41,11 +41,6 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 # #call plot
 # emsstations_plot
 
-# residential coverage -------------------------------------------------------
-residential <- read_sf("./data/working/corelogic/residential.csv")
-residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
-st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
-
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
 traveltime_api <- Sys.getenv("TRAVELAPI")
@@ -85,13 +80,24 @@ for(i in 1:nrow(emsstations)){
   mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
 
-pp_8 <- st_intersection(residential_sf, ems_iso8)
-pp_10 <- st_intersection(residential_sf, ems_iso10)
-pp_12 <- st_intersection(residential_sf, ems_iso12)
+# residential coverage -------------------------------------------------------
 
-pp_ems <- list()
-pp_ems[[i]] <- c(pp_8, pp_10, pp_12)
-# points_in_poly <- st_intersection(residential_sf, traveltime8)
+residential <- read_sf("./data/working/corelogic/residential.csv")
+residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
+st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
+
+ems_iso8_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_1.RDS")
+ems_iso10_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_1.RDS")
+ems_iso12_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_1.RDS")
+
+pp_8 <- st_intersection(residential_sf, ems_iso8_1)
+pp_10 <- st_intersection(residential_sf, ems_iso10_1)
+pp_12 <- st_intersection(residential_sf, ems_iso12_1)
+
+coverage_8_1 <- nrow(pp_8)/nrow(residential_sf)
+coverage_10_1 <- nrow(pp_10)/nrow(residential_sf)
+coverage_12_1 <- nrow(pp_12)/nrow(residential_sf)
+
 # osrm ------------------------------------------------------------------------
 
 # for(i in 1:nrow(emsstations)){
