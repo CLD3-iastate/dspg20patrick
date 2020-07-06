@@ -63,5 +63,5 @@ leaflet(wifi) %>%
 # Write out --------------------------------------------------
 #
 
-write.csv(groceries, "./data/working/geocode/patrick_groceries.csv", col.names = TRUE)
-write.csv(wifi, "./data/working/geocode/patrick_wifi.csv", col.names = TRUE)
+write.csv(groceries, "./data/working/geocode/patrick_groceries.csv")
+write.csv(wifi, "./data/working/geocode/patrick_wifi.csv")
