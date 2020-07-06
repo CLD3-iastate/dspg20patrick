@@ -12,7 +12,7 @@ library(sf)
 library(ggthemes)
 library(RColorBrewer)
 library(ggplot2)
-
+library(leaflet)
 
 ######## Pull ACS 2014/18 data for basic Patrick County sociodemographics #################
 
@@ -593,4 +593,48 @@ ggplot() +
                         limits = c(min_snap, max_snap), 
                         breaks = seq(min_snap, max_snap, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_snap.png", plot = last_plot())
+
+
+
+
+
+#
+# Leaflets ---------------------------------------------------------
+#
+
+# EXAMPLE: SNAP
+pal <- colorQuantile("Blues", domain = acs_bgrp$snap, probs = seq(0, 1, length = 6), right = TRUE)
+
+labels <- lapply(
+  paste("<strong>Area: </strong>",
+        acs_bgrp$NAME.y,
+        "<br />",
+        "<strong>% population with public assistance or SNAP benefits</strong>",
+        round(acs_bgrp$snap, 2)),
+  htmltools::HTML
+)
+
+leaflet(data = acs_bgrp, options = leafletOptions(minZoom = 10))%>%
+  addTiles() %>%
+  addPolygons(fillColor = ~pal(snap), 
+              fillOpacity = 0.6, 
+              stroke = FALSE,
+              label = labels,
+              labelOptions = labelOptions(direction = "bottom",
+                                          style = list(
+                                            "font-size" = "12px",
+                                            "border-color" = "rgba(0,0,0,0.5)",
+                                            direction = "auto"
+                                          ))) %>%
+  addMarkers(data = residential) %>%
+  addLegend("bottomleft", 
+            pal = pal, 
+            values =  ~snap,
+            title = "Percent by<br>Quintile Group", 
+            opacity = 0.6,
+            labFormat = function(type, cuts, p) {
+              n = length(cuts)
+              paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+            })
+
 
