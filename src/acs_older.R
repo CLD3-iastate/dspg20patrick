@@ -28,6 +28,10 @@ Sys.getenv("CENSUS_API_KEY")
 # Load all variable names
 # load_variables(2018, "acs5", cache = TRUE)
 
+# AGE
+# % population age 65+
+# B01001_020:25 (male), B01001_044:49 (female) / B01001_001   
+
 #HEALTH INSURANCE
 # % males 65+ without health insurance of all males 65+
 # B27001_026 (M 65-74 no HI) + B27001_029 (M 75+ no HI ) / (B27001_024 (total M 65-74) + B27001_027 (total M 75+))
@@ -146,6 +150,9 @@ Sys.getenv("CENSUS_API_KEY")
 
  # Select variables
 acs_older_vars <- c(
+  # Total older adults
+  "B01001_020", "B01001_021", "B01001_022", "B01001_023", "B01001_024", "B01001_025",
+  "B01001_044", "B01001_045", "B01001_046", "B01001_047", "B01001_048", "B01001_049", "B01001_001",
   # HI males age 65 +
   "B27001_024","B27001_026","B27001_027", "B27001_029",
   # HI females 65+
@@ -181,12 +188,7 @@ older_data_tract <- get_acs(geography = "tract", state = 51, county = 141,
                       cache_table = TRUE, output = "wide", geometry = TRUE,
                       keep_geo_vars = TRUE)
 
-# Get data from 2014/18 5-year estimates for Patrick County (51141) at block group level
-older_data_bgrp <- get_acs(geography = "block group", state = 51, county = 141,
-                     variables = acs_older_vars,
-                     year = 2018, survey = "acs5",
-                     cache_table = TRUE, output = "wide", geometry = TRUE,
-                     keep_geo_vars = TRUE)
+# Data not available at block group level except for total.
 
 
 #
@@ -204,6 +206,9 @@ acs_older_tract <- older_data_tract %>% transmute(
   ALAND = ALAND,
   AWATER = AWATER,
   geometry = geometry,
+  # TOTAL OLDER ADULTS
+  older = (B01001_020E + B01001_021E + B01001_022E + B01001_023E + B01001_024E + B01001_025E +
+  B01001_044E + B01001_045E + B01001_046E + B01001_047E + B01001_048E + B01001_049E) / B01001_001E * 100,
   #HEALTH INSURANCE
   nohealthins_m = (B27001_026E + B27001_029E) / (B27001_024E + B27001_027E) * 100,
   nohealthins_f = (B27001_054E + B27001_057E) / (B27001_052E + B27001_055E) * 100,
@@ -248,100 +253,51 @@ acs_older_tract <- older_data_tract %>% transmute(
   labfor = (B23001_160E + B23001_165E + B23001_170E + B23001_074E + B23001_079E + B23001_084E) / (B23001_159E + B23001_164E + B23001_169E + B23001_073E + B23001_078E + B23001_083E) * 100
   )
 
-#Block group (note: variables with estimate = 0 will have NAs in the final calculation. Disregard these
-# for now and use tract-level values for plotting.)
- acs_older_bgrp <- older_data_bgrp %>% transmute(
-   STATEFP = STATEFP,
-   COUNTYFP = COUNTYFP,
-   TRACTCE = TRACTCE,
-   GEOID = GEOID,
-   NAME.x = NAME.x,
-   NAME.y = NAME.y,
-   ALAND = ALAND,
-   AWATER = AWATER,
-   geometry = geometry,
-   #HEALTH INSURANCE
-   nohealthins_m = (B27001_026E + B27001_029E) / (B27001_024E + B27001_027E) * 100,
-   nohealthins_f = (B27001_054E + B27001_057E) / (B27001_052E + B27001_055E) * 100,
-   nohealthins = (B27001_026E + B27001_029E + B27001_054E + B27001_057E) / (B27001_052E + B27001_055E + B27001_024E + B27001_027E ) * 100,
-   #HEALTH STATUS
-   visdiff_m = (B18103_016E + B18103_019E) / (B18103_015E + B18103_018E) * 100,
-   visdiff_f = (B18103_035E + B18103_038E) / (B18103_034E + B18103_037E) * 100,
-   visdiff = (B18103_016E + B18103_019E + B18103_035E + B18103_038E) / (B18103_015E + B18103_018E + B18103_034E + B18103_037E) * 100,
-   heardiff_m = (B18102_016E + B18102_019E) / (B18102_015E + B18102_018E) * 100,
-   heardiff_f = (B18102_035E + B18102_038E) / (B18102_034E + B18102_037E) * 100,
-   heardiff = (B18102_016E + B18102_019E + B18102_035E + B18102_038E) / (B18102_015E + B18102_018E + B18102_034E + B18102_037E) * 100,
-   cogdiff_m = (B18104_013E + B18104_016E) / (B18104_012E + B18104_015E) * 100,
-   cogdiff_f = (B18104_029E + B18104_032E) / (B18104_028E + B18104_031E) * 100,
-   cogdiff = (B18104_013E + B18104_016E + B18104_029E + B18104_032E) / (B18104_012E + B18104_015E + B18104_028E + B18104_031E) * 100,
-   ambdiff_m = (B18105_013E + B18105_016E) / (B18105_012E + B18105_015E) * 100,
-   ambdiff_f = (B18105_029E + B18105_032E) / (B18105_028E + B18105_031E) * 100,
-   ambdiff = (B18105_013E + B18105_016E + B18105_029E + B18105_032E) / (B18105_012E + B18105_015E + B18105_028E + B18105_031E) * 100,
-   carediff_m = (B18106_013E + B18106_016E) / (B18106_012E + B18106_015E) * 100,
-   carediff_f = (B18106_029E + B18106_032E) / (B18106_028E + B18106_031E) * 100,
-   carediff = (B18106_013E + B18106_016E + B18106_029E + B18106_032E) / (B18106_012E + B18106_015E + B18106_028E + B18106_031E) * 100,
-   ildiff_m = (B18107_010E + B18107_013E) / (B18107_009E + B18107_012E) * 100,
-   ildiff_f = (B18107_023E + B18107_026E) / (B18107_022E + B18107_025E) * 100,
-   ildiff = (B18107_010E + B18107_013E + B18107_023E + B18107_026E) / (B18107_009E + B18107_012E + B18107_022E + B18107_025E) * 100,
-   disab_m = (B18101_016E + B18101_019E) / (B18101_015E + B18101_018E) * 100,
-   disab_f = (B18101_035E + B18101_038E) / (B18101_034E + B18101_037E) * 100,
-   disab = (B18101_016E + B18101_019E + B18101_035E + B18101_038E) / (B18101_015E + B18101_018E + B18101_034E + B18101_037E) * 100,
-   #HARDSHIPS
-   snap = B22001_003E / (B22001_006E + B22001_003E) * 100,
-   inpov_m = (B17001_015E + B17001_016E) / (B17001_015E + B17001_016E + B17001_044E + B17001_045E) * 100,
-   inpov_f = (B17001_029E + B17001_030E) / (B17001_029E + B17001_030E + B17001_058E + B17001_059E) * 100,
-   inpov = (B17001_029E + B17001_030E + B17001_015E + B17001_016E) / (B17001_015E + B17001_016E + B17001_029E + B17001_030E + B17001_044E + B17001_045E + B17001_058E + B17001_059E) * 100,
-   #HOUSEHOLDS
-   hhsixty_total = B11006_002E / B11006_001E * 100,
-   hhsixty_marr = B11006_005E / B11006_003E * 100,
-   hhsixty_mhh = B11006_006E / B11006_003E * 100,
-   hhsixty_fhh = B11006_007E / B11006_003E * 100,
-   hhsixty_single = B11006_007E + B11006_006E / B11006_003E * 100,
-   hhsixty_nonfam = B11006_008E / B11006_003E * 100,
-   #EMPLOYMENT
-   labfor_m = (B23001_074E + B23001_079E + B23001_084E) / (B23001_073E + B23001_078E + B23001_083E) * 100,
-   labfor_f = (B23001_160E + B23001_165E + B23001_170E) / (B23001_159E + B23001_164E + B23001_169E) * 100,
-   labfor = (B23001_160E + B23001_165E + B23001_170E + B23001_074E + B23001_079E + B23001_084E) / (B23001_159E + B23001_164E + B23001_169E + B23001_073E + B23001_078E + B23001_083E) * 100
- )
- 
- 
- #
- # Plots ------------------------------------------------------------------------
- #
 
- # Age 65 and over
- min_healthins <- floor(min(acs_older_tract$nohealthins))
- max_healthins <- ceiling(max(acs_older_tract$nohealthins))
- ggplot() +
-   geom_sf(data = acs_older_tract, size = 0.2, aes(fill = nohealthins)) +
-   labs(title = "Percent population age 65 and over with no health insurance\nby Census tract, 2014/18",
-        caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-   theme_map() +
-   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-         legend.title = element_text(size = 11, face = "bold"),
-         legend.text = element_text(size = 11),
-         legend.position = "right") +
-   scale_fill_continuous(name = "Percent", low = "#efedf5", high = "#756bb1",
-                         limits = c(min_healthins, max_healthins),
-                         breaks = seq(min_healthins, max_healthins, length.out = 5))
- ggsave(path = "./output/acs/", device = "png", filename = "plot_age65_nohi.png", plot = last_plot())
+#
+# Write out ------------------------------------------------------------------------
+#
 
- acs_plot <- function(acs_variables, plot_title, file_name, ...){
-   ggplot() +
-     geom_sf(data = acs_older_tract, size = 0.2, aes(fill = acs_variables)) +
-     labs(title = sprintf("%s \nby Census tract, 2014/18", plot_title),
-          caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
-     theme_map() +
-     theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
-           legend.title = element_text(size = 11, face = "bold"),
-           legend.text = element_text(size = 11),
-           legend.position = "right") +
-     scale_fill_continuous(name = "Percent", low = "#efedf5", high = "#756bb1",
-                           limits = c(floor(min(acs_variables)), ceiling(max(acs_variables))),
-                           breaks = seq(floor(min(acs_variables)), ceiling(max(acs_variables)), length.out = 5))
-   ggsave(path = "./output/acs/", device = "png", filename = sprintf("plot_age65_%s.png", file_name), plot = last_plot())
+write.csv(acs_older_tract, "./data/working/acs/olderadults/olderadults.csv")
 
- }
+
+#
+# Plots ------------------------------------------------------------------------
+#
+
+# Age 65 and over
+min_healthins <- floor(min(acs_older_tract$nohealthins))
+max_healthins <- ceiling(max(acs_older_tract$nohealthins))
+ggplot() +
+  geom_sf(data = acs_older_tract, size = 0.2, aes(fill = nohealthins)) +
+  labs(title = "Percent population age 65 and over with no health insurance\nby Census tract, 2014/18",
+       caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+  theme_map() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.title = element_text(size = 11, face = "bold"),
+        legend.text = element_text(size = 11),
+        legend.position = "right") +
+  scale_fill_continuous(name = "Percent", low = "#efedf5", high = "#756bb1",
+                        limits = c(min_healthins, max_healthins),
+                        breaks = seq(min_healthins, max_healthins, length.out = 5))
+ggsave(path = "./output/acs/", device = "png", filename = "plot_age65_nohi.png", plot = last_plot())
+
+acs_plot <- function(acs_variables, plot_title, file_name, ...){
+  ggplot() +
+    geom_sf(data = acs_older_tract, size = 0.2, aes(fill = acs_variables)) +
+    labs(title = sprintf("%s \nby Census tract, 2014/18", plot_title),
+         caption = "Source: American Community Survey 2014/18 (5-year) estimates.") +
+    theme_map() +
+    theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+          legend.title = element_text(size = 11, face = "bold"),
+          legend.text = element_text(size = 11),
+          legend.position = "right") +
+    scale_fill_continuous(name = "Percent", low = "#efedf5", high = "#756bb1",
+                          limits = c(floor(min(acs_variables)), ceiling(max(acs_variables))),
+                          breaks = seq(floor(min(acs_variables)), ceiling(max(acs_variables)), length.out = 5))
+  ggsave(path = "./output/acs/", device = "png", filename = sprintf("plot_age65_%s.png", file_name), plot = last_plot())
+  
+}
 acs_plot(acs_older_tract$nohealthins, "Percent older adults without health insurance", "nohealthins")
 acs_plot(acs_older_tract$snap, "Percent households with one or more 60+\nhousehold members receiving SNAP", "snap")
 acs_plot(acs_older_tract$inpov, "Percent older adults with income below poverty level", "inpov")
