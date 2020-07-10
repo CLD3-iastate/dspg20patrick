@@ -3,14 +3,9 @@ title: "Food Access"
 description: "Project description here"
 tags: ["R", "geospatial"]
 weight: 1
+url: "https://www.brandonleekramer.com/"
 draft: false
 ---
 
 Updates coming soon.
 
-<html>
-<head><title>Shiny App Iframe</title></head>
-<body>
-<iframe id="example1" src="https://gallery.shinyapps.io/goog-trend-index/" style="border: none; width: 100%; height: 850px" frameborder="0"></iframe>
-</body>
-</html>
