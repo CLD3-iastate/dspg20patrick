@@ -56,28 +56,28 @@ for(i in 1:nrow(emsstations)){
                              traveltime=480,
                              type="driving",
                              departure="2020-08-07T08:00:00+01:00")
-  saveRDS(ems_iso8, file = paste0('ems_iso_8_',i,'.RDS')) 
+  saveRDS(ems_iso8, file = paste0('ems_iso_8_',i,'.RDS'))
   ems_iso10 <- traveltime_map(appId= traveltime_id,
                               apiKey = traveltime_api,
                               location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
                               traveltime=600,
                               type="driving",
                               departure="2020-08-07T08:00:00+01:00")
-  saveRDS(ems_iso10, file = paste0('ems_iso_10_',i,'.RDS')) 
+  saveRDS(ems_iso10, file = paste0('ems_iso_10_',i,'.RDS'))
   ems_iso12 <- traveltime_map(appId= traveltime_id,
                               apiKey = traveltime_api,
                               location=c(emsstations$LATITUDE[i],emsstations$LONGITUDE[i]),
                               traveltime=720,
                               type="driving",
                               departure="2020-08-07T08:00:00+01:00")
-  saveRDS(ems_iso12, file = paste0('ems_iso_12_',i,'.RDS')) 
+  saveRDS(ems_iso12, file = paste0('ems_iso_12_',i,'.RDS'))
   residential = mapview(st_geometry(residential_sf), cex =.5, layer.name = "residential areas", color = colors[5])
   m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
   m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
   m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
   # add the second layer on top
   m1 = m1 + m2 + m3 + residential
-  mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
+  mapshot(m1, file = paste0("~/git/dspg20patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
 
 # residential coverage -------------------------------------------------------
@@ -102,23 +102,50 @@ coverage_12_1 <- nrow(pp_12)/nrow(residential_sf)
 
 # for(i in 1:nrow(emsstations)){
 # iso <- osrmIsochrone(loc = c(emsstations$LONGITUDE[i], emsstations$LATITUDE[i]), breaks = seq(from = 10,to = 20, by = 5))
-# 
+#
 # iso@data$drive_times <- factor(paste(iso@data$min, "to", iso@data$max, "min"))
 # # color palette for each area
 # factpal <- colorFactor(rev(heat.colors(3)), iso@data$drive_times)
-# 
+#
 # # draw map
-# m2 <- leaflet() %>% 
+# m2 <- leaflet() %>%
 #   setView(emsstations$LONGITUDE[i], emsstations$LATITUDE[i], zoom = 11) %>%
-#   addProviderTiles("CartoDB.Positron", group="Greyscale") %>% 
-#   addMarkers(lng = emsstations$LONGITUDE[i], emsstations$LATITUDE[i], popup = "EMS Station Isochrone") %>% 
+#   addProviderTiles("CartoDB.Positron", group="Greyscale") %>%
+#   addMarkers(lng = emsstations$LONGITUDE[i], emsstations$LATITUDE[i], popup = "EMS Station Isochrone") %>%
 #   addPolygons(fill=TRUE, stroke=TRUE, color = "black",
 #               fillColor = ~factpal(iso@data$drive_times),
 #               weight=0.5, fillOpacity=0.2,
 #               data = iso, popup = iso@data$drive_times,
-#               group = "Drive Time") %>% 
+#               group = "Drive Time") %>%
 #   # Legend
 #   addLegend("bottomright", pal = factpal, values = iso@data$drive_time,   title = "Drive Time")
 # mapshot(m2, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_osrm_",i, ".png", sep = ""))
 # }
+
+# groceries ------------------------------------------------------------------------
+#read in csv file
+groceries_full <- read_sf("./data/working/geocode/patrick_groceries.csv")
+
+#Changing the long and lat data to numeric and removing NA
+groceries <- groceries_full %>%
+  mutate(lat = unlist(lapply(groceries_full$latitude,as.numeric)),
+         long = unlist(lapply(groceries_full$longitude, as.numeric))) %>%
+  remove_missing()
+
+#Changing the csv to sf and the CRS
+groceries_sf <- st_as_sf(groceries, coords = c("longitude", "latitude"))
+
+st_crs(groceries_sf) <- "+proj=longlat +datum=WGS84"
+
+#Creating RDS files
+for(e in 1:nrow(groceries_sf)){
+  e=27
+  ems_iso8 <- traveltime_map(appId= traveltime_id,
+                             apiKey = traveltime_api,
+                             location= c(groceries_sf$lat[e], groceries_sf$long[e]),
+                             traveltime=480,
+                             type="driving",
+                             departure="2020-08-07T08:00:00+01:00")
+  saveRDS(groceries_iso8, file = paste0('groc_iso_8_',i,'.RDS'))
+}
 
