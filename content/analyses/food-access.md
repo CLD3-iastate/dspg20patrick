@@ -7,3 +7,5 @@ draft: false
 ---
 
 Updates coming soon.
+
+<iframe src="https://uva-sdad.shinyapps.io/gates-dashboard/" title="Gates Dashboard"></iframe>

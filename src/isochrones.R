@@ -41,6 +41,11 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 # #call plot
 # emsstations_plot
 
+#resedential information
+residential <- read_sf("./data/working/corelogic/residential.csv")
+residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
+st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
+
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
 traveltime_api <- Sys.getenv("TRAVELAPI")
@@ -77,18 +82,13 @@ for(i in 1:nrow(emsstations)){
   m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
   # add the second layer on top
   m1 = m1 + m2 + m3 + residential
-  mapshot(m1, file = paste0("~/git/dspg20patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
+  mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
 
 # residential coverage -------------------------------------------------------
-
-residential <- read_sf("./data/working/corelogic/residential.csv")
-residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
-st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
-
-ems_iso8_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_1.RDS")
-ems_iso10_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_1.RDS")
-ems_iso12_1 <- readRDS("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_1.RDS")
+ems_iso8_1 <- readRDS("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_8_1.RDS")
+ems_iso10_1 <- readRDS("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_10_1.RDS")
+ems_iso12_1 <- readRDS("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_12_1.RDS")
 
 pp_8 <- st_intersection(residential_sf, ems_iso8_1)
 pp_10 <- st_intersection(residential_sf, ems_iso10_1)
@@ -139,13 +139,80 @@ st_crs(groceries_sf) <- "+proj=longlat +datum=WGS84"
 
 #Creating RDS files
 for(e in 1:nrow(groceries_sf)){
-  e=27
-  ems_iso8 <- traveltime_map(appId= traveltime_id,
+#  e=24
+  grc_iso8 <- traveltime_map(appId= traveltime_id,
                              apiKey = traveltime_api,
                              location= c(groceries_sf$lat[e], groceries_sf$long[e]),
                              traveltime=480,
                              type="driving",
                              departure="2020-08-07T08:00:00+01:00")
-  saveRDS(groceries_iso8, file = paste0('groc_iso_8_',i,'.RDS'))
+  saveRDS(grc_iso8, file = paste0('grc_iso_8_',e,'.RDS'))
+  grc_iso10 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
+                              location=c(groceries_sf$lat[e], groceries_sf$long[e]),
+                              traveltime=600,
+                              type="driving",
+                              departure="2020-08-07T08:00:00+01:00")
+  saveRDS(grc_iso10, file = paste0('grc_iso_10_',e,'.RDS'))
+  grc_iso12 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
+                              location=c(groceries_sf$lat[e], groceries_sf$long[e]),
+                              traveltime=720,
+                              type="driving",
+                              departure="2020-08-07T08:00:00+01:00")
+  saveRDS(grc_iso12, file = paste0('grc_iso_12_',e,'.RDS'))
+  residential = mapview(st_geometry(residential_sf), cex =.5, layer.name = "residential areas", color = colors[5])
+  m1 = mapview(grc_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
+  m2 = mapview(grc_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
+  m3 = mapview(grc_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
+  # add the second layer on top
+  m1 = m1 + m2 + m3 + residential
+  mapshot(m1, file = paste0("~/git/dspg20patrick/output/isochrone_maps/grcmap_",e, ".png", sep = ""))
 }
 
+# wifi ------------------------------------------------------------------------
+#read in csv file
+wifi_full <- read_sf("./data/working/geocode/patrick_wifi.csv")
+
+#Changing the long and lat data to numeric and removing NA
+wifi <- wifi_full %>%
+  mutate(lat = unlist(lapply(wifi_full$latitude,as.numeric)),
+         long = unlist(lapply(wifi_full$longitude, as.numeric))) %>%
+  remove_missing()
+#Changing the csv to sf and the CRS
+wifi_sf <- st_as_sf(wifi, coords = c("longitude", "latitude"))
+
+st_crs(wifi_sf) <- "+proj=longlat +datum=WGS84"
+
+#Creating RDS files
+for(w in 1:nrow(wifi_sf)){
+  #  w=11
+  wifi_iso8 <- traveltime_map(appId= traveltime_id,
+                             apiKey = traveltime_api,
+                             location= c(wifi_sf$lat[e], wifi_sf$long[e]),
+                             traveltime=480,
+                             type="driving",
+                             departure="2020-08-07T08:00:00+01:00")
+  saveRDS(wifi_iso8, file = paste0('wifi_iso_8_',w,'.RDS'))
+  wifi_iso10 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
+                              location=c(wifi_sf$lat[e], wifi_sf$long[e]),
+                              traveltime=600,
+                              type="driving",
+                              departure="2020-08-07T08:00:00+01:00")
+  saveRDS(wifi_iso10, file = paste0('wifi_iso_10_',w,'.RDS'))
+  wifi_iso12 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
+                              location=c(wifi_sf$lat[e], wifi_sf$long[e]),
+                              traveltime=720,
+                              type="driving",
+                              departure="2020-08-07T08:00:00+01:00")
+  saveRDS(wifi_iso12, file = paste0('wifi_iso_12_',w,'.RDS'))
+  residential = mapview(st_geometry(residential_sf), cex =.5, layer.name = "residential areas", color = colors[5])
+  m1 = mapview(wifi_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
+  m2 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
+  m3 = mapview(wifi_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
+  # add the second layer on top
+  m1 = m1 + m2 + m3 + residential
+  mapshot(m1, file = paste0("~/git/dspg20patrick/output/isochrone_maps/grcmap_",w, ".png", sep = ""))
+}
