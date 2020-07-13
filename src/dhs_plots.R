@@ -19,8 +19,6 @@ shp_to_sf <- function(folder, file){
     sf::st_transform('+proj=longlat +datum=WGS84')
 }
 # veteran shp files -------------------------------------------------
-# a vector containing the subset fips codes
-fips <- c("51141", "37169", "37171", "51035", "51063", "51067", "51089")
 
 # read in the shp data as an sf files
 veterans <- sf::read_sf("./data/original/dhs-veterans/veterans.shp") %>%
@@ -50,14 +48,20 @@ dialysis <- #read in the csv data
 
 
 # dialysis leaflet plots ---------------------------------------------------------
+#create boundary box for locations of interest
+# search for your place of interest
+# coordinates of patrick county 36.6886° N, 80.3213° W
+bb <- getbb('patrick county, virginia')
+
 dialysis_plot <- leaflet(data = dialysis) %>% #create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-  #bbox() %>%
-  addMarkers()
+  addMarkers() %>%
+  fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>% #add bounding box
+  addMeasure()
 
-#use bbox on leaflet to create boundaries
+#call dialysis plot
+dialysis_plot
 
-#  sf::st_transform('+proj=longlat +datum=WGS84')
 
 #emsstations sf file---------------------------------------------------------------
 emsstations <- shp_to_sf("emsstations","emsstations")
@@ -77,19 +81,15 @@ hospitals <- sf::read_sf("./data/original/dhs-hospitals/Hospitals.shp") %>%
   sf::st_transform('+proj=longlat +datum=WGS84')
 
 #hospital leaflet plot-----------------------------------------------------------------
-#create boundary box for locations of interest
-# search for your place of interest
-# coordinates of patrick county 36.6886° N, 80.3213° W
-bb <- getbb('patrick county, virginia')
+
 
 hospitals_plot <- leaflet(data = hospitals) %>% # create leaflet object
   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
   addMarkers() %>%
+  #add bounding box for location
   fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>%
   addMeasure()
 
-#add bounding box for location
-#call plot
 hospitals_plot
 
 #local emergency----------------------------------------------------------------
@@ -103,50 +103,53 @@ local_emergency_plot <- leaflet(data = local_emergency) %>% # create leaflet obj
 #call plot
 local_emergency_plot
 
-
 # nursinghomes shp files -------------------------------------------------
 # read shp nursinghomes fi
 nursing_homes <- sf::read_sf("./data/original/dhs-nursinghomes/NursingHomes.shp") %>%
-# only keep data in the places we want
-subset(ZIP %in% zips) %>%
-sf::st_transform('+proj=longlat +datum=WGS84')
+  # only keep data in the places we want
+  subset(COUNTYFIPS %in% fips) %>%
+  sf::st_transform('+proj=longlat +datum=WGS84')
 
-
- # leaflet plots ----------------------------------------------------------------
+# nursing home leaflet plot ----------------------------------------------------------------
 
 nursing_homes_plot <- leaflet(data = nursing_homes) %>%
-# create leaflet object
-addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-   addMarkers()
+  # create leaflet object
+  addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
+  addMarkers()
 nursing_homes_plot
+
 
 # pharmacies csv file -------------------------------------------------
 #read in the csv data
 pharmacies <- read_csv("./data/original/dhs-pharmacies/pharmacies.csv") %>%
-#separate comma separted coordinates from one column to two columns
-separate(CalcLocation, c("x","y"), sep = ",") %>%
-#transform data frame into a sf file, did c("y", "x") because c("x","y") = Antartica
-st_as_sf(coords = c("y", "x")) %>%
-#only keep data in desired location
-subset(ZIP %in% zips)
+  #separate comma separted coordinates from one column to two columns
+  separate(CalcLocation, c("x","y"), sep = ",") %>%
+  #transform data frame into a sf file, did c("y", "x") because c("x","y") = Antartica
+  st_as_sf(coords = c("y", "x")) %>%
+  #only keep data in desired location
+  subset(State == "VA")
 
 # pharmacies leaflet plots ---------------------------------------------------------
 pharmacies_plot <- leaflet(data = pharmacies) %>% #create leaflet object
-   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-   addMarkers()
- pharmacies_plot
+  addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
+  addMarkers() %>%
+  fitBounds(bb[1,1], bb[2,1], bb[1,2], bb[2,2]) %>% #add bounding box
+  addMeasure()
+
+pharmacies_plot
 
 # urgentcare shp files -------------------------------------------------
 # read shp nursinghomes file
 urgent_care <- sf::read_sf("./data/original/dhs-urgentcare/UrgentCareFacs.shp") %>%
-# only keep data in the places we want
-subset(FIPS %in% fips) %>%
-sf::st_transform('+proj=longlat +datum=WGS84')
+
+  # only keep data in the places we want
+  subset(FIPS %in% fips) %>%
+  sf::st_transform('+proj=longlat +datum=WGS84')
 
 
-# leaflet plots ----------------------------------------------------------------
+# urgentcare leaflet plot ----------------------------------------------------------------
 
 urgent_care_plot <- leaflet(data = urgent_care) %>% # create leaflet object
-   addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
-   addMarkers()
+  addProviderTiles(provider = "CartoDB.Positron") %>% # add basemap
+  addMarkers()
 urgent_care_plot

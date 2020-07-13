@@ -1,0 +1,171 @@
+---
+title: "Patrick County, VA: Older Adult Well-Being"
+author: "Teja Pristavec"
+date: "7/7/2020"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Older Adult Well-Being
+
+# Introduction
+Write the introduction here. Use your literature review (expand if needed) to describe the topic and highlight the importance/key issues in rural areas. You can add relevant links [like this](http://rmarkdown.rstudio.com/authoring_shiny.html).
+
+Add a second paragraph that is specific to Patrick County. Why is this topic important to Patrick County? Describe what is known about this issue in Patrick County (if applicable). 
+
+The third paragraph explains what we set out to do to address the concern.
+
+# Data and Methods
+Describe the data discovery process, what datasets we selected for this topic, and why/what our selection criteria were.
+Describe how we constructed our indicators and how we mapped them. 
+
+## Explorer
+Describe the interactive older adult well-being explorer and how to use it. 
+
+```{r explorer, echo = FALSE}
+# In all of R code chunks the `echo = FALSE` attribute is used. This is to prevent the R code within the chunk from rendering in the document alongside the Shiny components.
+
+# Load packages
+library(dplyr)
+library(sf)
+library(leaflet)
+
+# Load and prepare data
+older <- read.csv("./data/working/acs/olderadults.csv", header = TRUE, 
+                 colClasses = c("STATEFP" = "character", "COUNTYFP" = "character", 
+                                "TRACTCE" = "character", "GEOID" = "character"))
+older <- st_as_sf(data)
+
+# Shiny UI
+inputPanel(selectInput("whichvar", "Variable", 
+               choices = list("Percent older adults",
+                              "Percent older adults without health insurance",
+                              "Percent older adult females without health insurance",
+                              "Percent older adult males without health insurance",
+                              "Percent older adults with income below poverty level",
+                              "Percent older adult females with income below poverty level",
+                              "Percent older adult males with income below poverty level",
+                              "Percent households with one or more 60+ members",
+                              "Percent married couple households with one or more 60+ member",
+                              "Percent single (no partner present) households with one or more 60+ member",
+                              "Percent households with one or more 60+ household members receiving SNAP",
+                              "Percent older adults in the labor force",
+                              "Percent older adult females in the labor force",
+                              "Percent older adult males in the labor force",
+                              "Percent older adults with any disability",
+                              "Percent older adult females with any disability",
+                              "Percent older adult males with any disability",
+                              "Percent older adults with vision difficulty",
+                              "Percent older adult females with vision difficulty",
+                              "Percent older adult males with vision difficulty",
+                              "Percent older adults with hearing difficulty",
+                              "Percent older adult females with hearing difficulty",
+                              "Percent older adult males with hearing difficulty",
+                              "Percent older adults with cognitive difficulty",
+                              "Percent older adult females with cognitive difficulty",
+                              "Percent older adult males with cognitive difficulty",
+                              "Percent older adults with ambulatory difficulty",
+                              "Percent older adult females with ambulatory difficulty",
+                              "Percent older adult males with ambulatory difficulty",
+                              "Percent older adults with self-care difficulty",
+                              "Percent older adult females with self-care difficulty",
+                              "Percent older adult males with self-care difficulty",
+                              "Percent older adults with independent living difficulty",
+                              "Percent older adult females with independent living difficulty",
+                              "Percent older adult males with independent living difficulty"
+                              ), 
+               selected = "Percent older adults")
+)
+
+renderLeaflet({
+  variable <- switch(older,
+                 "Percent older adults" = older$older,
+                 "Percent older adults without health insurance" = older$nohealthins,
+                 "Percent older adult females without health insurance" = older$nohealthins_f,
+                 "Percent older adult males without health insurance" = older$nohealthins_m,
+                 "Percent older adults with income below poverty level" = older$inpov,
+                 "Percent older adult females with income below poverty level" = older$inpov_f,
+                 "Percent older adult males with income below poverty level" = older$inpov_m,
+                 "Percent households with one or more 60+ members" = older$hhsixty_total,
+                 "Percent married couple households with one or more 60+ member" = older$hhsixty_marr,
+                 "Percent single (no partner present) households with one or more 60+ member" = older$hhsixty_single,
+                 "Percent households with one or more 60+ household members receiving SNAP" = older$snap,
+                 "Percent older adults in the labor force" = older$labfor,
+                 "Percent older adult females in the labor force" = older$labfor_f,
+                 "Percent older adult males in the labor force" = older$labfor_m,
+                 "Percent older adults with any disability" = older$disab,
+                 "Percent older adult females with any disability" = older$disab_f,
+                 "Percent older adult males with any disability" = older$disab_m,
+                 "Percent older adults with vision difficulty" = older$visdiff,
+                 "Percent older adult females with vision difficulty" = older$visdiff_f,
+                 "Percent older adult males with vision difficulty" = older$visdiff_m,
+                 "Percent older adults with hearing difficulty" = older$heardiff,
+                 "Percent older adult females with hearing difficulty" = older$heardiff_f,
+                 "Percent older adult males with hearing difficulty" = older$heardiff_m,
+                 "Percent older adults with cognitive difficulty" = older$cogdiff,
+                 "Percent older adult females with cognitive difficulty" = older$cogdiff_f,
+                 "Percent older adult males with cognitive difficulty" = older$cogdiff_m,
+                 "Percent older adults with ambulatory difficulty" = older$ambdiff,
+                 "Percent older adult females with ambulatory difficulty" = older$ambdiff_f,
+                 "Percent older adult males with ambulatory difficulty" = older$ambdiff_m,
+                 "Percent older adults with self-care difficulty" = older$carediff,
+                 "Percent older adult females with self-care difficulty" = older$carediff_f,
+                 "Percent older adult males with self-care difficulty" = older$carediff_m,
+                 "Percent older adults with independent living difficulty" = older$ildiff,
+                 "Percent older adult females with independent living difficulty" = older$ildiff_f,
+                 "Percent older adult males with independent living difficulty" = older$ildiff_m 
+  )
+  
+  pal <- colorQuantile("Blues", domain = variable, probs = seq(0, 1, length = 6), right = TRUE)
+  
+  labels <- lapply(
+    paste("<strong>Area: </strong>",
+          acs_bgrp$NAME.y,
+          "<br />",
+          "<strong>Percent:</strong>",
+          round(variable, 2)),
+    htmltools::HTML
+  )
+  
+  leaflet(data = older, options = leafletOptions(minZoom = 10))%>%
+    addTiles() %>%
+    addPolygons(fillColor = ~pal(variable), 
+                fillOpacity = 0.6, 
+                stroke = FALSE,
+                label = labels,
+                labelOptions = labelOptions(direction = "bottom",
+                                            style = list(
+                                              "font-size" = "12px",
+                                              "border-color" = "rgba(0,0,0,0.5)",
+                                              direction = "auto"
+                                            ))) %>%
+    addLegend("bottomleft", 
+              pal = pal, 
+              values =  ~variable,
+              title = "Percent by<br>Quintile Group", 
+              opacity = 0.6,
+              labFormat = function(type, cuts, p) {
+                n = length(cuts)
+                paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+              })
+  
+})
+```
+
+## Embedded Application
+
+It's also possible to embed an entire Shiny application within an R Markdown document using the `shinyAppDir` function. This example embeds a Shiny application located in another directory:
+
+```{r tabsets, echo=FALSE}
+
+```
+
+Note the use of the `height` parameter to determine how much vertical space the embedded application should occupy.
+
+You can also use the `shinyApp` function to define an application inline rather then in an external directory.
+
+
