@@ -41,6 +41,11 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 # #call plot
 # emsstations_plot
 
+# Write out for web
+ems <- emsstations %>% st_transform(4269)
+ems <- ems %>% select(OBJECTID, ADDRESS, CITY, STATE, ZIP, NAICSDESCR, LONGITUDE, LATITUDE, DIRECTIONS, NAME, geometry)
+write_rds(ems, "./data/web/ems.Rds")
+
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
 traveltime_api <- Sys.getenv("TRAVELAPI")
