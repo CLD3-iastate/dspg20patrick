@@ -33,11 +33,10 @@ Describe the interactive older adult well-being explorer and how to use it.
 library(dplyr)
 library(sf)
 library(leaflet)
+library(readr)
 
 # Load and prepare data
-older <- read.csv("./data/working/acs/olderadults.csv", header = TRUE, 
-                 colClasses = c("STATEFP" = "character", "COUNTYFP" = "character", 
-                                "TRACTCE" = "character", "GEOID" = "character"))
+older <- read_csv("~/Git/patrick/data/working/acs/olderadults.csv")
 older <- st_as_sf(data)
 
 # Shiny UI
