@@ -65,3 +65,9 @@ leaflet(wifi) %>%
 
 write.csv(groceries, "./data/working/geocode/patrick_groceries.csv")
 write.csv(wifi, "./data/working/geocode/patrick_wifi.csv")
+
+groceries <- groceries %>% select(-notes)
+wifi <- wifi %>% select(-notes)
+
+write_rds(groceries, "./data/web/groceries.Rds")
+write_rds(wifi, "./data/web/wifi.Rds")
