@@ -113,7 +113,6 @@ residential <- residential %>% filter(county_use_description == "COMMERCIAL AND 
                                   county_use_description == "SINGLE FAM RESIDENTIAL-SUBURB" |
                                   county_use_description == "SINGLE FAM RESIDENTIAL-URBAN")
 
-
 # Test plot
 residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
 plot(st_geometry(residential_sf), pch = 21, cex = 0.3)
@@ -124,6 +123,12 @@ plot(st_geometry(residential_sf), pch = 21, cex = 0.3)
 #
 
 write.csv(residential, "./data/working/corelogic/residential.csv")
-st_write(residential_sf, "./data/working/corelogic/residential.shp", driver = "ESRI Shapefile")
+
+residential <- residential %>% select(
+  composite_property_linkage_key, county_use_description, land_use_code,
+  parcel_level_latitude, parcel_level_longitude)
+
+residential <- residential %>% rename(latitude = parcel_level_latitude, longitude = parcel_level_longitude)
+write_rds(residential, "./data/web/residential.Rds")
 
 
