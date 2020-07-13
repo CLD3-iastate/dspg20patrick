@@ -353,7 +353,6 @@ ggplot() +
                         breaks = seq(min_nohealthins, max_nohealthins, length.out = 5))
 ggsave(path = "./output/acs/", device = "png", filename = "plot_nohealthins.png", plot = last_plot())
 
-
 # No Computer
 min_nocomputer <- floor(min(acs_bgrp$nocomputer))
 max_nocomputer <- ceiling(max(acs_bgrp$nocomputer))
@@ -595,7 +594,36 @@ ggplot() +
 ggsave(path = "./output/acs/", device = "png", filename = "plot_snap.png", plot = last_plot())
 
 
+#
+# Write out ---------------------------------------------------------
+#
 
+# Connectivity
+connectivity <- acs_bgrp %>% select(STATEFP, COUNTYFP, TRACTCE, BLKGRPCE, GEOID,
+                                    NAME.x, NAME.y, geometry,
+                                    nocomputer, laptop, smartphone, tablet, othercomputer,
+                                    nointernet, satellite, cellular, dialup, broadband)
+connectivity <- st_as_sf(connectivity)
+connectivity <- connectivity %>% st_transform(4269)
+write_rds(connectivity, "./data/web/connectivity.Rds")
+
+# Sociodemographics
+socdem_block <- acs_bgrp %>% select(STATEFP, COUNTYFP, TRACTCE, BLKGRPCE, GEOID,
+                               NAME.x, NAME.y, geometry,
+                               age65, under18, black, noba, unempl, nohealthins2, snap)
+socdem_tract <- acs_tract %>% select(STATEFP, COUNTYFP, TRACTCE, GEOID,
+                                    NAME.x, NAME.y, geometry,
+                                    hispanic, inpov, privateins, publicins)
+
+# Transform
+socdem_block <- st_as_sf(socdem_block)
+socdem_tract <- st_as_sf(socdem_tract)
+socdem_block <- socdem_block %>% st_transform(4269)
+socdem_tract <- socdem_tract %>% st_transform(4269)
+
+# Write
+write_rds(socdem_block, "./data/web/socdem_block.Rds")
+write_rds(socdem_tract, "./data/web/socdem_tract.Rds")
 
 
 #
