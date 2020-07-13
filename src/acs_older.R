@@ -258,7 +258,9 @@ acs_older_tract <- older_data_tract %>% transmute(
 # Write out ------------------------------------------------------------------------
 #
 
-write.csv(acs_older_tract, "./data/working/acs/olderadults/olderadults.csv")
+olderadults <- st_as_sf(acs_older_tract)
+olderadults <- olderadults %>% st_transform(4269)
+write_rds(olderadults, "./data/web/olderadults.Rds")
 
 
 #

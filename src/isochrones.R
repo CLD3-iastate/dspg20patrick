@@ -41,10 +41,17 @@ emsstations <- shp_to_sf("emsstations","emsstations")
 # #call plot
 # emsstations_plot
 
+<<<<<<< HEAD
 #resedential information
 residential <- read_sf("./data/working/corelogic/residential.csv")
 residential_sf <- st_as_sf(residential, coords = c("parcel_level_longitude", "parcel_level_latitude"))
 st_crs(residential_sf) <- "+proj=longlat +datum=WGS84"
+=======
+# Write out for web
+ems <- emsstations %>% st_transform(4269)
+ems <- ems %>% select(OBJECTID, ADDRESS, CITY, STATE, ZIP, NAICSDESCR, LONGITUDE, LATITUDE, DIRECTIONS, NAME, geometry)
+write_rds(ems, "./data/web/ems.Rds")
+>>>>>>> 5500c2731bf25e0f78bdefd9b7690295cac5eaaf
 
 # traveltime ----------------------------------------------------------------------
 readRenviron("~/.Renviron")
