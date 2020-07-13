@@ -40,6 +40,16 @@ usda_geo_data <- usda_data %>%
   left_join(tract_data)
 usda_geo_data <- st_as_sf(usda_geo_data)
 
+# Write for web
+usda <- usda_geo_data %>% select(GEOID, State, County, 
+                                 STATEFP, COUNTYFP, TRACTCE, NAME, geometry,
+                                 lahunv1share, lahunv10share, lakids1share, lakids10share, 
+                                 lalowi1share, lalowi10share, lapop1share, lapop10share, 
+                                 laseniors1share, laseniors10share)
+usda <- st_as_sf(usda)
+usda <- usda %>% st_transform(4269)
+write_rds(usda, "./data/web/usda.Rds")
+
 
 # USDA plots -----------------------------------------------------------------------
 # Vars: LAhalfand10 lahunv10share	lakids10share	lalowi10share	lapop10share	laseniors10share	LILATracts_1And10
