@@ -138,10 +138,10 @@ pharmacies_plot <- leaflet(data = pharmacies) %>% #create leaflet object
 
 pharmacies_plot
 
-
 # urgentcare shp files -------------------------------------------------
 # read shp nursinghomes file
 urgent_care <- sf::read_sf("./data/original/dhs-urgentcare/UrgentCareFacs.shp") %>%
+
   # only keep data in the places we want
   subset(FIPS %in% fips) %>%
   sf::st_transform('+proj=longlat +datum=WGS84')
