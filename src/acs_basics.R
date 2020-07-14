@@ -631,6 +631,9 @@ write_rds(socdem_tract, "./data/web/socdem_tract.Rds")
 #
 
 # EXAMPLE: SNAP
+
+acs_bgrp <- st_transform(acs_bgrp, '+proj=longlat +datum=WGS84')
+
 pal <- colorQuantile("Blues", domain = acs_bgrp$snap, probs = seq(0, 1, length = 6), right = TRUE)
 
 labels <- lapply(
