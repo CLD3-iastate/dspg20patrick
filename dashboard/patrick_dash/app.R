@@ -2,69 +2,71 @@ library(shiny)
 
 ui <-
   navbarPage("Patrick County Dashboard",
-             tabPanel("Older Adults",
-                      sidebarLayout(
-                        sidebarPanel(
-                        ),
-                        mainPanel(
-                          h2("Older Adults")
-                        )
+             tabPanel("Main", value = "main",
+                      mainPanel(
                       )
              ),
-             tabPanel("Connectivity",
-                      sidebarLayout(
-                        sidebarPanel(
-                        ),
-                        mainPanel(
-                          h2("Connectvity")
-                        )
+             tabPanel("Sociodemographics", value = "socio",
+                      mainPanel(
+                        h2("Sociodemographics of Patrick County")
                       )
+             ),
+             tabPanel("Older Adult Well-Being", value = "older",
+                        mainPanel(
+                          h2("Older Adults")
+                      )
+             ),
+             tabPanel("Health Care Access", value ="ems",
+                      #sidebarLayout(
+                        #sidebarPanel(
+                        #),
+                        mainPanel(
+                          h2("Health Care Access")
+                        )
+                      #)
               ),
-             navbarMenu("Health Services",
-                        tabPanel("DHS Data",
-                                 sidebarLayout(
-                                   sidebarPanel(
-                                   ),
+             navbarMenu("Connectivity",
+                        tabPanel("Device and Internet Access", value =  "device",
                                    mainPanel(
-                                     h2("DHS Data")
+                                     h2("Device and Internet Access")
                                    )
-                                 )
                         ),
-                        tabPanel("Coverage Maps",
-                                 sidebarLayout(
-                                   sidebarPanel(
-                                   ),
+                        tabPanel("Wi-Fi Hotspot Access", value = "wifi",
                                    mainPanel(
-                                     h2("EMS Isochrone Coverage Maps")
+                                     h2("Wi-Fi Hotspot Access"),
+                                     p("This is a paragraph about coverage maps because we love coverage maps"),
+                                     div(),
+                                     p("This is a second paragraph")
                                    )
-                                )
                         )
                       ),
                         navbarMenu("Food Access",
-                                   tabPanel("USDA Data",
-                                            sidebarLayout(
-                                              sidebarPanel(
-                                              ),
+                                   tabPanel("USDA Data Explorer", value =  "usda",
                                               mainPanel(
-                                                h2("USDA Food Access Data")
+                                                h2("USDA Data Explorer")
                                               )
-                                            )
                                   ),
-                                   tabPanel("Coverage Maps",
-                                            sidebarLayout(
-                                              sidebarPanel(
-                                              ),
+                                   tabPanel("Grocery and Farmers Market Access", value = "grocery",
                                               mainPanel(
-                                                h2("Food Acess Isochrone Coverage Maps")
-                                              )
+                                                h2("Grocery and Farmers Market Access")
                                             )
                         )
+          ),
+          tabPanel("Data and Measures", value = "data",
+                   mainPanel(
+                     h2("Data and Measures")
+                   )
+          ),
+          tabPanel("Contact", value = "contact",
+                   mainPanel(
+                     h2("Contact")
+                   )
           ),
   inverse = T
   )
 
 server <- function(input, output) {
-   
+
 }
 
 shinyApp(ui = ui, server = server)
