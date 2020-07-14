@@ -196,15 +196,15 @@ st_crs(wifi_sf) <- "+proj=longlat +datum=WGS84"
 #Creating RDS files
 for(w in 1:nrow(wifi_sf)){
   #  w=8
-  wifi_iso10 <- traveltime_map(appId= "f9f60f55",
-                              apiKey = "fae5faa6460588d37be915198cc192a3",
+  wifi_iso10 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
                               location=c(wifi_sf$lat[w], wifi_sf$long[w]),
                               traveltime=600,
                               type="driving",
                               departure="2020-08-07T08:00:00+01:00")
   saveRDS(wifi_iso10, file = paste0('wifi_iso_10_',w,'.RDS'))
-  wifi_iso15 <- traveltime_map(appId= "f9f60f55",
-                              apiKey = "fae5faa6460588d37be915198cc192a3",
+  wifi_iso15 <- traveltime_map(appId= traveltime_id,
+                              apiKey = traveltime_api,
                               location=c(wifi_sf$lat[w], wifi_sf$long[w]),
                               traveltime=900,
                               type="driving",
