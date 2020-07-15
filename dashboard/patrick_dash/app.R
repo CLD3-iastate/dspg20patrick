@@ -7,6 +7,7 @@ library(viridis)
 library(ggthemes)
 library(RColorBrewer)
 library(sjmisc)
+library(shinythemes)
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("~/git/dspg2020patrick/data/web/socdem_block.Rds")
@@ -19,11 +20,12 @@ groceries <- readRDS("~/git/dspg2020patrick/data/web/groceries.Rds")
 usda <- readRDS("~/git/dspg2020patrick/data/web/usda.Rds")
 wifi <- readRDS("~/git/dspg2020patrick/data/web/wifi.Rds")
 olderadults <- readRDS("~/git/dspg2020patrick/data/web/olderadults.Rds")
+olderadults <- st_transform(olderadults, '+proj=longlat +datum=WGS84')
 residential <- readRDS("~/git/dspg2020patrick/data/web/residential.Rds")
 
 
 # user -------------------------------------------------------------
-ui <-fluidPage(
+ui <-fluidPage(theme = shinytheme("cosmo"),
   navbarPage("Patrick County Dashboard",
   # main -----------------------------------------------------------
 # TBD: words by isabel and tas
@@ -69,10 +71,32 @@ ui <-fluidPage(
                           br(),
                           p("Older adults have the hardest time getting healthcare..."),
                           div(),
-                          p("Currenty this is important for these reasons...") # ,
-                          #output(older people leaflets),
-                          #probably drop down menu with two menus for data sets?
-                          #select based on gender
+                          p("Currenty this is important for these reasons..."),
+                          selectInput("olddrop", "Individual Variables", choices = c(
+                            "Without Health Insurance" = "nohealthins",
+                            "Vision Difficulty" = "visdiff",
+                            "Ambulatory Difficulty" = "ambdiff",
+                            "Self-Care Difficulty" = "carediff",
+                            "Cognitive Difficulty" = "cogdiff",
+                            "Independent Living Difficulty" = "ildiff",
+                            "Any Disability" = "disab",
+                            "Below 100 percent of the Poverty Line" = "inpov",
+                            "Labor Force" = "labfor")
+                          ),
+                          selectInput("hhdrop", "Household Variables", choices = c(
+                            "Married Couple Households with one or more 60+ member" = "hhsixty_married",
+                            "Households with one or more 60+ members" = "hhsixty_total",
+                            "Single (no partner present) households with one or more 60+ member" = "hhsixty_nonfam",
+                            "Households with one or more 60+ members that are Male" = "hhsixty_mhh",
+                            "Households with one or more 60+ members that are Female" = "hhsixty_fhh",
+                            "Households with one or more 60+ household members receiving SNAP" = "snap")
+                          ),
+                          selectInput("oldspecdrop", "Specifications for Individual Variables", choices = c(
+                            "Total",
+                            "Female" = "_f",
+                            "Male" = "_m")
+                          ),
+                          leafletOutput("oldplot")
                       )
              ),
   # wifi-----------------------------------------------------------
@@ -151,7 +175,7 @@ ui <-fluidPage(
                      h2("Data and Measures"),
                      br(),
                      p("paragraph about data.") # ,
-                     # table that displays measures based on topic selection
+                     # table(datatable)
                    )
           ),
   # contact -----------------------------------------------------------
@@ -170,7 +194,7 @@ ui <-fluidPage(
 # server -----------------------------------------------------------
 server <- function(input, output, session) {
 
-  # server socio -----------------------------------------------------
+  # socio plots -----------------------------------------------------
   
   var <- reactive({
     input$sociodrop
@@ -555,6 +579,618 @@ server <- function(input, output, session) {
                   })
     }
   })
+  
+  # old plots -----------------------------------------------
+  var_old <- reactive({
+    input$olddrop
+  })
+  var_hh <- reactive({
+    input$hhdrop
+  })
+  output$oldplot <- renderLeaflet({
+    # healthins wasn't coded properly so it's just all zeroes
+    
+    # if(var_old() == "nohealthins"){
+    
+    # data <- switch(input$oldspecdrop,
+    #                "Total" = olderadults$nohealthins,
+    #                "_f" = olderadults$nohealthins_f,
+    #                "_m" = olderadults$nohealthins_m)
+    #   
+    #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+    #   
+    #   labels <- lapply(
+    #     paste("<strong>Area: </strong>",
+    #           olderadults$NAME.y,
+    #           "<br />",
+    #           "<strong>% older adults without health insurance</strong>",
+    #           round(data, 2)),
+    #     htmltools::HTML
+    #   )
+    #   
+    #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+    #     addTiles() %>%
+    #     addPolygons(fillColor = ~pal(data),
+    #                 fillOpacity = 0.6, 
+    #                 stroke = FALSE,
+    #                 label = labels,
+    #                 labelOptions = labelOptions(direction = "bottom",
+    #                                             style = list(
+    #                                               "font-size" = "12px",
+    #                                               "border-color" = "rgba(0,0,0,0.5)",
+    #                                               direction = "auto"
+    #                                             ))) %>%
+    #     # addMarkers(data = residential) %>%
+    #     addLegend("bottomleft",
+    #               pal = pal,
+    #               values =  ~(data),
+    #               title = "Percent by<br>Quintile Group",
+    #               opacity = 0.6,
+    #               labFormat = function(type, cuts, p) {
+    #                 n = length(cuts)
+    #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+    #               })
+      
+      #}else 
+        if(var_old() == "visdiff") {
+          data <- switch(input$oldspecdrop,
+                         "Total" = olderadults$visdiff,
+                         "_f" = olderadults$visdiff_f,
+                         "_m" = olderadults$visdiff_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with vision difficulties</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "ambdiff") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$ambdiff,
+                       "_f" = olderadults$ambdiff_f,
+                       "_m" = olderadults$ambdiff_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with ambulatory difficulties</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "cogdiff") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$cogdiff,
+                       "_f" = olderadults$cogdiff_f,
+                       "_m" = olderadults$cogdiff_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with cognitive difficulties</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "carediff") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$carediff,
+                       "_f" = olderadults$carediff_f,
+                       "_m" = olderadults$carediff_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with self-care difficulties</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "ildiff") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$ildiff,
+                       "_f" = olderadults$ildiff_f,
+                       "_m" = olderadults$ildiff_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with independent living difficulties</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "disab") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$disab,
+                       "_f" = olderadults$disab_f,
+                       "_m" = olderadults$disab_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with any disability</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "inpov") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$inpov,
+                       "_f" = olderadults$inpov_f,
+                       "_m" = olderadults$inpov_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults with income below poverty line</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_old() == "labfor") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$labfor,
+                       "_f" = olderadults$labfor_f,
+                       "_m" = olderadults$labfor_m)
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults in the labor force</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else 
+        # if(var_hh() == "snap")
+        {
+        
+        data <- switch(input$hhdrop,
+                       "hhsixty_married" = olderadults$hhsixty_married,
+                       "hhsixty_total" = olderadults$hhsixty_total,
+                       "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
+                       "hhsixty_mhh" = olderadults$hhsixty_mhh,
+                       "hhsixty_fhh" = olderadults$hhsixty_fhh,
+                       "snap" = olderadults$snap)
+        spec <- switch(input$hhdrop,
+                       "hhsixty_married" = "Married",
+                       "hhsixty_total" = "Total",
+                       "hhsixty_nonfam" = "Single",
+                       "hhsixty_mhh" = "Male",
+                       "hhsixty_fhh" = "Female",
+                       "snap" = "SNAP Benefit")
+        
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% </strong>", 
+                spec,
+                "<strong>Households with a 60+ member</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+        
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(data), 
+                      fillOpacity = 0.6, 
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(data),
+                    title = "Percent by<br>Quintile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+        }
+      # else if(var_hh() == "hhsixty_total") {
+      #   
+      #   
+      #   
+      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_total, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% Housholds with a 60+ member</strong>",
+      #           round(olderadults$hhsixty_total, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_total), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(olderadults$hhsixty_total),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      # }else if(var_hh() == "hhsixty_fhh") {
+      #   
+      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_fhh, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% Housholds with a Female 60+ member</strong>",
+      #           round(olderadults$hhsixty_fhh, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(olderadults$hhsixty_fhh),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      # }else if(var_hh() == "hhsixty_mhh") {
+      #   
+      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_mhh, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% Housholds with a Male 60+ member</strong>",
+      #           round(olderadults$hhsixty_mhh, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(olderadults$hhsixty_mhh),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      # }else if(var_hh() == "hhsixty_nonfam") {
+      #   
+      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_nonfam, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% Single Housholds with a 60+ member</strong>",
+      #           round(olderadults$hhsixty_nonfam, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(olderadults$hhsixty_nonfam),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      # }else{
+      #   
+      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_marr, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% Married Housholds with a 60+ member</strong>",
+      #           round(olderadults$hhsixty_marr, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_marr), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(olderadults$hhsixty_marr),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      #}
+  })
+  # data and measures table ----------------------------------------
+  # output$datatable <- renderTable({
+  #   data <- switch(input$topic,
+  #                "" = olderadults$visdiff,
+  #                "_f" = olderadults$visdiff_f,
+  #                "_m" = olderadults$visdiff_m)
+  # table(data)
+  # })
+  # device ---------------------------------------------------------
+  # wifi -----------------------------------------------------------
+  # ems ------------------------------------------------------------
+  # usda -----------------------------------------------------------
+  # grocery --------------------------------------------------------
 }
 shinyApp(ui = ui, server = server)
 
