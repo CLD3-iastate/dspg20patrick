@@ -90,7 +90,6 @@ for(i in 1:nrow(emsstations)){
   m1 = m1 + m2 + m3 + residential
   mapshot(m1, file = paste0("~/git/dspg2020patrick/output/isochrone_maps/emsmap_",i, ".png", sep = ""))
 }
-
 # residential coverage -------------------------------------------------------
 ems_iso8_1 <- readRDS("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_8_1.RDS")
 ems_iso10_1 <- readRDS("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_10_1.RDS")
@@ -195,7 +194,7 @@ st_crs(wifi_sf) <- "+proj=longlat +datum=WGS84"
 
 #Creating RDS files
 for(w in 1:nrow(wifi_sf)){
-  #  w=8
+    w = 9
   wifi_iso10 <- traveltime_map(appId= traveltime_id,
                               apiKey = traveltime_api,
                               location=c(wifi_sf$lat[w], wifi_sf$long[w]),
@@ -217,3 +216,33 @@ for(w in 1:nrow(wifi_sf)){
   m1 = m2 + m3 + residential
   mapshot(m1, file = paste0("~/git/dspg20patrick/output/isochrone_maps/wifimap_",w, ".png", sep = ""))
 }
+
+#crosswalks for  outputs in "~/git/dspg20patrick/output/isochrone_maps"
+# emsmap_1.png -> STUART VOLUNTEER FIRE DEPARTMENT
+# emsmap_2.png -> MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT
+# emsmap_3.png -> BLUE RIDGE VOLUNTEER RESCUE SQUAD
+# emsmap_4.png -> VESTA RESCUE SQUAD
+# emsmap_5.png -> ARARAT RESCUE SQUAD
+# emsmap_6.png -> FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 HQ
+# emsmap_7.png -> JEB STUART RESCUE SQUAD
+# emsmap_8.png -> 	SMITH RIVER RESCUE SQUAD
+# emsmap_9.png -> FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2
+
+# grcmap_1.png -> Flemings Orchard (Farmers Market)
+# grcmap_2.png -> Ayers Apple Cooler (Farmers Market)
+# grcmap_3.png -> Mountain Meadow Farm and Craft Market
+# grcmap_4.png -> Lowes Foods of Stuart (Supermarket)
+# grcmap_5.png -> Patrick County Local Farmers Market
+# grcmap_6.png -> Stuart Farmers Market
+# grcmap_7.png -> W & W Produce (Farmers Market)
+# grcmap_8.png -> Walmart Supercenter (Supermarket)
+# grcmap_9.png -> 	Poor Farmers Farm (Farmers Market)
+
+# wifimap_1.png -> Meadows of Dan Elementary School
+# wifimap_2.png -> Woolwine Elementary School
+# wifimap_3.png -> Patrick Springs Primary School
+# wifimap_4.png -> Blue Ridge Elementary School
+# wifimap_5.png -> Patrick County High School
+# wifimap_6.png -> Stuart Elementary School
+# wifimap_7.png -> Patrick County Branch Library
+# wifimap_8.png -> Hardin Reynolds Memorial School
