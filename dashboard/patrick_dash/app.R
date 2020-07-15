@@ -6,6 +6,7 @@ library(tidycensus)
 library(viridis)
 library(ggthemes)
 library(RColorBrewer)
+library(sjmisc)
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("~/git/dspg2020patrick/data/web/socdem_block.Rds")
@@ -21,10 +22,10 @@ olderadults <- readRDS("~/git/dspg2020patrick/data/web/olderadults.Rds")
 residential <- readRDS("~/git/dspg2020patrick/data/web/residential.Rds")
 
 
-# user -----------------------------------------------------------
-ui <-
+# user -------------------------------------------------------------
+ui <-fluidPage(
   navbarPage("Patrick County Dashboard",
-# main -----------------------------------------------------------
+  # main -----------------------------------------------------------
 # TBD: words by isabel and tas
              tabPanel("Main", value = "main",
                       mainPanel(
@@ -36,7 +37,7 @@ ui <-
                       p("our team is made up of...")
                       )
              ),
-# socio -----------------------------------------------------------
+  # socio -----------------------------------------------------------
              tabPanel("Sociodemographics", value = "socio",
                       mainPanel(
                         h2("Sociodemographics of Patrick County"),
@@ -44,12 +45,24 @@ ui <-
                         p(""),
                         div(),
                         p("Currenty this is important for these reasons..."),
-                        selectInput("sociodrop", "Select Variable", names(socdem_block)),
-                        leafletOutput("socioplot") # ,
+                        selectInput("sociodrop", "Variables", choices = c(
+                          "65 and Older" = "age65",
+                          "18 and Younger" = "under18",
+                          "Black" = "black",
+                          "Hispanic" = "hispanic",
+                          "No Bachelor's Deegree" = "noba",
+                          "Unemployed" = "unempl",
+                          "Without Health Insurance" = "nohealthins2",
+                          "Private Insurance" = "privateins",
+                          "Public Insurance" = "publicins",
+                          "Under 100 percent of the Poverty Line" = "inpov",
+                          "Receiving Snap Benefits or Public Assistance" = "snap")
+                        ),
+                        leafletOutput("socioplot")# ,
                         #probably drop down menu with two menus for data sets?
                       )
              ),
-# older -----------------------------------------------------------
+  # older -----------------------------------------------------------
              tabPanel("Older Adult Well-Being", value = "older",
                         mainPanel(
                           h2("Older Adult Well-Being"),
@@ -62,7 +75,7 @@ ui <-
                           #select based on gender
                       )
              ),
-# wifi-----------------------------------------------------------
+  # wifi-----------------------------------------------------------
              navbarMenu("Connectivity",
                         tabPanel("Device and Internet Access", value =  "device",
                                    mainPanel(
@@ -75,7 +88,7 @@ ui <-
                                      #probably drop down variable selector
                                    )
                         ),
-                        # wifi maps -----------------------------
+                                    # wifi maps -----------------------------
                         tabPanel("Wi-Fi Hotspot Access", value = "wifi",
                                    mainPanel(
                                      h2("Wi-Fi Hotspot Access"),
@@ -89,7 +102,7 @@ ui <-
                                    )
                         )
                       ),
-# ems -----------------------------------------------------------
+  # ems -----------------------------------------------------------
             tabPanel("Health Care Access", value ="ems",
                       #sidebarLayout(
                       #sidebarPanel(
@@ -106,7 +119,7 @@ ui <-
                     )
                       #)
 ),
-# food -----------------------------------------------------------
+  # food -----------------------------------------------------------
             navbarMenu("Food Access",
                         tabPanel("USDA Data Explorer", value =  "usda",
                               mainPanel(
@@ -119,7 +132,7 @@ ui <-
                                    #dropdown menu w variable options
                                   )
                               ),
-                                  # food maps ---------------------
+                                    # food maps ---------------------
                          tabPanel("Grocery and Farmers Market Access", value = "grocery",
                                 mainPanel(
                                     h2("Grocery and Farmers Market Access"),
@@ -132,7 +145,7 @@ ui <-
                                    )
                         )
           ),
-# data -----------------------------------------------------------
+  # data -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
                      h2("Data and Measures"),
@@ -141,7 +154,7 @@ ui <-
                      # table that displays measures based on topic selection
                    )
           ),
-# contact -----------------------------------------------------------
+  # contact -----------------------------------------------------------
           tabPanel("Contact", value = "contact",
                    mainPanel(
                      h2("Contact"),
@@ -151,27 +164,35 @@ ui <-
           ),
   inverse = T
   )
+)
+
 
 # server -----------------------------------------------------------
-server <- function(input, output) {
+server <- function(input, output, session) {
 
-# server socio -----------------------------------------------------
-
+  # server socio -----------------------------------------------------
+  
+  var <- reactive({
+    input$sociodrop
+  })
+  #age65
   output$socioplot <- renderLeaflet({
-    pal <- colorQuantile("Blues", domain = socdem_block$snap, probs = seq(0, 1, length = 6), right = TRUE)
-    
+    if(var() == "age65") {
+      
+    pal <- colorQuantile("Blues", domain = socdem_block$age65, probs = seq(0, 1, length = 6), right = TRUE)
+
     labels <- lapply(
       paste("<strong>Area: </strong>",
             socdem_block$NAME.y,
             "<br />",
             "<strong>% population with public assistance or SNAP benefits</strong>",
-            round(socdem_block$snap, 2)),
+            round(socdem_block$age65, 2)),
       htmltools::HTML
     )
     
     leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
       addTiles() %>%
-      addPolygons(fillColor = ~pal(snap), 
+      addPolygons(fillColor = ~pal(socdem_block$age65), 
                   fillOpacity = 0.6, 
                   stroke = FALSE,
                   label = labels,
@@ -182,17 +203,358 @@ server <- function(input, output) {
                                                 direction = "auto"
                                               ))) %>%
       # addMarkers(data = residential) %>%
-      addLegend("bottomleft", 
-                pal = pal, 
-                values =  ~snap,
-                title = "Percent by<br>Quintile Group", 
+      addLegend("bottomleft",
+                pal = pal,
+                values =  ~(socdem_block$age65),
+                title = "Percent by<br>Quintile Group",
                 opacity = 0.6,
                 labFormat = function(type, cuts, p) {
                   n = length(cuts)
                   paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                 })
+    #under18
+    }else if(var() == "under18"){
+      pal <- colorQuantile("Blues", domain = socdem_block$under18, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$under18, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$under18), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$under18),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "black"){
+      pal <- colorQuantile("Blues", domain = socdem_block$black, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$black, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$black), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$black),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "noba"){
+      pal <- colorQuantile("Blues", domain = socdem_block$noba, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$noba, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$noba), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$noba),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "unempl"){
+      pal <- colorQuantile("Blues", domain = socdem_block$unempl, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$unempl, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$unempl), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$unempl),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "nohealthins2"){
+      pal <- colorQuantile("Blues", domain = socdem_block$nohealthins2, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$nohealthins2, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$nohealthins2), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$nohealthins2),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "snap"){
+      pal <- colorQuantile("Blues", domain = socdem_block$snap, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_block$snap, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_block$snap), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$snap),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "inpov"){
+      pal <- colorQuantile("Blues", domain = socdem_tract$inpov, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_tract$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_tract$inpov, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_tract$inpov), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_tract$inpov),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "hispanic"){
+      pal <- colorQuantile("Blues", domain = socdem_tract$hispanic, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_tract$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_tract$hispanic, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_tract$hispanic), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_tract$hispanic),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else if(var() == "privateins"){
+      pal <- colorQuantile("Blues", domain = socdem_tract$privateins, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_tract$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_tract$privateins, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_tract$privateins), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_tract$privateins),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else{
+      pal <- colorQuantile("Blues", domain = socdem_tract$publicins, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_tract$NAME.y,
+              "<br />",
+              "<strong>% population with public assistance or SNAP benefits</strong>",
+              round(socdem_tract$publicins, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(socdem_tract$publicins), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_tract$publicins),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }
   })
 }
-
 shinyApp(ui = ui, server = server)
 
