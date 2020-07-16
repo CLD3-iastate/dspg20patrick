@@ -589,49 +589,49 @@ server <- function(input, output, session) {
   })
   output$oldplot <- renderLeaflet({
     # healthins wasn't coded properly so it's just all zeroes
+
+    if(var_old() == "nohealthins"){
+
+    data <- switch(input$oldspecdrop,
+                    "Total" = olderadults$nohealthins,
+                    "_f" = olderadults$nohealthins_f,
+                   "_m" = olderadults$nohealthins_m)
     
-    # if(var_old() == "nohealthins"){
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = min(4,length(unique(data)))), right = TRUE)
     
-    # data <- switch(input$oldspecdrop,
-    #                "Total" = olderadults$nohealthins,
-    #                "_f" = olderadults$nohealthins_f,
-    #                "_m" = olderadults$nohealthins_m)
-    #   
-    #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
-    #   
-    #   labels <- lapply(
-    #     paste("<strong>Area: </strong>",
-    #           olderadults$NAME.y,
-    #           "<br />",
-    #           "<strong>% older adults without health insurance</strong>",
-    #           round(data, 2)),
-    #     htmltools::HTML
-    #   )
-    #   
-    #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-    #     addTiles() %>%
-    #     addPolygons(fillColor = ~pal(data),
-    #                 fillOpacity = 0.6, 
-    #                 stroke = FALSE,
-    #                 label = labels,
-    #                 labelOptions = labelOptions(direction = "bottom",
-    #                                             style = list(
-    #                                               "font-size" = "12px",
-    #                                               "border-color" = "rgba(0,0,0,0.5)",
-    #                                               direction = "auto"
-    #                                             ))) %>%
-    #     # addMarkers(data = residential) %>%
-    #     addLegend("bottomleft",
-    #               pal = pal,
-    #               values =  ~(data),
-    #               title = "Percent by<br>Quintile Group",
-    #               opacity = 0.6,
-    #               labFormat = function(type, cuts, p) {
-    #                 n = length(cuts)
-    #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-    #               })
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% older adults without health insurance</strong>",
+                round(data, 2)),
+          htmltools::HTML
+        )
+    
+      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(data),
+                    fillOpacity = 0.6,
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(data),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
       
-      #}else 
+      }else 
         if(var_old() == "visdiff") {
           data <- switch(input$oldspecdrop,
                          "Total" = olderadults$visdiff,
@@ -949,7 +949,7 @@ server <- function(input, output, session) {
         {
         
         data <- switch(input$hhdrop,
-                       "hhsixty_married" = olderadults$hhsixty_married,
+                       "hhsixty_married" = olderadults$hhsixty_marr,
                        "hhsixty_total" = olderadults$hhsixty_total,
                        "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
                        "hhsixty_mhh" = olderadults$hhsixty_mhh,
