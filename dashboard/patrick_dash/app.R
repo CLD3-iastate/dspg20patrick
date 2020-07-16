@@ -2,8 +2,6 @@ library(shiny)
 library(leaflet)
 library(tidyverse)
 library(sf)
-library(tidycensus)
-library(viridis)
 library(ggthemes)
 library(RColorBrewer)
 library(sjmisc)
@@ -15,9 +13,11 @@ socdem_block <- st_transform(socdem_block, '+proj=longlat +datum=WGS84')
 socdem_tract <- readRDS("~/git/dspg2020patrick/data/web/socdem_tract.Rds")
 socdem_tract <- st_transform(socdem_tract, '+proj=longlat +datum=WGS84')
 connectivity <- readRDS("~/git/dspg2020patrick/data/web/connectivity.Rds")
+connectivity <- st_transform(connectivity, '+proj=longlat +datum=WGS84')
 ems <- readRDS("~/git/dspg2020patrick/data/web/ems.Rds")
 groceries <- readRDS("~/git/dspg2020patrick/data/web/groceries.Rds")
 usda <- readRDS("~/git/dspg2020patrick/data/web/usda.Rds")
+usda <- st_transform(usda, '+proj=longlat +datum=WGS84')
 wifi <- readRDS("~/git/dspg2020patrick/data/web/wifi.Rds")
 olderadults <- readRDS("~/git/dspg2020patrick/data/web/olderadults.Rds")
 olderadults <- st_transform(olderadults, '+proj=longlat +datum=WGS84')
@@ -107,9 +107,20 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      br(),
                                      p("This is a paragraph about connectivity status"),
                                      div(),
-                                     p("This is a second paragraph about why it's important") # ,
-                                     #output(leaflets),
-                                     #probably drop down variable selector
+                                     p("This is a second paragraph about why it's important"),
+                                     selectInput("devicedrop", "Connectivity Variables", choices = c(
+                                       "No Computer" = "nocomputer",
+                                       "Laptop Ownership" = "laptop",
+                                       "Smartphone Ownership" = "smartphone",
+                                       "Tablet Ownership" = "tablet", 
+                                       "Other Computer Ownsership" = "othercomputer",
+                                       "Without Internet" = "nointernet",
+                                       "Satellite Internet" = "satellite",
+                                       "Cellular Internet" = "cellular",
+                                       "Dial-up Internet" = "dialup",
+                                       "Broadband Internet" = "broadband")
+                                     ),
+                                     leafletOutput("deviceplot")
                                    )
                         ),
                                     # wifi maps -----------------------------
@@ -151,9 +162,20 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    br(),
                                    p("This is a paragraph about food access"),
                                    div(),
-                                   p("This is a second paragraph about current importance") # ,
-                                   #output(leaflet)
-                                   #dropdown menu w variable options
+                                   p("This is a second paragraph about current importance"),
+                                   selectInput("usdadrop", "USDA Variables", choices = c(
+                                     "Low Vehicle Access at 1 Mile" = "lahunv1share",
+                                     "Low Vehicle Access at 10 Miles" = "lahunv10share",
+                                     "Low Food Access for Children at 1 Mile" = "lakids1share",
+                                     "Low Food Access for Children at 10 Miles" = "lakids10share",
+                                     "Low Food Access for Low Income Population at 1 Mile" = "lalowi1share",
+                                     "Low Food Access for Low Income Population at 10 Miles" = "lalowi10share",
+                                     "Low Food Access Population at 1 Mile" = "lapop1share",  
+                                     "Low Food Access Population at 10 Miles" = "lapop10share",
+                                     "Low Food Access Seniors at 1 Mile" = "laseniors1share",
+                                     "Low Food Access Seniors at 10 Miles" = "laseniors10share")
+                                   ),
+                                   leafletOutput("usdaplot")
                                   )
                               ),
                                     # food maps ---------------------
@@ -579,6 +601,7 @@ server <- function(input, output, session) {
                   })
     }
   })
+  
   
   # old plots -----------------------------------------------
   var_old <- reactive({
@@ -1178,6 +1201,7 @@ server <- function(input, output, session) {
       #               })
       #}
   })
+  
   # data and measures table ----------------------------------------
   # output$datatable <- renderTable({
   #   data <- switch(input$topic,
@@ -1186,10 +1210,212 @@ server <- function(input, output, session) {
   #                "_m" = olderadults$visdiff_m)
   # table(data)
   # })
+  
   # device ---------------------------------------------------------
+  var_device <- reactive({
+    input$devicedrop
+  })
+  output$deviceplot <- renderLeaflet({
+  if(var_device() != "nocomputer"){
+  data <- switch(input$devicedrop,
+                 "laptop" = connectivity$laptop,
+                 "smartphone" = connectivity$smartphone,
+                 "tablet" = connectivity$tablet, 
+                 "othercomputer" = connectivity$othercomputer,
+                 "nointernet" = connectivity$nointernet,
+                 "satellite" = connectivity$satellite,
+                 "cellular" = connectivity$cellular,
+                 "dialup" = connectivity$dialup,
+                 "broadband" = connectivity$broadband)
+  
+  device_spec <- switch(input$devicedrop,
+                 "laptop" = "laptop",
+                 "smartphone" = "smartphone",
+                 "tablet" = "tablet", 
+                 "othercomputer"= "other computer",
+                 "nointernet" = "no internet access",
+                 "satellite" = "satellite internet",
+                 "cellular" = "cellular internet",
+                 "dialup" = "dialup internet",
+                 "broadband" = "broadband internet")
+  
+  pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+  
+  labels <- lapply(
+    paste("<strong>Area: </strong>",
+          connectivity$NAME.y,
+          "<br />",
+          "<strong>% Population with",
+          device_spec,
+          "access</strong>",
+          round(data, 2)),
+    htmltools::HTML
+  )
+  
+  leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
+    addTiles() %>%
+    addPolygons(fillColor = ~pal(data), 
+                fillOpacity = 0.6, 
+                stroke = FALSE,
+                label = labels,
+                labelOptions = labelOptions(direction = "bottom",
+                                            style = list(
+                                              "font-size" = "12px",
+                                              "border-color" = "rgba(0,0,0,0.5)",
+                                              direction = "auto"
+                                            ))) %>%
+    # addMarkers(data = residential) %>%
+    addLegend("bottomleft",
+              pal = pal,
+              values =  ~(data),
+              title = "Percent by<br>Quintile Group",
+              opacity = 0.6,
+              labFormat = function(type, cuts, p) {
+                n = length(cuts)
+                paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+              })
+  }else{
+    pal <- colorQuantile("Blues", domain = connectivity$nocomputer, probs = seq(0, 1, length = 6), right = TRUE)
+    
+    labels <- lapply(
+      paste("<strong>Area: </strong>",
+            connectivity$NAME.y,
+            "<br />",
+            "<strong>% Population without computer access</strong>",
+            round(connectivity$nocomputer, 2)),
+      htmltools::HTML
+    )
+    
+    leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
+      addTiles() %>%
+      addPolygons(fillColor = ~pal(connectivity$nocomputer), 
+                  fillOpacity = 0.6, 
+                  stroke = FALSE,
+                  label = labels,
+                  labelOptions = labelOptions(direction = "bottom",
+                                              style = list(
+                                                "font-size" = "12px",
+                                                "border-color" = "rgba(0,0,0,0.5)",
+                                                direction = "auto"
+                                              ))) %>%
+      # addMarkers(data = residential) %>%
+      addLegend("bottomleft",
+                pal = pal,
+                values =  ~(connectivity$nocomputer),
+                title = "Percent by<br>Quintile Group",
+                opacity = 0.6,
+                labFormat = function(type, cuts, p) {
+                  n = length(cuts)
+                  paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                })
+    }
+  })
+  
   # wifi -----------------------------------------------------------
+  
   # ems ------------------------------------------------------------
+  
   # usda -----------------------------------------------------------
+  var_usda <- reactive({
+    input$usdadrop
+  })
+  output$usdaplot <- renderLeaflet({
+    if(var_usda() != "lahunv1share"){
+      data <- switch(input$usdadrop,
+                     "lahunv10share" = usda$lahunv10share,
+                     "lakids1share" = usda$lakids1share,
+                     "lakids10share" = usda$lakids10share,
+                     "lalowi1share" = usda$lalowi1share,
+                     "lalowi10share" = usda$lalowi10share,
+                     "lapop1share" = usda$lapop1share,  
+                     "lapop10share" = usda$lapop10share,
+                     "laseniors1share" = usda$laseniors1share,
+                     "laseniors10share" = usda$laseniors10share)
+      
+      usda_spec <- switch(input$usdadrop,
+                          "lahunv10share" = "low vehicle access at 10 miles",
+                          "lakids1share" = "low food access for children at 1 mile",
+                          "lakids10share" = "low food access for children at 10 miles",
+                          "lalowi1share" = "low food access for low income population at 1 mile",
+                          "lalowi10share" = "low food access for low income population at 10 miles",
+                          "lapop1share" = "low food access at 1 mile",  
+                          "lapop10share" = "low food access at 10 miles",
+                          "laseniors1share" = "low food access for seniors at 1 mile",
+                          "laseniors10share" = "low food access for seniors at 10 miles")
+      
+      #lahunv10share has issues
+      
+      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              usda$NAME.y,
+              "<br />",
+              "<strong>% Population with",
+              usda_spec,
+              round(data, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(data), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(data),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }else{
+      pal <- colorQuantile("Blues", domain = usda$lahunv1share, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              usda$NAME.y,
+              "<br />",
+              "<strong>% Population with low vehicle access at 1 mile</strong>",
+              round(usda$lahunv1share, 2)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
+        addTiles() %>%
+        addPolygons(fillColor = ~pal(usda$lahunv1share), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        # addMarkers(data = residential) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(usda$lahunv1share),
+                  title = "Percent by<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+    }
+  })
+  
   # grocery --------------------------------------------------------
 }
 shinyApp(ui = ui, server = server)
