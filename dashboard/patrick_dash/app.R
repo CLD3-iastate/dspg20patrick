@@ -6,22 +6,43 @@ library(ggthemes)
 library(RColorBrewer)
 library(sjmisc)
 library(shinythemes)
+library(DT)
+library(data.table)
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("~/git/dspg2020patrick/data/web/socdem_block.Rds")
 socdem_block <- st_transform(socdem_block, '+proj=longlat +datum=WGS84')
+
 socdem_tract <- readRDS("~/git/dspg2020patrick/data/web/socdem_tract.Rds")
 socdem_tract <- st_transform(socdem_tract, '+proj=longlat +datum=WGS84')
+
 connectivity <- readRDS("~/git/dspg2020patrick/data/web/connectivity.Rds")
 connectivity <- st_transform(connectivity, '+proj=longlat +datum=WGS84')
+
 ems <- readRDS("~/git/dspg2020patrick/data/web/ems.Rds")
+ems <- st_transform(ems, '+proj=longlat +datum=WGS84')
+
 groceries <- readRDS("~/git/dspg2020patrick/data/web/groceries.Rds")
+groceries <- st_as_sf(groceries, coords = c("longitude", "latitude"))
+st_crs(groceries) <- "+proj=longlat +datum=WGS84"
+groceries <- st_transform(groceries, '+proj=longlat +datum=WGS84')
+groceries <- subset(groceries, type == "farmers market" | type == "supermarket")
+
 usda <- readRDS("~/git/dspg2020patrick/data/web/usda.Rds")
 usda <- st_transform(usda, '+proj=longlat +datum=WGS84')
+
 wifi <- readRDS("~/git/dspg2020patrick/data/web/wifi.Rds")
+wifi <- st_as_sf(wifi, coords = c("longitude", "latitude"))
+st_crs(wifi) <- "+proj=longlat +datum=WGS84"
+wifi <- st_transform(wifi, '+proj=longlat +datum=WGS84')
+
 olderadults <- readRDS("~/git/dspg2020patrick/data/web/olderadults.Rds")
 olderadults <- st_transform(olderadults, '+proj=longlat +datum=WGS84')
+
 residential <- readRDS("~/git/dspg2020patrick/data/web/residential.Rds")
+residential <- st_as_sf(residential, coords = c("longitude", "latitude"))
+st_crs(residential) <- "+proj=longlat +datum=WGS84"
+residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 
 # user -------------------------------------------------------------
@@ -39,6 +60,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                       p("our team is made up of...")
                       )
              ),
+
   # socio -----------------------------------------------------------
              tabPanel("Sociodemographics", value = "socio",
                       mainPanel(
@@ -64,6 +86,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                         #probably drop down menu with two menus for data sets?
                       )
              ),
+
   # older -----------------------------------------------------------
              tabPanel("Older Adult Well-Being", value = "older",
                         mainPanel(
@@ -99,6 +122,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                           leafletOutput("oldplot")
                       )
              ),
+
   # wifi-----------------------------------------------------------
              navbarMenu("Connectivity",
                         tabPanel("Device and Internet Access", value =  "device",
@@ -113,7 +137,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Laptop Ownership" = "laptop",
                                        "Smartphone Ownership" = "smartphone",
                                        "Tablet Ownership" = "tablet", 
-                                       "Other Computer Ownsership" = "othercomputer",
+                                       "Other Computer Ownership" = "othercomputer",
                                        "Without Internet" = "nointernet",
                                        "Satellite Internet" = "satellite",
                                        "Cellular Internet" = "cellular",
@@ -123,6 +147,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      leafletOutput("deviceplot")
                                    )
                         ),
+                        
                                     # wifi maps -----------------------------
                         tabPanel("Wi-Fi Hotspot Access", value = "wifi",
                                    mainPanel(
@@ -130,10 +155,17 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      br(),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
                                      div(),
-                                     p("This is a second paragraph") # ,
-                                     #output(wifi leaflets),
-                                     #probably drop down for isochrone range, wifi hotpsot, coverage
-                                     #table
+                                     p("This is a second paragraph"),
+                                     selectInput("wifidrop", "Free Wifi Locations", choices = c(
+                                       "Meadows of Dan Elementary School",
+                                       "Woolwine Elementary School",
+                                       "Patrick Springs Primary School",
+                                       "Blue Ridge Elementary School",
+                                       "Patrick County High School",
+                                       "Stuart Elementary School",
+                                       "Patrick County Branch Library",
+                                       "Hardin Reynolds Memorial School")),
+                                     leafletOutput("wifiplot")
                                    )
                         )
                       ),
@@ -147,13 +179,27 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                       br(),
                       p("This is a paragraph about coverage maps because we love coverage maps"),
                       div(),
-                      p("This is a second paragraph") # ,
-                         #output(leaflets),
-                          #probably drop down for isochrone range, hotpsot, and coverage
+                      p("This is a second paragraph"),
+                      selectInput("emsdrop", "EMS Locations", choices = c(
+                        "STUART VOLUNTEER FIRE DEPARTMENT",
+                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
+                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
+                        "VESTA RESCUE SQUAD",                                                                                           
+                        "ARARAT RESCUE SQUAD",                                                                                          
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
+                        "JEB STUART RESCUE SQUAD",                                                                                      
+                        "SMITH RIVER RESCUE SQUAD",                                                                                     
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
+                                   )),
+                      leafletOutput("emsplot")
+                      # ,
+                      # tableOutput("emstable")
+
                         #table
                     )
                       #)
 ),
+
   # food -----------------------------------------------------------
             navbarMenu("Food Access",
                         tabPanel("USDA Data Explorer", value =  "usda",
@@ -178,6 +224,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    leafletOutput("usdaplot")
                                   )
                               ),
+                       
                                     # food maps ---------------------
                          tabPanel("Grocery and Farmers Market Access", value = "grocery",
                                 mainPanel(
@@ -185,12 +232,21 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                     br(),
                                     p("This is a paragraph about food access"),
                                     div(),
-                                    p("This is a second paragraph about current importance") # ,
-                                    #output(leaflet)
-                                    #isochrone range, locarion, coverage table
+                                    p("This is a second paragraph about current importance"),
+                                               selectInput("grocdrop", "Grocery Locations", choices = c(
+                                                 "Flemings Orchard",
+                                                 "Ayers Apple Cooler",
+                                                 "Mountain Meadow Farm and Craft Market",
+                                                 "Lowes Foods of Stuart",
+                                                 "Patrick County Local Farmers Market",
+                                                 "Stuart Farmers Market",                
+                                                 "W & W Produce",
+                                                 "Walmart Supercenter",
+                                                 "Poor Farmers Farm")),
+                                               leafletOutput("grocplot")
+                                             )
                                    )
-                        )
-          ),
+                        ),
   # data -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
@@ -200,6 +256,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                      # table(datatable)
                    )
           ),
+
   # contact -----------------------------------------------------------
           tabPanel("Contact", value = "contact",
                    mainPanel(
@@ -216,7 +273,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
 # server -----------------------------------------------------------
 server <- function(input, output, session) {
 
-  # socio plots -----------------------------------------------------
+  # socio plots: done -----------------------------------------------------
   
   var <- reactive({
     input$sociodrop
@@ -603,7 +660,7 @@ server <- function(input, output, session) {
   })
   
   
-  # old plots -----------------------------------------------
+  # old plots: two breaks -----------------------------------------------
   var_old <- reactive({
     input$olddrop
   })
@@ -967,10 +1024,9 @@ server <- function(input, output, session) {
                       n = length(cuts)
                       paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                     })
-      }else 
+      }else
         # if(var_hh() == "snap")
         {
-        
         data <- switch(input$hhdrop,
                        "hhsixty_married" = olderadults$hhsixty_marr,
                        "hhsixty_total" = olderadults$hhsixty_total,
@@ -1202,7 +1258,8 @@ server <- function(input, output, session) {
       #}
   })
   
-  # data and measures table ----------------------------------------
+  
+  # data and measures table: not done ----------------------------------------
   # output$datatable <- renderTable({
   #   data <- switch(input$topic,
   #                "" = olderadults$visdiff,
@@ -1211,7 +1268,8 @@ server <- function(input, output, session) {
   # table(data)
   # })
   
-  # device ---------------------------------------------------------
+  
+  # device: two breaks ---------------------------------------------------------
   var_device <- reactive({
     input$devicedrop
   })
@@ -1311,11 +1369,128 @@ server <- function(input, output, session) {
     }
   })
   
-  # wifi -----------------------------------------------------------
   
-  # ems ------------------------------------------------------------
+  # wifi: no table -----------------------------------------------------------
+  var_wifi <- reactive({
+    input$wifidrop
+  })
+  output$wifiplot <- renderLeaflet({
+    if(var_wifi() != "Meadows of Dan Elementary School"){
+      colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+      
+      data <- switch(input$wifidrop,
+                     "Woolwine Elementary School" = 2,
+                     "Patrick Springs Primary School" = 3,
+                     "Blue Ridge Elementary School" = 4,
+                     "Patrick County High School" = 5,
+                     "Stuart Elementary School" = 6,
+                     "Patrick County Branch Library" = 7,
+                     "Hardin Reynolds Memorial School" = 8  
+      )
+      
+      wifi_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_10_",data,".RDS"))
+      wifi_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+      
+      
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
+      m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
+      m1 = m1 + m2 + residential_map
+      
+      m1@map
+    }else{
+      wifi_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_10_",1,".RDS"))
+      wifi_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_15_",1,".RDS"))
+      
+      
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
+      m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
+      m1 = m1 + m2 + residential_map
+      
+      m1@map
+    } 
+  })
   
-  # usda -----------------------------------------------------------
+  # ems: no table ------------------------------------------------------------
+  
+  var_ems <- reactive({
+    input$emsdrop
+  })
+  output$emsplot <- renderLeaflet({
+    if(var_ems() != "STUART VOLUNTEER FIRE DEPARTMENT"){
+    colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+    
+    data <- switch(input$emsdrop,
+    "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
+    "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
+    "VESTA RESCUE SQUAD" = 4,                                                                                           
+    "ARARAT RESCUE SQUAD" = 5,                                                                                          
+    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
+    "JEB STUART RESCUE SQUAD" = 7,                                                                                      
+    "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
+    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9
+    )
+    
+    ems_iso8 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_",data,".RDS"))
+    ems_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_",data,".RDS"))
+    ems_iso12 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_",data,".RDS"))
+    
+    
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+    m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
+    m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
+    m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
+    m1 = m1 + m2 + m3 + residential_map
+    
+    m1@map
+  }else{
+    ems_iso8 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_",1,".RDS"))
+    ems_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_",1,".RDS"))
+    ems_iso12 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_",1,".RDS"))
+    
+    
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+    m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
+    m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
+    m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
+    m1 = m1 + m2 + m3 + residential_map
+    
+    m1@map
+  } 
+  })
+  
+  # output$emstable <- renderTable({
+  #  data <- switch(input$emsdrop,
+  #                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
+  #                    "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
+  #                    "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
+  #                    "VESTA RESCUE SQUAD" = 4,                                                                                           
+  #                    "ARARAT RESCUE SQUAD" = 5,                                                                                          
+  #                    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
+  #                    "JEB STUART RESCUE SQUAD" = 7,                                                                                      
+  #                    "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
+  #                    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+  # 
+  # 
+  #   ems_iso8 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_8_",data,".RDS"))
+  #   ems_iso10 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_10_",data,".RDS"))
+  #   ems_iso12 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_12_",data,".RDS"))
+  #   
+  #   pp_8 <- st_intersection(residential, ems_iso8)
+  #   pp_10 <- st_intersection(residential, ems_iso10)
+  #   pp_12 <- st_intersection(residential, ems_iso12)
+  #   
+  #   coverage_8 <- (nrow(pp_8)/nrow(residential)*100)
+  #   coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
+  #   coverage_12 <- (nrow(pp_12)/nrow(residential)*100)
+  #   
+  #   table <- as.data.frame(c("8 Minutes", "10 Minutes", "12 Minutes"))
+  #   table$Coverage <- c(coverage_8, coverage_10, coverage_12)
+  #   colnames(table) <- c("Time", "Coverage")
+  #   print(table)})
+  
+   # usda: one problem -----------------------------------------------------------
   var_usda <- reactive({
     input$usdadrop
   })
@@ -1416,7 +1591,50 @@ server <- function(input, output, session) {
     }
   })
   
-  # grocery --------------------------------------------------------
+  # grocery : no table --------------------------------------------------------
+  
+  var_groc <- reactive({
+    input$grocdrop
+  })
+  output$grocplot <- renderLeaflet({
+    if(var_groc() != "Flemings Orchard"){
+      colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+      
+      data <- switch(input$grocdrop,
+                     "Ayers Apple Cooler" = 2,
+                     "Mountain Meadow Farm and Craft Market" = 3,
+                     "Lowes Foods of Stuart" = 4,
+                     "Patrick County Local Farmers Market" = 5,
+                     "Stuart Farmers Market" = 6,                
+                     "W & W Produce" = 7,
+                     "Walmart Supercenter" = 8,
+                     "Poor Farmers Farm" = 9
+      )
+      
+      groc_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_10_",data,".RDS"))
+      groc_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_15_",data,".RDS"))
+      
+      
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
+      m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
+      m1 = m1 + m2 + residential_map
+      
+      m1@map
+    }else{
+      groc_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_10_",1,".RDS"))
+      groc_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_15_",1,".RDS"))
+      
+      
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
+      m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
+      m1 = m1 + m2 + residential_map
+      
+      m1@map
+    } 
+  })
 }
+
 shinyApp(ui = ui, server = server)
 
