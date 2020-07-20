@@ -8,6 +8,16 @@ library(sjmisc)
 library(shinythemes)
 library(DT)
 library(data.table)
+library(rsconnect)
+
+# readRenviron("~/.Renviron")
+# shinyname <- Sys.getenv("SHINYNAME")
+# shinytoken <- Sys.getenv("SHINYTOKEN")
+# shinysecret <- Sys.getenv("SHINYSECRET")
+# 
+# rsconnect::setAccountInfo(name=shinyname,
+#                           token=shinytoken,
+#                           secret=shinysecret)
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("~/git/dspg2020patrick/data/web/socdem_block.Rds")
@@ -96,7 +106,6 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                           div(),
                           p("Currenty this is important for these reasons..."),
                           selectInput("olddrop", "Individual Variables", choices = c(
-                            "Without Health Insurance" = "nohealthins",
                             "Vision Difficulty" = "visdiff",
                             "Ambulatory Difficulty" = "ambdiff",
                             "Self-Care Difficulty" = "carediff",
@@ -136,12 +145,10 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "No Computer" = "nocomputer",
                                        "Laptop Ownership" = "laptop",
                                        "Smartphone Ownership" = "smartphone",
-                                       "Tablet Ownership" = "tablet", 
-                                       "Other Computer Ownership" = "othercomputer",
+                                       "Tablet Ownership" = "tablet",
                                        "Without Internet" = "nointernet",
                                        "Satellite Internet" = "satellite",
                                        "Cellular Internet" = "cellular",
-                                       "Dial-up Internet" = "dialup",
                                        "Broadband Internet" = "broadband")
                                      ),
                                      leafletOutput("deviceplot")
@@ -660,7 +667,7 @@ server <- function(input, output, session) {
   })
   
   
-  # old plots: two breaks -----------------------------------------------
+  # old plots -----------------------------------------------
   var_old <- reactive({
     input$olddrop
   })
@@ -669,50 +676,7 @@ server <- function(input, output, session) {
   })
   output$oldplot <- renderLeaflet({
     # healthins wasn't coded properly so it's just all zeroes
-
-    if(var_old() == "nohealthins"){
-
-    data <- switch(input$oldspecdrop,
-                    "Total" = olderadults$nohealthins,
-                    "_f" = olderadults$nohealthins_f,
-                   "_m" = olderadults$nohealthins_m)
-    
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = min(4,length(unique(data)))), right = TRUE)
-    
-        labels <- lapply(
-          paste("<strong>Area: </strong>",
-                olderadults$NAME.y,
-                "<br />",
-                "<strong>% older adults without health insurance</strong>",
-                round(data, 2)),
-          htmltools::HTML
-        )
-    
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
-        addPolygons(fillColor = ~pal(data),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        # addMarkers(data = residential) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-      
-      }else 
-        if(var_old() == "visdiff") {
+if(var_old() == "visdiff") {
           data <- switch(input$oldspecdrop,
                          "Total" = olderadults$visdiff,
                          "_f" = olderadults$visdiff_f,
@@ -985,7 +949,9 @@ server <- function(input, output, session) {
                       n = length(cuts)
                       paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                     })
-      }else if(var_old() == "labfor") {
+      }else 
+        # if(var_old() == "labfor") 
+          {
         data <- switch(input$oldspecdrop,
                        "Total" = olderadults$labfor,
                        "_f" = olderadults$labfor_f,
@@ -1024,60 +990,60 @@ server <- function(input, output, session) {
                       n = length(cuts)
                       paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                     })
-      }else
-        # if(var_hh() == "snap")
-        {
-        data <- switch(input$hhdrop,
-                       "hhsixty_married" = olderadults$hhsixty_marr,
-                       "hhsixty_total" = olderadults$hhsixty_total,
-                       "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
-                       "hhsixty_mhh" = olderadults$hhsixty_mhh,
-                       "hhsixty_fhh" = olderadults$hhsixty_fhh,
-                       "snap" = olderadults$snap)
-        spec <- switch(input$hhdrop,
-                       "hhsixty_married" = "Married",
-                       "hhsixty_total" = "Total",
-                       "hhsixty_nonfam" = "Single",
-                       "hhsixty_mhh" = "Male",
-                       "hhsixty_fhh" = "Female",
-                       "snap" = "SNAP Benefit")
-        
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
-        
-        labels <- lapply(
-          paste("<strong>Area: </strong>",
-                olderadults$NAME.y,
-                "<br />",
-                "<strong>% </strong>", 
-                spec,
-                "<strong>Households with a 60+ member</strong>",
-                round(data, 2)),
-          htmltools::HTML
-        )
-        
-        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-          addTiles() %>%
-          addPolygons(fillColor = ~pal(data), 
-                      fillOpacity = 0.6, 
-                      stroke = FALSE,
-                      label = labels,
-                      labelOptions = labelOptions(direction = "bottom",
-                                                  style = list(
-                                                    "font-size" = "12px",
-                                                    "border-color" = "rgba(0,0,0,0.5)",
-                                                    direction = "auto"
-                                                  ))) %>%
-          # addMarkers(data = residential) %>%
-          addLegend("bottomleft",
-                    pal = pal,
-                    values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
-                    opacity = 0.6,
-                    labFormat = function(type, cuts, p) {
-                      n = length(cuts)
-                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                    })
-        }
+          }
+      # }else
+      #   {
+      #   data <- switch(input$hhdrop,
+      #                  "hhsixty_married" = olderadults$hhsixty_marr,
+      #                  "hhsixty_total" = olderadults$hhsixty_total,
+      #                  "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
+      #                  "hhsixty_mhh" = olderadults$hhsixty_mhh,
+      #                  "hhsixty_fhh" = olderadults$hhsixty_fhh,
+      #                  "snap" = olderadults$snap)
+      #   spec <- switch(input$hhdrop,
+      #                  "hhsixty_married" = "Married",
+      #                  "hhsixty_total" = "Total",
+      #                  "hhsixty_nonfam" = "Single",
+      #                  "hhsixty_mhh" = "Male",
+      #                  "hhsixty_fhh" = "Female",
+      #                  "snap" = "SNAP Benefit")
+      #   
+      #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+      #   
+      #   labels <- lapply(
+      #     paste("<strong>Area: </strong>",
+      #           olderadults$NAME.y,
+      #           "<br />",
+      #           "<strong>% </strong>", 
+      #           spec,
+      #           "<strong>Households with a 60+ member</strong>",
+      #           round(data, 2)),
+      #     htmltools::HTML
+      #   )
+      #   
+      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+      #     addTiles() %>%
+      #     addPolygons(fillColor = ~pal(data), 
+      #                 fillOpacity = 0.6, 
+      #                 stroke = FALSE,
+      #                 label = labels,
+      #                 labelOptions = labelOptions(direction = "bottom",
+      #                                             style = list(
+      #                                               "font-size" = "12px",
+      #                                               "border-color" = "rgba(0,0,0,0.5)",
+      #                                               direction = "auto"
+      #                                             ))) %>%
+      #     # addMarkers(data = residential) %>%
+      #     addLegend("bottomleft",
+      #               pal = pal,
+      #               values =  ~(data),
+      #               title = "Percent by<br>Quintile Group",
+      #               opacity = 0.6,
+      #               labFormat = function(type, cuts, p) {
+      #                 n = length(cuts)
+      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+      #               })
+      #   }
       # else if(var_hh() == "hhsixty_total") {
       #   
       #   
@@ -1269,7 +1235,7 @@ server <- function(input, output, session) {
   # })
   
   
-  # device: two breaks ---------------------------------------------------------
+  # device ---------------------------------------------------------
   var_device <- reactive({
     input$devicedrop
   })
@@ -1279,22 +1245,18 @@ server <- function(input, output, session) {
                  "laptop" = connectivity$laptop,
                  "smartphone" = connectivity$smartphone,
                  "tablet" = connectivity$tablet, 
-                 "othercomputer" = connectivity$othercomputer,
                  "nointernet" = connectivity$nointernet,
                  "satellite" = connectivity$satellite,
                  "cellular" = connectivity$cellular,
-                 "dialup" = connectivity$dialup,
                  "broadband" = connectivity$broadband)
   
   device_spec <- switch(input$devicedrop,
                  "laptop" = "laptop",
                  "smartphone" = "smartphone",
                  "tablet" = "tablet", 
-                 "othercomputer"= "other computer",
                  "nointernet" = "no internet access",
                  "satellite" = "satellite internet",
                  "cellular" = "cellular internet",
-                 "dialup" = "dialup internet",
                  "broadband" = "broadband internet")
   
   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
