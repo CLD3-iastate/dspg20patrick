@@ -20,36 +20,36 @@ library(rsconnect)
 #                           secret=shinysecret)
 
 # data -----------------------------------------------------------
-socdem_block <- readRDS("~/git/dspg2020patrick/data/web/socdem_block.Rds")
+socdem_block <- readRDS("data/socdem_block.Rds")
 socdem_block <- st_transform(socdem_block, '+proj=longlat +datum=WGS84')
 
-socdem_tract <- readRDS("~/git/dspg2020patrick/data/web/socdem_tract.Rds")
+socdem_tract <- readRDS("data/socdem_tract.Rds")
 socdem_tract <- st_transform(socdem_tract, '+proj=longlat +datum=WGS84')
 
-connectivity <- readRDS("~/git/dspg2020patrick/data/web/connectivity.Rds")
+connectivity <- readRDS("data/connectivity.Rds")
 connectivity <- st_transform(connectivity, '+proj=longlat +datum=WGS84')
 
-ems <- readRDS("~/git/dspg2020patrick/data/web/ems.Rds")
+ems <- readRDS("data/ems.Rds")
 ems <- st_transform(ems, '+proj=longlat +datum=WGS84')
 
-groceries <- readRDS("~/git/dspg2020patrick/data/web/groceries.Rds")
+groceries <- readRDS("data/groceries.Rds")
 groceries <- st_as_sf(groceries, coords = c("longitude", "latitude"))
 st_crs(groceries) <- "+proj=longlat +datum=WGS84"
 groceries <- st_transform(groceries, '+proj=longlat +datum=WGS84')
 groceries <- subset(groceries, type == "farmers market" | type == "supermarket")
 
-usda <- readRDS("~/git/dspg2020patrick/data/web/usda.Rds")
+usda <- readRDS("data/usda.Rds")
 usda <- st_transform(usda, '+proj=longlat +datum=WGS84')
 
-wifi <- readRDS("~/git/dspg2020patrick/data/web/wifi.Rds")
+wifi <- readRDS("data/wifi.Rds")
 wifi <- st_as_sf(wifi, coords = c("longitude", "latitude"))
 st_crs(wifi) <- "+proj=longlat +datum=WGS84"
 wifi <- st_transform(wifi, '+proj=longlat +datum=WGS84')
 
-olderadults <- readRDS("~/git/dspg2020patrick/data/web/olderadults.Rds")
+olderadults <- readRDS("data/olderadults.Rds")
 olderadults <- st_transform(olderadults, '+proj=longlat +datum=WGS84')
 
-residential <- readRDS("~/git/dspg2020patrick/data/web/residential.Rds")
+residential <- readRDS("data/residential.Rds")
 residential <- st_as_sf(residential, coords = c("longitude", "latitude"))
 st_crs(residential) <- "+proj=longlat +datum=WGS84"
 residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
@@ -528,7 +528,7 @@ server <- function(input, output, session) {
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
     }else if(var() == "inpov"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$inpov, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = socdem_tract$inpov, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -555,14 +555,14 @@ server <- function(input, output, session) {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$inpov),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
     }else if(var() == "hispanic"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$hispanic, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = socdem_tract$hispanic, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -589,14 +589,14 @@ server <- function(input, output, session) {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$hispanic),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
     }else if(var() == "privateins"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$privateins, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = socdem_tract$privateins, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -623,14 +623,14 @@ server <- function(input, output, session) {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$privateins),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
     }else{
-      pal <- colorQuantile("Blues", domain = socdem_tract$publicins, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = socdem_tract$publicins, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -657,7 +657,7 @@ server <- function(input, output, session) {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$publicins),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
@@ -1350,8 +1350,8 @@ if(var_old() == "visdiff") {
                      "Hardin Reynolds Memorial School" = 8  
       )
       
-      wifi_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_10_",data,".RDS"))
-      wifi_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
+      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
       
       
       residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1361,8 +1361,8 @@ if(var_old() == "visdiff") {
       
       m1@map
     }else{
-      wifi_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_10_",1,".RDS"))
-      wifi_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/wifi/wifi_iso_15_",1,".RDS"))
+      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",1,".RDS"))
+      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",1,".RDS"))
       
       
       residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1381,6 +1381,7 @@ if(var_old() == "visdiff") {
   })
   output$emsplot <- renderLeaflet({
     if(var_ems() != "STUART VOLUNTEER FIRE DEPARTMENT"){
+      
     colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
     
     data <- switch(input$emsdrop,
@@ -1394,9 +1395,9 @@ if(var_old() == "visdiff") {
     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9
     )
     
-    ems_iso8 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_",data,".RDS"))
-    ems_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_",data,".RDS"))
-    ems_iso12 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_",data,".RDS"))
+    ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
+    ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
+    ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
     
     
     residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1407,9 +1408,9 @@ if(var_old() == "visdiff") {
     
     m1@map
   }else{
-    ems_iso8 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_8_",1,".RDS"))
-    ems_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_10_",1,".RDS"))
-    ems_iso12 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/ems/ems_iso_12_",1,".RDS"))
+    ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",1,".RDS"))
+    ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",1,".RDS"))
+    ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",1,".RDS"))
     
     
     residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1482,7 +1483,7 @@ if(var_old() == "visdiff") {
       
       #lahunv10share has issues
       
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -1510,14 +1511,14 @@ if(var_old() == "visdiff") {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
     }else{
-      pal <- colorQuantile("Blues", domain = usda$lahunv1share, probs = seq(0, 1, length = 6), right = TRUE)
+      pal <- colorQuantile("Blues", domain = usda$lahunv1share, probs = seq(0, 1, length = 5), right = TRUE)
       
       labels <- lapply(
         paste("<strong>Area: </strong>",
@@ -1544,7 +1545,7 @@ if(var_old() == "visdiff") {
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(usda$lahunv1share),
-                  title = "Percent by<br>Quintile Group",
+                  title = "Percent by<br>Quartile Group",
                   opacity = 0.6,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
@@ -1573,8 +1574,8 @@ if(var_old() == "visdiff") {
                      "Poor Farmers Farm" = 9
       )
       
-      groc_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_10_",data,".RDS"))
-      groc_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_15_",data,".RDS"))
+      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
+      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
       
       residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1584,8 +1585,8 @@ if(var_old() == "visdiff") {
       
       m1@map
     }else{
-      groc_iso10 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_10_",1,".RDS"))
-      groc_iso15 <- readRDS(paste0("~/git/dspg2020patrick/data/working/isochrones/grocery/grc_iso_15_",1,".RDS"))
+      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",1,".RDS"))
+      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",1,".RDS"))
       
       
       residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
