@@ -6,6 +6,7 @@ library(leaflet)
 library(disco)
 library(RColorBrewer)
 library(readr)
+library(tigris)
 
 
 #
@@ -14,6 +15,7 @@ library(readr)
 
 groceries <- read_xlsx("./data/original/patrick_groceries.xlsx", col_names = TRUE, trim_ws = TRUE, progress = readxl_progress())
 wifi <- read_xlsx("./data/original/patrick_wifi.xlsx", col_names = TRUE, trim_ws = TRUE, progress = readxl_progress())
+otherfood <- read_xlsx("./data/original/patrick_otherfood.xlsx", col_names = TRUE, trim_ws = TRUE, progress = readxl_progress())
 
 
 #
@@ -22,7 +24,8 @@ wifi <- read_xlsx("./data/original/patrick_wifi.xlsx", col_names = TRUE, trim_ws
 
 groceries <- groceries %>% geocode(fulladdress, lat = latitude, long = longitude, method = "cascade")
 wifi <- wifi %>% geocode(fulladdress, lat = latitude, long = longitude, method = "cascade")
-
+otherfood <- otherfood %>% geocode(fulladdress, lat = latitude, long = longitude, method = "cascade")
+  
 # Patrick County High School, lat = 36.624179, long = -80.269961
 wifi$latitude[5] <- 36.624179
 wifi$longitude[5] <- -80.269961
@@ -43,11 +46,16 @@ groceries$latitude[10] <- 36.741524
 groceries$longitude[10] <- -80.208900
 groceries$geo_method[10] <- "manual"
 
+# Meadows of Dan Community Building, lat = 36.735423, long = -80.403206
+otherfood$latitude[7] <- 36.735423
+otherfood$longitude[7] <- -80.403206
+otherfood$geo_method[7] <- "manual"
 
 #
 # Plot --------------------------------------------------
 #
 
+patrickcty <- counties
 # Groceries
 pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = groceries$type)
 leaflet(groceries) %>%
@@ -64,6 +72,16 @@ leaflet(wifi) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(stroke = FALSE, fillOpacity = 1, radius = 6)
 
+# Other food
+pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
+leaflet(otherfood) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
+  addLegend("bottomleft", 
+            pal = pal, 
+            values =  ~type,
+            title = "Type", 
+            opacity = 1)
 
 #
 # Write out --------------------------------------------------
@@ -71,8 +89,10 @@ leaflet(wifi) %>%
 
 write.csv(groceries, "./data/working/geocode/patrick_groceries.csv")
 write.csv(wifi, "./data/working/geocode/patrick_wifi.csv")
+write.csv(otherfood, "./data/working/geocode/patrick_otherfood.csv")
 
 groceries <- groceries %>% select(-notes)
 
 write_rds(groceries, "./data/web/groceries.Rds")
 write_rds(wifi, "./data/web/wifi.Rds")
+write_rds(otherfood, "./data/web/otherfood.Rds")
