@@ -7,6 +7,7 @@ library(disco)
 library(RColorBrewer)
 library(readr)
 library(stringr)
+library(tigris)
 
 
 #
@@ -56,10 +57,15 @@ otherfood$geo_method[7] <- "manual"
 # Plot --------------------------------------------------
 #
 
+patrickcty <- counties(state = "51", year = 2018)
+patrickcty <- st_as_sf(patrickcty)
+patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
+
 # Groceries
 pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = groceries$type)
 leaflet(groceries) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
   addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
   addLegend("bottomleft", 
             pal = pal, 
@@ -70,12 +76,14 @@ leaflet(groceries) %>%
 # Wifi
 leaflet(wifi) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
   addCircleMarkers(stroke = FALSE, fillOpacity = 1, radius = 6)
 
 # Other food
 pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
 leaflet(otherfood) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
   addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
   addLegend("bottomleft", 
             pal = pal, 
@@ -130,6 +138,7 @@ labels <- lapply(
 leaflet(data = otherfood, 
         options = leafletOptions(minZoom = 10)) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
   addCircleMarkers(stroke = FALSE, 
                    fillOpacity = 0.7, 
                    color = ~pal(type), 
