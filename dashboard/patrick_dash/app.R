@@ -19,6 +19,8 @@ library(rsconnect)
 #                           token=shinytoken,
 #                           secret=shinysecret)
 
+prettyblue <- "#232D4B"
+
 # data -----------------------------------------------------------
 socdem_block <- readRDS("data/socdem_block.Rds")
 socdem_block <- st_transform(socdem_block, '+proj=longlat +datum=WGS84')
@@ -57,84 +59,82 @@ residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 # user -------------------------------------------------------------
 ui <-fluidPage(theme = shinytheme("cosmo"),
-  navbarPage("Patrick County Dashboard",
-  # main -----------------------------------------------------------
-# TBD: words by isabel and tas
-             tabPanel("Main", value = "main",
-                      mainPanel(
-                      h2("Patrick County"),
-                      br(),
-                      p("Patrick county is fun and I love it, but it's rural so sometimes 
+               navbarPage("Patrick County Dashboard",
+                          # main -----------------------------------------------------------
+                          # TBD: words by isabel and tas
+                          tabPanel("Main", value = "main",
+                                   mainPanel(
+                                     h2("Patrick County"),
+                                     br(),
+                                     p("Patrick county is fun and I love it, but it's rural so sometimes 
                         we have issues with health care access..."),
-                      div(),
-                      p("our team is made up of...")
-                      )
-             ),
-
-  # socio -----------------------------------------------------------
-             tabPanel("Sociodemographics", value = "socio",
-                      mainPanel(
-                        h2("Sociodemographics of Patrick County"),
-                        br(),
-                        p(""),
-                        div(),
-                        p("Currenty this is important for these reasons..."),
-                        selectInput("sociodrop", "Variables", choices = c(
-                          "65 and Older" = "age65",
-                          "18 and Younger" = "under18",
-                          "Black" = "black",
-                          "Hispanic" = "hispanic",
-                          "No Bachelor's Deegree" = "noba",
-                          "Unemployed" = "unempl",
-                          "Without Health Insurance" = "nohealthins2",
-                          "Private Insurance" = "privateins",
-                          "Public Insurance" = "publicins",
-                          "Under 100 percent of the Poverty Line" = "inpov",
-                          "Receiving Snap Benefits or Public Assistance" = "snap")
-                        ),
-                        leafletOutput("socioplot")# ,
-                        #probably drop down menu with two menus for data sets?
-                      )
-             ),
-
-  # older -----------------------------------------------------------
-             tabPanel("Older Adult Well-Being", value = "older",
-                        mainPanel(
-                          h2("Older Adult Well-Being"),
-                          br(),
-                          p("Older adults have the hardest time getting healthcare..."),
-                          div(),
-                          p("Currenty this is important for these reasons..."),
-                          selectInput("olddrop", "Individual Variables", choices = c(
-                            "Vision Difficulty" = "visdiff",
-                            "Ambulatory Difficulty" = "ambdiff",
-                            "Self-Care Difficulty" = "carediff",
-                            "Cognitive Difficulty" = "cogdiff",
-                            "Independent Living Difficulty" = "ildiff",
-                            "Any Disability" = "disab",
-                            "Below 100 percent of the Poverty Line" = "inpov",
-                            "Labor Force" = "labfor")
+                                     div(),
+                                     p("our team is made up of...")
+                                   )
                           ),
-                          selectInput("hhdrop", "Household Variables", choices = c(
-                            "Married Couple Households with one or more 60+ member" = "hhsixty_married",
-                            "Households with one or more 60+ members" = "hhsixty_total",
-                            "Single (no partner present) households with one or more 60+ member" = "hhsixty_nonfam",
-                            "Households with one or more 60+ members that are Male" = "hhsixty_mhh",
-                            "Households with one or more 60+ members that are Female" = "hhsixty_fhh",
-                            "Households with one or more 60+ household members receiving SNAP" = "snap")
+                          
+                          # socio -----------------------------------------------------------
+                          tabPanel("Sociodemographics", value = "socio",
+                                   mainPanel(
+                                     h2("Sociodemographics of Patrick County"),
+                                     br(),
+                                     p(""),
+                                     div(),
+                                     p("Currenty this is important for these reasons..."),
+                                     selectInput("sociodrop", "Variables", choices = c(
+                                       "65 and Older" = "age65",
+                                       "18 and Younger" = "under18",
+                                       "Black" = "black",
+                                       "Hispanic" = "hispanic",
+                                       "No Bachelor's Deegree" = "noba",
+                                       "Unemployed" = "unempl",
+                                       "Without Health Insurance" = "nohealthins2",
+                                       "Private Insurance" = "privateins",
+                                       "Public Insurance" = "publicins",
+                                       "Under 100 percent of the Poverty Line" = "inpov",
+                                       "Receiving Snap Benefits or Public Assistance" = "snap")
+                                     ),
+                                     leafletOutput("socioplot")
+                                   )
                           ),
-                          selectInput("oldspecdrop", "Specifications for Individual Variables", choices = c(
-                            "Total",
-                            "Female" = "_f",
-                            "Male" = "_m")
+                          
+                          # older -----------------------------------------------------------
+                          tabPanel("Older Adult Well-Being", value = "older",
+                                   mainPanel(
+                                     h2("Older Adult Well-Being"),
+                                     br(),
+                                     p("Older adults have the hardest time getting healthcare..."),
+                                     div(),
+                                     p("Currenty this is important for these reasons..."),
+                                     selectInput("olddrop", "Individual Variables", choices = c(
+                                       "Vision Difficulty" = "visdiff",
+                                       "Ambulatory Difficulty" = "ambdiff",
+                                       "Self-Care Difficulty" = "carediff",
+                                       "Cognitive Difficulty" = "cogdiff",
+                                       "Independent Living Difficulty" = "ildiff",
+                                       "Any Disability" = "disab",
+                                       "Below 100 percent of the Poverty Line" = "inpov",
+                                       "Labor Force" = "labfor")
+                                     ),
+                                     selectInput("hhdrop", "Household Variables", choices = c(
+                                       "Married Couple Households with one or more 60+ member" = "hhsixty_married",
+                                       "Households with one or more 60+ members" = "hhsixty_total",
+                                       "Single (no partner present) households with one or more 60+ member" = "hhsixty_nonfam",
+                                       "Households with one or more 60+ members that are Male" = "hhsixty_mhh",
+                                       "Households with one or more 60+ members that are Female" = "hhsixty_fhh",
+                                       "Households with one or more 60+ household members receiving SNAP" = "snap")
+                                     ),
+                                     selectInput("oldspecdrop", "Specifications for Individual Variables", choices = c(
+                                       "Total",
+                                       "Female" = "_f",
+                                       "Male" = "_m")
+                                     ),
+                                     leafletOutput("oldplot")
+                                   )
                           ),
-                          leafletOutput("oldplot")
-                      )
-             ),
-
-  # wifi-----------------------------------------------------------
-             navbarMenu("Connectivity",
-                        tabPanel("Device and Internet Access", value =  "device",
+                          
+                          # wifi-----------------------------------------------------------
+                          tabPanel("Connectivity", value =  "connectivity",
                                    mainPanel(
                                      h2("Device and Internet Access"),
                                      br(),
@@ -151,13 +151,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Cellular Internet" = "cellular",
                                        "Broadband Internet" = "broadband")
                                      ),
-                                     leafletOutput("deviceplot")
-                                   )
-                        ),
-                        
-                                    # wifi maps -----------------------------
-                        tabPanel("Wi-Fi Hotspot Access", value = "wifi",
-                                   mainPanel(
+                                     leafletOutput("deviceplot"),
                                      h2("Wi-Fi Hotspot Access"),
                                      br(),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
@@ -172,88 +166,79 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Stuart Elementary School",
                                        "Patrick County Branch Library",
                                        "Hardin Reynolds Memorial School")),
-                                     leafletOutput("wifiplot")
+                                     leafletOutput("wifiplot"),
+                                     DTOutput("wifitable")
                                    )
-                        )
-                      ),
-  # ems -----------------------------------------------------------
-            tabPanel("Health Care Access", value ="ems",
-                      #sidebarLayout(
-                      #sidebarPanel(
-                      #),
-                    mainPanel(
-                      h2("Health Care Access"),
-                      br(),
-                      p("This is a paragraph about coverage maps because we love coverage maps"),
-                      div(),
-                      p("This is a second paragraph"),
-                      selectInput("emsdrop", "EMS Locations", choices = c(
-                        "STUART VOLUNTEER FIRE DEPARTMENT",
-                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
-                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
-                        "VESTA RESCUE SQUAD",                                                                                           
-                        "ARARAT RESCUE SQUAD",                                                                                          
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
-                        "JEB STUART RESCUE SQUAD",                                                                                      
-                        "SMITH RIVER RESCUE SQUAD",                                                                                     
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
-                                   )),
-                      leafletOutput("emsplot")
-                      # ,
-                      # tableOutput("emstable")
-
-                        #table
-                    )
-                      #)
-),
-
-  # food -----------------------------------------------------------
-            navbarMenu("Food Access",
-                        tabPanel("USDA Data Explorer", value =  "usda",
-                              mainPanel(
-                                   h2("USDA Data Explorer"),
-                                   br(),
-                                   p("This is a paragraph about food access"),
-                                   div(),
-                                   p("This is a second paragraph about current importance"),
-                                   selectInput("usdadrop", "USDA Variables", choices = c(
-                                     "Low Vehicle Access at 1 Mile" = "lahunv1share",
-                                     "Low Vehicle Access at 10 Miles" = "lahunv10share",
-                                     "Low Food Access for Children at 1 Mile" = "lakids1share",
-                                     "Low Food Access for Children at 10 Miles" = "lakids10share",
-                                     "Low Food Access for Low Income Population at 1 Mile" = "lalowi1share",
-                                     "Low Food Access for Low Income Population at 10 Miles" = "lalowi10share",
-                                     "Low Food Access Population at 1 Mile" = "lapop1share",  
-                                     "Low Food Access Population at 10 Miles" = "lapop10share",
-                                     "Low Food Access Seniors at 1 Mile" = "laseniors1share",
-                                     "Low Food Access Seniors at 10 Miles" = "laseniors10share")
-                                   ),
-                                   leafletOutput("usdaplot")
-                                  )
-                              ),
-                       
-                                    # food maps ---------------------
-                         tabPanel("Grocery and Farmers Market Access", value = "grocery",
-                                mainPanel(
-                                    h2("Grocery and Farmers Market Access"),
-                                    br(),
-                                    p("This is a paragraph about food access"),
-                                    div(),
-                                    p("This is a second paragraph about current importance"),
-                                               selectInput("grocdrop", "Grocery Locations", choices = c(
-                                                 "Flemings Orchard",
-                                                 "Ayers Apple Cooler",
-                                                 "Mountain Meadow Farm and Craft Market",
-                                                 "Lowes Foods of Stuart",
-                                                 "Patrick County Local Farmers Market",
-                                                 "Stuart Farmers Market",                
-                                                 "W & W Produce",
-                                                 "Walmart Supercenter",
-                                                 "Poor Farmers Farm")),
-                                               leafletOutput("grocplot")
-                                             )
+                          ),
+                          # ems -----------------------------------------------------------
+                          tabPanel("Health Care Access", value ="ems",
+                                   #sidebarLayout(
+                                   #sidebarPanel(
+                                   #),
+                                   mainPanel(
+                                     h2("Health Care Access"),
+                                     br(),
+                                     p("This is a paragraph about coverage maps because we love coverage maps"),
+                                     div(),
+                                     p("This is a second paragraph"),
+                                     selectInput("emsdrop", "EMS Locations", choices = c(
+                                       "STUART VOLUNTEER FIRE DEPARTMENT",
+                                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
+                                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
+                                       "VESTA RESCUE SQUAD",                                                                                           
+                                       "ARARAT RESCUE SQUAD",                                                                                          
+                                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
+                                       "JEB STUART RESCUE SQUAD",                                                                                      
+                                       "SMITH RIVER RESCUE SQUAD",                                                                                     
+                                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
+                                     )),
+                                     leafletOutput("emsplot"),
+                                     DTOutput("emstable")
                                    )
-                        ),
+                                   #)
+                          ),
+                          
+                          # food -----------------------------------------------------------
+                          
+                          tabPanel("Food Access", value =  "food",
+                                   mainPanel(
+                                     h2("USDA Data Explorer"),
+                                     br(),
+                                     p("This is a paragraph about food access"),
+                                     div(),
+                                     p("This is a second paragraph about current importance"),
+                                     selectInput("usdadrop", "USDA Variables", choices = c(
+                                       "Low Vehicle Access at 1 Mile" = "lahunv1share",
+                                       "Low Vehicle Access at 10 Miles" = "lahunv10share",
+                                       "Low Food Access for Children at 1 Mile" = "lakids1share",
+                                       "Low Food Access for Children at 10 Miles" = "lakids10share",
+                                       "Low Food Access for Low Income Population at 1 Mile" = "lalowi1share",
+                                       "Low Food Access for Low Income Population at 10 Miles" = "lalowi10share",
+                                       "Low Food Access Population at 1 Mile" = "lapop1share",  
+                                       "Low Food Access Population at 10 Miles" = "lapop10share",
+                                       "Low Food Access Seniors at 1 Mile" = "laseniors1share",
+                                       "Low Food Access Seniors at 10 Miles" = "laseniors10share")
+                                     ),
+                                     leafletOutput("usdaplot"),
+                                     h2("Grocery and Farmers Market Access"),
+                                     br(),
+                                     p("This is a paragraph about food access"),
+                                     div(),
+                                     p("This is a second paragraph about current importance"),
+                                     selectInput("grocdrop", "Grocery Locations", choices = c(
+                                       "Flemings Orchard",
+                                       "Ayers Apple Cooler",
+                                       "Mountain Meadow Farm and Craft Market",
+                                       "Lowes Foods of Stuart",
+                                       "Patrick County Local Farmers Market",
+                                       "Stuart Farmers Market",                
+                                       "W & W Produce",
+                                       "Walmart Supercenter",
+                                       "Poor Farmers Farm")),
+                                     leafletOutput("grocplot"),
+                                     DTOutput("groctable")
+                                   )
+                         ),
   # data -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
@@ -1374,6 +1359,33 @@ if(var_old() == "visdiff") {
     } 
   })
   
+  output$wifitable <- renderDataTable({
+    data <- switch(input$wifidrop,
+                   "Meadows of Dan Elementary School" = 1,
+                   "Woolwine Elementary School" = 2,
+                   "Patrick Springs Primary School" = 3,
+                   "Blue Ridge Elementary School" = 4,
+                   "Patrick County High School" = 5,
+                   "Stuart Elementary School" = 6,
+                   "Patrick County Branch Library" = 7,
+                   "Hardin Reynolds Memorial School" = 8  
+    )
+    
+    wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
+    wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+    
+    pp_10 <- st_intersection(residential, wifi_iso10)
+    pp_15 <- st_intersection(residential, wifi_iso15)
+    
+    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
+    coverage_15 <- (nrow(pp_15)/nrow(residential)*100)
+    
+    table <- as.data.frame(c("10 Minutes", "15 Minutes"))
+    table$Coverage <- c(coverage_10, coverage_15)
+    colnames(table) <- c("Time", "Coverage")
+    table
+  })
+  
   # ems: no table ------------------------------------------------------------
   
   var_ems <- reactive({
@@ -1423,35 +1435,36 @@ if(var_old() == "visdiff") {
   } 
   })
   
-  # output$emstable <- renderTable({
-  #  data <- switch(input$emsdrop,
-  #                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-  #                    "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
-  #                    "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
-  #                    "VESTA RESCUE SQUAD" = 4,                                                                                           
-  #                    "ARARAT RESCUE SQUAD" = 5,                                                                                          
-  #                    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-  #                    "JEB STUART RESCUE SQUAD" = 7,                                                                                      
-  #                    "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-  #                    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
-  # 
-  # 
-  #   ems_iso8 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_8_",data,".RDS"))
-  #   ems_iso10 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_10_",data,".RDS"))
-  #   ems_iso12 <- readRDS(paste0("~/git/dspg20patrick/data/working/isochrones/ems/ems_iso_12_",data,".RDS"))
-  #   
-  #   pp_8 <- st_intersection(residential, ems_iso8)
-  #   pp_10 <- st_intersection(residential, ems_iso10)
-  #   pp_12 <- st_intersection(residential, ems_iso12)
-  #   
-  #   coverage_8 <- (nrow(pp_8)/nrow(residential)*100)
-  #   coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
-  #   coverage_12 <- (nrow(pp_12)/nrow(residential)*100)
-  #   
-  #   table <- as.data.frame(c("8 Minutes", "10 Minutes", "12 Minutes"))
-  #   table$Coverage <- c(coverage_8, coverage_10, coverage_12)
-  #   colnames(table) <- c("Time", "Coverage")
-  #   print(table)})
+  output$emstable <- renderDataTable({
+   data <- switch(input$emsdrop,
+                    "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
+                     "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,
+                     "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,
+                     "VESTA RESCUE SQUAD" = 4,
+                     "ARARAT RESCUE SQUAD" = 5,
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
+                     "JEB STUART RESCUE SQUAD" = 7,
+                     "SMITH RIVER RESCUE SQUAD" = 8,
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+
+
+    ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
+    ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
+    ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
+
+    pp_8 <- st_intersection(residential, ems_iso8)
+    pp_10 <- st_intersection(residential, ems_iso10)
+    pp_12 <- st_intersection(residential, ems_iso12)
+
+    coverage_8 <- (nrow(pp_8)/nrow(residential)*100)
+    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
+    coverage_12 <- (nrow(pp_12)/nrow(residential)*100)
+
+    table <- as.data.frame(c("8 Minutes", "10 Minutes", "12 Minutes"))
+    table$Coverage <- c(coverage_8, coverage_10, coverage_12)
+    colnames(table) <- c("Time", "Coverage")
+    table
+    })
   
    # usda: one problem -----------------------------------------------------------
   var_usda <- reactive({
@@ -1597,6 +1610,35 @@ if(var_old() == "visdiff") {
       m1@map
     } 
   })
+  
+  output$groctable <- renderDataTable({
+    data <- switch(input$grocdrop,
+                   "Flemings Orchard" = 1,
+                   "Ayers Apple Cooler" = 2,
+                   "Mountain Meadow Farm and Craft Market" = 3,
+                   "Lowes Foods of Stuart" = 4,
+                   "Patrick County Local Farmers Market" = 5,
+                   "Stuart Farmers Market" = 6,                
+                   "W & W Produce" = 7,
+                   "Walmart Supercenter" = 8,
+                   "Poor Farmers Farm" = 9
+    )
+    
+    groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
+    groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
+    
+    pp_10 <- st_intersection(residential, groc_iso10)
+    pp_15 <- st_intersection(residential, groc_iso15)
+    
+    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
+    coverage_15 <- (nrow(pp_15)/nrow(residential)*100)
+    
+    table <- as.data.frame(c("10 Minutes", "15 Minutes"))
+    table$Coverage <- c(coverage_10, coverage_15)
+    colnames(table) <- c("Time", "Coverage")
+    table
+  })
+  
 }
 
 shinyApp(ui = ui, server = server)
