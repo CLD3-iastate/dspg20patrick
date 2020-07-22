@@ -6,7 +6,7 @@ library(leaflet)
 library(disco)
 library(RColorBrewer)
 library(readr)
-library(tigris)
+library(stringr)
 
 
 #
@@ -51,11 +51,11 @@ otherfood$latitude[7] <- 36.735423
 otherfood$longitude[7] <- -80.403206
 otherfood$geo_method[7] <- "manual"
 
+
 #
 # Plot --------------------------------------------------
 #
 
-patrickcty <- counties
 # Groceries
 pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = groceries$type)
 leaflet(groceries) %>%
@@ -83,6 +83,7 @@ leaflet(otherfood) %>%
             title = "Type", 
             opacity = 1)
 
+
 #
 # Write out --------------------------------------------------
 #
@@ -96,3 +97,52 @@ groceries <- groceries %>% select(-notes)
 write_rds(groceries, "./data/web/groceries.Rds")
 write_rds(wifi, "./data/web/wifi.Rds")
 write_rds(otherfood, "./data/web/otherfood.Rds")
+
+
+#
+# For web --------------------------------------------------
+#
+
+# Other food
+otherfood$latitude <- jitter(otherfood$latitude, factor = 1)
+otherfood$longitude <- jitter(otherfood$longitude, factor = 1)
+
+pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
+
+labels <- lapply(
+  paste("<strong>Name: </strong>",
+        otherfood$name,
+        "<br />",
+        "<strong>Address:</strong>",
+        otherfood$fulladdress,
+        "<br />",
+        "<strong>Type:</strong>",
+        otherfood$type,
+        "<br />",
+        "<strong>Open to:</strong>",
+        otherfood$audience,
+        "<br />",
+        "<strong>Notes:</strong>",
+        otherfood$notes),
+  htmltools::HTML
+)
+
+leaflet(data = otherfood, 
+        options = leafletOptions(minZoom = 10)) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(stroke = FALSE, 
+                   fillOpacity = 0.7, 
+                   color = ~pal(type), 
+                   radius = 7, 
+                   opacity = 0.7,
+                   label = labels, 
+                   labelOptions = labelOptions(direction = "bottom",
+                                               style = list(
+                                                 "font-size" = "12px",
+                                                 "border-color" = "rgba(0,0,0,0.5)",
+                                                 direction = "auto"))) %>%
+  addLegend("bottomleft", 
+            pal = pal, 
+            values =  ~type,
+            title = "Type", 
+            opacity = 0.7)
