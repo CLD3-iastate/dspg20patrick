@@ -9,6 +9,8 @@ library(shinythemes)
 library(DT)
 library(data.table)
 library(rsconnect)
+library(shinycssloaders)
+library(readxl)
 
 # readRenviron("~/.Renviron")
 # shinyname <- Sys.getenv("SHINYNAME")
@@ -40,6 +42,11 @@ st_crs(groceries) <- "+proj=longlat +datum=WGS84"
 groceries <- st_transform(groceries, '+proj=longlat +datum=WGS84')
 groceries <- subset(groceries, type == "farmers market" | type == "supermarket")
 
+otherfood <- readRDS("data/otherfood.Rds")
+otherfood <- st_as_sf(otherfood, coords = c("longitude", "latitude"))
+st_crs(otherfood) <- "+proj=longlat +datum=WGS84"
+otherfood <- st_transform(otherfood, '+proj=longlat +datum=WGS84')
+
 usda <- readRDS("data/usda.Rds")
 usda <- st_transform(usda, '+proj=longlat +datum=WGS84')
 
@@ -56,15 +63,15 @@ residential <- st_as_sf(residential, coords = c("longitude", "latitude"))
 st_crs(residential) <- "+proj=longlat +datum=WGS84"
 residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
+measures_table <- read_excel("data/Measures.xlsx")
 
 # user -------------------------------------------------------------
 ui <-fluidPage(theme = shinytheme("cosmo"),
                navbarPage("Patrick County Dashboard",
-                          # main -----------------------------------------------------------
-                          # TBD: words by isabel and tas
+  # main -----------------------------------------------------------
                           tabPanel("Main", value = "main",
                                    mainPanel(
-                                     h2("Patrick County"),
+                                     h1("Addressing Barriers to Health Care Access in Patrick County, Virginia"),
                                      br(),
                                      p("Patrick county is fun and I love it, but it's rural so sometimes 
                         we have issues with health care access..."),
@@ -73,10 +80,10 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    )
                           ),
                           
-                          # socio -----------------------------------------------------------
+  # socio -----------------------------------------------------------
                           tabPanel("Sociodemographics", value = "socio",
                                    mainPanel(
-                                     h2("Sociodemographics of Patrick County"),
+                                     h1("Sociodemographics of Patrick County"),
                                      br(),
                                      p(""),
                                      div(),
@@ -98,10 +105,10 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    )
                           ),
                           
-                          # older -----------------------------------------------------------
+  # older -----------------------------------------------------------
                           tabPanel("Older Adult Well-Being", value = "older",
                                    mainPanel(
-                                     h2("Older Adult Well-Being"),
+                                     h1("Older Adult Well-Being"),
                                      br(),
                                      p("Older adults have the hardest time getting healthcare..."),
                                      div(),
@@ -133,10 +140,11 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    )
                           ),
                           
-                          # wifi-----------------------------------------------------------
+  # wifi-----------------------------------------------------------
                           tabPanel("Connectivity", value =  "connectivity",
                                    mainPanel(
-                                     h2("Device and Internet Access"),
+                                     h1("Connectivity"),
+                                     h3("Device and Internet Access"),
                                      br(),
                                      p("This is a paragraph about connectivity status"),
                                      div(),
@@ -152,7 +160,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Broadband Internet" = "broadband")
                                      ),
                                      leafletOutput("deviceplot"),
-                                     h2("Wi-Fi Hotspot Access"),
+                                     h3("Wi-Fi Hotspot Access"),
                                      br(),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
                                      div(),
@@ -167,16 +175,18 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Patrick County Branch Library",
                                        "Hardin Reynolds Memorial School")),
                                      leafletOutput("wifiplot"),
+                                     h3("TravelTime Coverage"),
                                      DTOutput("wifitable")
                                    )
                           ),
-                          # ems -----------------------------------------------------------
+  # ems -----------------------------------------------------------
                           tabPanel("Health Care Access", value ="ems",
                                    #sidebarLayout(
                                    #sidebarPanel(
                                    #),
                                    mainPanel(
-                                     h2("Health Care Access"),
+                                     h1("Health Care Access"),
+                                     h3("Emergency Medical Service Locations"),
                                      br(),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
                                      div(),
@@ -193,23 +203,25 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
                                      )),
                                      leafletOutput("emsplot"),
+                                     h3("TravelTime Coverage"),
                                      DTOutput("emstable")
                                    )
                                    #)
                           ),
                           
-                          # food -----------------------------------------------------------
+  # food -----------------------------------------------------------
                           
                           tabPanel("Food Access", value =  "food",
                                    mainPanel(
-                                     h2("USDA Data Explorer"),
+                                     h1("Food Access"),
+                                     h3("USDA Data Explorer"),
                                      br(),
                                      p("This is a paragraph about food access"),
                                      div(),
                                      p("This is a second paragraph about current importance"),
                                      selectInput("usdadrop", "USDA Variables", choices = c(
                                        "Low Vehicle Access at 1 Mile" = "lahunv1share",
-                                       "Low Vehicle Access at 10 Miles" = "lahunv10share",
+                                       # "Low Vehicle Access at 10 Miles" = "lahunv10share",
                                        "Low Food Access for Children at 1 Mile" = "lakids1share",
                                        "Low Food Access for Children at 10 Miles" = "lakids10share",
                                        "Low Food Access for Low Income Population at 1 Mile" = "lalowi1share",
@@ -220,14 +232,12 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Low Food Access Seniors at 10 Miles" = "laseniors10share")
                                      ),
                                      leafletOutput("usdaplot"),
-                                     h2("Grocery and Farmers Market Access"),
+                                     h3("Grocery and Farmers Market Access"),
                                      br(),
                                      p("This is a paragraph about food access"),
                                      div(),
                                      p("This is a second paragraph about current importance"),
                                      selectInput("grocdrop", "Grocery Locations", choices = c(
-                                       "Flemings Orchard",
-                                       "Ayers Apple Cooler",
                                        "Mountain Meadow Farm and Craft Market",
                                        "Lowes Foods of Stuart",
                                        "Patrick County Local Farmers Market",
@@ -236,29 +246,37 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Walmart Supercenter",
                                        "Poor Farmers Farm")),
                                      leafletOutput("grocplot"),
+                                     h3("TravelTime Coverage"),
                                      DTOutput("groctable")
                                    )
                          ),
   # data -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
-                     h2("Data and Measures"),
+                     h1("Data and Measures"),
                      br(),
-                     p("paragraph about data.") # ,
-                     # table(datatable)
-                   )
-          ),
+                     p("paragraph about data."),
+                     selectInput("topic", "Data Topics", choices = c(
+                       "Connectivity",
+                       "Demographics",
+                       "Food Access",
+                       "Health",
+                       "Older Adults")
+                   ),
+                   DTOutput("datatable")
+          )
+        ),
 
   # contact -----------------------------------------------------------
           tabPanel("Contact", value = "contact",
                    mainPanel(
-                     h2("Contact"),
+                     h1("Contact"),
                      br(),
                      p("This is a paragraph about contacting us")
                    )
           ),
   inverse = T
-  )
+    )
 )
 
 
@@ -1211,13 +1229,17 @@ if(var_old() == "visdiff") {
   
   
   # data and measures table: not done ----------------------------------------
-  # output$datatable <- renderTable({
-  #   data <- switch(input$topic,
-  #                "" = olderadults$visdiff,
-  #                "_f" = olderadults$visdiff_f,
-  #                "_m" = olderadults$visdiff_m)
-  # table(data)
-  # })
+  output$datatable <- renderDataTable({
+    data <- switch(input$topic,
+                   "Connectivity" = "connectivity",
+                   "Demographics" = "demographics",
+                   "Food Access" = "food access",
+                   "Health" = "health",
+                   "Older Adults" = "olderadults")
+  table <- subset(measures_table, Topic == data)
+  table <- as.data.frame(table)
+  table
+  })
   
   
   # device ---------------------------------------------------------
@@ -1317,7 +1339,7 @@ if(var_old() == "visdiff") {
   })
   
   
-  # wifi: no table -----------------------------------------------------------
+  # wifi -----------------------------------------------------------
   var_wifi <- reactive({
     input$wifidrop
   })
@@ -1386,7 +1408,7 @@ if(var_old() == "visdiff") {
     table
   })
   
-  # ems: no table ------------------------------------------------------------
+  # ems ------------------------------------------------------------
   
   var_ems <- reactive({
     input$emsdrop
@@ -1466,14 +1488,14 @@ if(var_old() == "visdiff") {
     table
     })
   
-   # usda: one problem -----------------------------------------------------------
+  # usda - problems  -----------------------------------------------------------
   var_usda <- reactive({
     input$usdadrop
   })
   output$usdaplot <- renderLeaflet({
     if(var_usda() != "lahunv1share"){
       data <- switch(input$usdadrop,
-                     "lahunv10share" = usda$lahunv10share,
+                     # "lahunv10share" = usda$lahunv10share,
                      "lakids1share" = usda$lakids1share,
                      "lakids10share" = usda$lakids10share,
                      "lalowi1share" = usda$lalowi1share,
@@ -1484,7 +1506,7 @@ if(var_old() == "visdiff") {
                      "laseniors10share" = usda$laseniors10share)
       
       usda_spec <- switch(input$usdadrop,
-                          "lahunv10share" = "low vehicle access at 10 miles",
+                          # "lahunv10share" = "low vehicle access at 10 miles",
                           "lakids1share" = "low food access for children at 1 mile",
                           "lakids10share" = "low food access for children at 10 miles",
                           "lalowi1share" = "low food access for low income population at 1 mile",
@@ -1493,8 +1515,6 @@ if(var_old() == "visdiff") {
                           "lapop10share" = "low food access at 10 miles",
                           "laseniors1share" = "low food access for seniors at 1 mile",
                           "laseniors10share" = "low food access for seniors at 10 miles")
-      
-      #lahunv10share has issues
       
       pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
       
@@ -1567,18 +1587,16 @@ if(var_old() == "visdiff") {
     }
   })
   
-  # grocery : no table --------------------------------------------------------
+  # grocery --------------------------------------------------------
   
   var_groc <- reactive({
     input$grocdrop
   })
   output$grocplot <- renderLeaflet({
-    if(var_groc() != "Flemings Orchard"){
+    if(var_groc() != "Mountain Meadow Farm and Craft Market"){
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
       data <- switch(input$grocdrop,
-                     "Ayers Apple Cooler" = 2,
-                     "Mountain Meadow Farm and Craft Market" = 3,
                      "Lowes Foods of Stuart" = 4,
                      "Patrick County Local Farmers Market" = 5,
                      "Stuart Farmers Market" = 6,                
@@ -1598,8 +1616,8 @@ if(var_old() == "visdiff") {
       
       m1@map
     }else{
-      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",1,".RDS"))
-      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",1,".RDS"))
+      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",3,".RDS"))
+      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
       
       
       residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
@@ -1613,8 +1631,6 @@ if(var_old() == "visdiff") {
   
   output$groctable <- renderDataTable({
     data <- switch(input$grocdrop,
-                   "Flemings Orchard" = 1,
-                   "Ayers Apple Cooler" = 2,
                    "Mountain Meadow Farm and Craft Market" = 3,
                    "Lowes Foods of Stuart" = 4,
                    "Patrick County Local Farmers Market" = 5,
@@ -1639,6 +1655,70 @@ if(var_old() == "visdiff") {
     table
   })
   
+  # output$othermap <- renderLeaflet({
+  #   patrickcty <- counties(state = "51", year = 2018)
+  #   patrickcty <- st_as_sf(patrickcty)
+  #   patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
+  #   
+  #   
+  #   # Other food
+  #   pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
+  #   leaflet(otherfood) %>%
+  #     addProviderTiles(providers$CartoDB.Positron) %>%
+  #     addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
+  #     addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
+  #     addLegend("bottomleft", 
+  #               pal = pal, 
+  #               values =  ~type,
+  #               title = "Type", 
+  #               opacity = 1)
+  #   
+  #   
+  #   # Other food
+  #   otherfood$latitude <- jitter(otherfood$latitude, factor = 1)
+  #   otherfood$longitude <- jitter(otherfood$longitude, factor = 1)
+  #   
+  #   pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
+  #   
+  #   labels <- lapply(
+  #     paste("<strong>Name: </strong>",
+  #           otherfood$name,
+  #           "<br />",
+  #           "<strong>Address:</strong>",
+  #           otherfood$fulladdress,
+  #           "<br />",
+  #           "<strong>Type:</strong>",
+  #           otherfood$type,
+  #           "<br />",
+  #           "<strong>Open to:</strong>",
+  #           otherfood$audience,
+  #           "<br />",
+  #           "<strong>Notes:</strong>",
+  #           otherfood$notes),
+  #     htmltools::HTML
+  #   )
+  #   
+  #   leaflet(data = otherfood, 
+  #           options = leafletOptions(minZoom = 10)) %>%
+  #     addProviderTiles(providers$CartoDB.Positron) %>%
+  #     addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
+  #     addCircleMarkers(stroke = FALSE, 
+  #                      fillOpacity = 0.7, 
+  #                      color = ~pal(type), 
+  #                      radius = 7, 
+  #                      opacity = 0.7,
+  #                      label = labels, 
+  #                      labelOptions = labelOptions(direction = "bottom",
+  #                                                  style = list(
+  #                                                    "font-size" = "12px",
+  #                                                    "border-color" = "rgba(0,0,0,0.5)",
+  #                                                    direction = "auto"))) %>%
+  #     addLegend("bottomleft", 
+  #               pal = pal, 
+  #               values =  ~type,
+  #               title = "Type", 
+  #               opacity = 0.7)
+  # })
 }
 
 shinyApp(ui = ui, server = server)
