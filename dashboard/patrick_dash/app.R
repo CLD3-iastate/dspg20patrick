@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(tidyverse)
 library(sf)
+library(mapview)
 library(ggthemes)
 library(RColorBrewer)
 library(sjmisc)
@@ -191,7 +192,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Patrick County High School",
                                        "Stuart Elementary School",
                                        "Patrick County Branch Library",
-                                       "Hardin Reynolds Memorial School")),
+                                       "Hardin Reynolds Memorial School",
+                                       "Stuart Baptist Church",                        
+                                       "Patrick Henry Community College Stuart Campus")),
                                      withSpinner(leafletOutput("wifiplot")),
                                      h3("TravelTime Coverage"),
                                      br(),
@@ -1398,7 +1401,7 @@ if(var_old() == "visdiff") {
   })
   
   
-  # wifi - need to update with new locations and isochrones -----------------------------------------------------------
+  # wifi: done -----------------------------------------------------------
   var_wifi <- reactive({
     input$wifidrop
   })
@@ -1413,14 +1416,16 @@ if(var_old() == "visdiff") {
                      "Patrick County High School" = 5,
                      "Stuart Elementary School" = 6,
                      "Patrick County Branch Library" = 7,
-                     "Hardin Reynolds Memorial School" = 8  
+                     "Hardin Reynolds Memorial School" = 8,
+                     "Stuart Baptist Church" = 9,                       
+                     "Patrick Henry Community College Stuart Campus" = 10
       )
       
       wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
       m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1431,7 +1436,7 @@ if(var_old() == "visdiff") {
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",1,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
       m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1449,7 +1454,9 @@ if(var_old() == "visdiff") {
                    "Patrick County High School" = 5,
                    "Stuart Elementary School" = 6,
                    "Patrick County Branch Library" = 7,
-                   "Hardin Reynolds Memorial School" = 8  
+                   "Hardin Reynolds Memorial School" = 8,
+                   "Stuart Baptist Church" = 9,                       
+                   "Patrick Henry Community College Stuart Campus" = 10 
     )
     
     wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
@@ -1493,7 +1500,7 @@ if(var_old() == "visdiff") {
     ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
     
     
-    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
     m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
     m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
     m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
@@ -1506,7 +1513,7 @@ if(var_old() == "visdiff") {
     ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",1,".RDS"))
     
     
-    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
     m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
     m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
     m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
@@ -1668,7 +1675,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[3])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1679,7 +1686,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[3])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
