@@ -22,6 +22,7 @@ library(readxl)
 #                           secret=shinysecret)
 
 prettyblue <- "#232D4B"
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff',spinner.size = 3)
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("data/socdem_block.Rds")
@@ -101,7 +102,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Under 100 percent of the Poverty Line" = "inpov",
                                        "Receiving Snap Benefits or Public Assistance" = "snap")
                                      ),
-                                     leafletOutput("socioplot")
+                                     withSpinner(leafletOutput("socioplot"))
                                    )
                           ),
                           
@@ -136,7 +137,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Female" = "_f",
                                        "Male" = "_m")
                                      ),
-                                     leafletOutput("oldplot")
+                                     withSpinner(leafletOutput("oldplot"))
                                    )
                           ),
                           
@@ -159,7 +160,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Cellular Internet" = "cellular",
                                        "Broadband Internet" = "broadband")
                                      ),
-                                     leafletOutput("deviceplot"),
+                                     withSpinner(leafletOutput("deviceplot")),
                                      h3("Wi-Fi Hotspot Access"),
                                      br(),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
@@ -174,9 +175,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Stuart Elementary School",
                                        "Patrick County Branch Library",
                                        "Hardin Reynolds Memorial School")),
-                                     leafletOutput("wifiplot"),
+                                     withSpinner(leafletOutput("wifiplot")),
                                      h3("TravelTime Coverage"),
-                                     DTOutput("wifitable")
+                                     withSpinner(DTOutput("wifitable"))
                                    )
                           ),
   # ems -----------------------------------------------------------
@@ -202,9 +203,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "SMITH RIVER RESCUE SQUAD",                                                                                     
                                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
                                      )),
-                                     leafletOutput("emsplot"),
+                                     withSpinner(leafletOutput("emsplot")),
                                      h3("TravelTime Coverage"),
-                                     DTOutput("emstable")
+                                     withSpinner(DTOutput("emstable"))
                                    )
                                    #)
                           ),
@@ -231,7 +232,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Low Food Access Seniors at 1 Mile" = "laseniors1share",
                                        "Low Food Access Seniors at 10 Miles" = "laseniors10share")
                                      ),
-                                     leafletOutput("usdaplot"),
+                                     withSpinner(leafletOutput("usdaplot")),
                                      h3("Grocery and Farmers Market Access"),
                                      br(),
                                      p("This is a paragraph about food access"),
@@ -245,9 +246,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "W & W Produce",
                                        "Walmart Supercenter",
                                        "Poor Farmers Farm")),
-                                     leafletOutput("grocplot"),
+                                     withSpinner(leafletOutput("grocplot")),
                                      h3("TravelTime Coverage"),
-                                     DTOutput("groctable")
+                                     withSpinner(DTOutput("groctable"))
                                    )
                          ),
   # data -----------------------------------------------------------
@@ -263,7 +264,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                        "Health",
                        "Older Adults")
                    ),
-                   DTOutput("datatable")
+                   withSpinner(DTOutput("datatable"))
           )
         ),
 
