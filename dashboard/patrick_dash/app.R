@@ -11,6 +11,11 @@ library(data.table)
 library(rsconnect)
 library(shinycssloaders)
 library(readxl)
+library(tidygeocoder)
+library(disco)
+library(readr)
+library(stringr)
+library(tigris)
 
 # readRenviron("~/.Renviron")
 # shinyname <- Sys.getenv("SHINYNAME")
@@ -22,7 +27,9 @@ library(readxl)
 #                           secret=shinysecret)
 
 prettyblue <- "#232D4B"
-options(spinner.color = prettyblue, spinner.color.background = '#ffffff',spinner.size = 3)
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff',spinner.size = 3, spinner.type = 7)
+
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
 
 # data -----------------------------------------------------------
 socdem_block <- readRDS("data/socdem_block.Rds")
@@ -66,6 +73,7 @@ residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 measures_table <- read_excel("data/Measures.xlsx")
 
+
 # user -------------------------------------------------------------
 ui <-fluidPage(theme = shinytheme("cosmo"),
                navbarPage("Patrick County Dashboard",
@@ -89,6 +97,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p(""),
                                      div(),
                                      p("Currenty this is important for these reasons..."),
+                                     br(),
                                      selectInput("sociodrop", "Variables", choices = c(
                                        "65 and Older" = "age65",
                                        "18 and Younger" = "under18",
@@ -110,10 +119,12 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                           tabPanel("Older Adult Well-Being", value = "older",
                                    mainPanel(
                                      h1("Older Adult Well-Being"),
+                                     h3("Individual Level Information"),
                                      br(),
                                      p("Older adults have the hardest time getting healthcare..."),
                                      div(),
                                      p("Currenty this is important for these reasons..."),
+                                     br(),
                                      selectInput("olddrop", "Individual Variables", choices = c(
                                        "Vision Difficulty" = "visdiff",
                                        "Ambulatory Difficulty" = "ambdiff",
@@ -124,20 +135,24 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Below 100 percent of the Poverty Line" = "inpov",
                                        "Labor Force" = "labfor")
                                      ),
-                                     selectInput("hhdrop", "Household Variables", choices = c(
-                                       "Married Couple Households with one or more 60+ member" = "hhsixty_married",
-                                       "Households with one or more 60+ members" = "hhsixty_total",
-                                       "Single (no partner present) households with one or more 60+ member" = "hhsixty_nonfam",
-                                       "Households with one or more 60+ members that are Male" = "hhsixty_mhh",
-                                       "Households with one or more 60+ members that are Female" = "hhsixty_fhh",
-                                       "Households with one or more 60+ household members receiving SNAP" = "snap")
-                                     ),
                                      selectInput("oldspecdrop", "Specifications for Individual Variables", choices = c(
                                        "Total",
                                        "Female" = "_f",
                                        "Male" = "_m")
                                      ),
-                                     withSpinner(leafletOutput("oldplot"))
+                                     withSpinner(leafletOutput("oldplot")),
+                                     h3("Household Level Information"),
+                                     br(),
+                                     selectInput("hhdrop", "Household Variables", choices = c(
+                                       "Married Couple Households with one or more 60+ member" = "hhsixty_married",
+                                       "Households with one or more 60+ members" = "hhsixty_total",
+                                       "Single (no partner present) households with one or more 60+ member" = "hhsixty_nonfam",
+                                       "Households with one or more 60+ members that are Male" = "hhsixty_mhh",
+                                       "Households with one or more 60+ members that are Female" = "hhsixty_fhh" # ,
+                                       #"Households with one or more 60+ household members receiving SNAP" = "snap"
+                                       )
+                                     ),
+                                     withSpinner(leafletOutput("householdplot"))
                                    )
                           ),
                           
@@ -150,6 +165,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p("This is a paragraph about connectivity status"),
                                      div(),
                                      p("This is a second paragraph about why it's important"),
+                                     br(),
                                      selectInput("devicedrop", "Connectivity Variables", choices = c(
                                        "No Computer" = "nocomputer",
                                        "Laptop Ownership" = "laptop",
@@ -166,6 +182,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
                                      div(),
                                      p("This is a second paragraph"),
+                                     br(),
                                      selectInput("wifidrop", "Free Wifi Locations", choices = c(
                                        "Meadows of Dan Elementary School",
                                        "Woolwine Elementary School",
@@ -177,6 +194,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Hardin Reynolds Memorial School")),
                                      withSpinner(leafletOutput("wifiplot")),
                                      h3("TravelTime Coverage"),
+                                     br(),
                                      withSpinner(DTOutput("wifitable"))
                                    )
                           ),
@@ -192,19 +210,21 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p("This is a paragraph about coverage maps because we love coverage maps"),
                                      div(),
                                      p("This is a second paragraph"),
+                                     br(),
                                      selectInput("emsdrop", "EMS Locations", choices = c(
-                                       "STUART VOLUNTEER FIRE DEPARTMENT",
-                                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
-                                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
-                                       "VESTA RESCUE SQUAD",                                                                                           
-                                       "ARARAT RESCUE SQUAD",                                                                                          
-                                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
-                                       "JEB STUART RESCUE SQUAD",                                                                                      
-                                       "SMITH RIVER RESCUE SQUAD",                                                                                     
-                                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2"
+                                       "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
+                                      "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
+                                       "Blue Ridge Volunteer Rescue Squad" = "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
+                                       "Vesta Rescue Squad" = "VESTA RESCUE SQUAD",                                                                                           
+                                      "Ararat Rescue Squad"  ="ARARAT RESCUE SQUAD",                                                                                          
+                                      "Five Forks Volunteer Fire and Rescue Station 1" = "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
+                                      "Five Forks Volunteer Fire and Rescue Station 2"= "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2",
+                                      "Jeb Stuart Rescue Squad" = "JEB STUART RESCUE SQUAD",                                                                                      
+                                      "Smith River Rescue Squad" = "SMITH RIVER RESCUE SQUAD"                                                                                     
                                      )),
                                      withSpinner(leafletOutput("emsplot")),
                                      h3("TravelTime Coverage"),
+                                     br(),
                                      withSpinner(DTOutput("emstable"))
                                    )
                                    #)
@@ -220,6 +240,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p("This is a paragraph about food access"),
                                      div(),
                                      p("This is a second paragraph about current importance"),
+                                     br(),
                                      selectInput("usdadrop", "USDA Variables", choices = c(
                                        "Low Vehicle Access at 1 Mile" = "lahunv1share",
                                        # "Low Vehicle Access at 10 Miles" = "lahunv10share",
@@ -238,6 +259,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      p("This is a paragraph about food access"),
                                      div(),
                                      p("This is a second paragraph about current importance"),
+                                     br(),
                                      selectInput("grocdrop", "Grocery Locations", choices = c(
                                        "Mountain Meadow Farm and Craft Market",
                                        "Lowes Foods of Stuart",
@@ -248,7 +270,11 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                        "Poor Farmers Farm")),
                                      withSpinner(leafletOutput("grocplot")),
                                      h3("TravelTime Coverage"),
-                                     withSpinner(DTOutput("groctable"))
+                                     br(),
+                                     withSpinner(DTOutput("groctable")),
+                                     h3("Other Food Access"),
+                                     br(),
+                                     withSpinner(leafletOutput("othermap"))
                                    )
                          ),
   # data -----------------------------------------------------------
@@ -257,7 +283,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                      h1("Data and Measures"),
                      br(),
                      p("paragraph about data."),
+                     br(),
                      selectInput("topic", "Data Topics", choices = c(
+                       "All",
                        "Connectivity",
                        "Demographics",
                        "Food Access",
@@ -671,7 +699,7 @@ server <- function(input, output, session) {
   })
   
   
-  # old plots -----------------------------------------------
+  # old plots - snap -----------------------------------------------
   var_old <- reactive({
     input$olddrop
   })
@@ -686,7 +714,7 @@ if(var_old() == "visdiff") {
                          "_f" = olderadults$visdiff_f,
                          "_m" = olderadults$visdiff_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -713,7 +741,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -725,7 +753,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$ambdiff_f,
                        "_m" = olderadults$ambdiff_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -752,7 +780,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -764,7 +792,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$cogdiff_f,
                        "_m" = olderadults$cogdiff_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -791,7 +819,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -803,7 +831,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$carediff_f,
                        "_m" = olderadults$carediff_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -830,7 +858,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -842,7 +870,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$ildiff_f,
                        "_m" = olderadults$ildiff_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -869,7 +897,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -881,7 +909,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$disab_f,
                        "_m" = olderadults$disab_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -908,7 +936,7 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
@@ -920,7 +948,7 @@ if(var_old() == "visdiff") {
                        "_f" = olderadults$inpov_f,
                        "_m" = olderadults$inpov_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -947,21 +975,21 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
                       paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                     })
       }else 
-        # if(var_old() == "labfor") 
+        # if(var_old() == "labfor")
           {
         data <- switch(input$oldspecdrop,
                        "Total" = olderadults$labfor,
                        "_f" = olderadults$labfor_f,
                        "_m" = olderadults$labfor_m)
         
-        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+        pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
         
         labels <- lapply(
           paste("<strong>Area: </strong>",
@@ -988,47 +1016,49 @@ if(var_old() == "visdiff") {
           addLegend("bottomleft",
                     pal = pal,
                     values =  ~(data),
-                    title = "Percent by<br>Quintile Group",
+                    title = "Percent by<br>Quartile Group",
                     opacity = 0.6,
                     labFormat = function(type, cuts, p) {
                       n = length(cuts)
                       paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                     })
-          }
-      # }else
-      #   {
-      #   data <- switch(input$hhdrop,
-      #                  "hhsixty_married" = olderadults$hhsixty_marr,
-      #                  "hhsixty_total" = olderadults$hhsixty_total,
-      #                  "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
-      #                  "hhsixty_mhh" = olderadults$hhsixty_mhh,
-      #                  "hhsixty_fhh" = olderadults$hhsixty_fhh,
-      #                  "snap" = olderadults$snap)
-      #   spec <- switch(input$hhdrop,
-      #                  "hhsixty_married" = "Married",
-      #                  "hhsixty_total" = "Total",
-      #                  "hhsixty_nonfam" = "Single",
-      #                  "hhsixty_mhh" = "Male",
-      #                  "hhsixty_fhh" = "Female",
-      #                  "snap" = "SNAP Benefit")
-      #   
-      #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
+      }
+  })
+    output$householdplot <- renderLeaflet({
+    #if(var_hh() == "snap"){
+      
+        # data <- switch(input$hhdrop,
+        #                "hhsixty_married" = olderadults$hhsixty_marr,
+        #                "hhsixty_total" = olderadults$hhsixty_total,
+        #                "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
+        #                "hhsixty_mhh" = olderadults$hhsixty_mhh,
+        #                "hhsixty_fhh" = olderadults$hhsixty_fhh,
+        #                "snap" = olderadults$snap)
+        # spec <- switch(input$hhdrop,
+        #                "hhsixty_married" = "Married",
+        #                "hhsixty_total" = "Total",
+        #                "hhsixty_nonfam" = "Single",
+        #                "hhsixty_mhh" = "Male",
+        #                "hhsixty_fhh" = "Female",
+        #                "snap" = "SNAP Benefit")
+
+      #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
+      # 
       #   labels <- lapply(
       #     paste("<strong>Area: </strong>",
       #           olderadults$NAME.y,
       #           "<br />",
-      #           "<strong>% </strong>", 
+      #           "<strong>% </strong>",
       #           spec,
       #           "<strong>Households with a 60+ member</strong>",
       #           round(data, 2)),
       #     htmltools::HTML
       #   )
-      #   
+      # 
       #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
       #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(data), 
-      #                 fillOpacity = 0.6, 
+      #     addPolygons(fillColor = ~pal(data),
+      #                 fillOpacity = 0.6,
       #                 stroke = FALSE,
       #                 label = labels,
       #                 labelOptions = labelOptions(direction = "bottom",
@@ -1041,209 +1071,237 @@ if(var_old() == "visdiff") {
       #     addLegend("bottomleft",
       #               pal = pal,
       #               values =  ~(data),
-      #               title = "Percent by<br>Quintile Group",
+      #               title = "Percent by<br>Quartile Group",
       #               opacity = 0.6,
       #               labFormat = function(type, cuts, p) {
       #                 n = length(cuts)
       #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
       #               })
       #   }
-      # else if(var_hh() == "hhsixty_total") {
-      #   
-      #   
-      #   
-      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_total, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
-      #   labels <- lapply(
-      #     paste("<strong>Area: </strong>",
-      #           olderadults$NAME.y,
-      #           "<br />",
-      #           "<strong>% Housholds with a 60+ member</strong>",
-      #           round(olderadults$hhsixty_total, 2)),
-      #     htmltools::HTML
-      #   )
-      #   
-      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-      #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_total), 
-      #                 fillOpacity = 0.6, 
-      #                 stroke = FALSE,
-      #                 label = labels,
-      #                 labelOptions = labelOptions(direction = "bottom",
-      #                                             style = list(
-      #                                               "font-size" = "12px",
-      #                                               "border-color" = "rgba(0,0,0,0.5)",
-      #                                               direction = "auto"
-      #                                             ))) %>%
-      #     # addMarkers(data = residential) %>%
-      #     addLegend("bottomleft",
-      #               pal = pal,
-      #               values =  ~(olderadults$hhsixty_total),
-      #               title = "Percent by<br>Quintile Group",
-      #               opacity = 0.6,
-      #               labFormat = function(type, cuts, p) {
-      #                 n = length(cuts)
-      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-      #               })
-      # }else if(var_hh() == "hhsixty_fhh") {
-      #   
-      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_fhh, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
-      #   labels <- lapply(
-      #     paste("<strong>Area: </strong>",
-      #           olderadults$NAME.y,
-      #           "<br />",
-      #           "<strong>% Housholds with a Female 60+ member</strong>",
-      #           round(olderadults$hhsixty_fhh, 2)),
-      #     htmltools::HTML
-      #   )
-      #   
-      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-      #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh), 
-      #                 fillOpacity = 0.6, 
-      #                 stroke = FALSE,
-      #                 label = labels,
-      #                 labelOptions = labelOptions(direction = "bottom",
-      #                                             style = list(
-      #                                               "font-size" = "12px",
-      #                                               "border-color" = "rgba(0,0,0,0.5)",
-      #                                               direction = "auto"
-      #                                             ))) %>%
-      #     # addMarkers(data = residential) %>%
-      #     addLegend("bottomleft",
-      #               pal = pal,
-      #               values =  ~(olderadults$hhsixty_fhh),
-      #               title = "Percent by<br>Quintile Group",
-      #               opacity = 0.6,
-      #               labFormat = function(type, cuts, p) {
-      #                 n = length(cuts)
-      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-      #               })
-      # }else if(var_hh() == "hhsixty_mhh") {
-      #   
-      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_mhh, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
-      #   labels <- lapply(
-      #     paste("<strong>Area: </strong>",
-      #           olderadults$NAME.y,
-      #           "<br />",
-      #           "<strong>% Housholds with a Male 60+ member</strong>",
-      #           round(olderadults$hhsixty_mhh, 2)),
-      #     htmltools::HTML
-      #   )
-      #   
-      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-      #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh), 
-      #                 fillOpacity = 0.6, 
-      #                 stroke = FALSE,
-      #                 label = labels,
-      #                 labelOptions = labelOptions(direction = "bottom",
-      #                                             style = list(
-      #                                               "font-size" = "12px",
-      #                                               "border-color" = "rgba(0,0,0,0.5)",
-      #                                               direction = "auto"
-      #                                             ))) %>%
-      #     # addMarkers(data = residential) %>%
-      #     addLegend("bottomleft",
-      #               pal = pal,
-      #               values =  ~(olderadults$hhsixty_mhh),
-      #               title = "Percent by<br>Quintile Group",
-      #               opacity = 0.6,
-      #               labFormat = function(type, cuts, p) {
-      #                 n = length(cuts)
-      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-      #               })
-      # }else if(var_hh() == "hhsixty_nonfam") {
-      #   
-      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_nonfam, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
-      #   labels <- lapply(
-      #     paste("<strong>Area: </strong>",
-      #           olderadults$NAME.y,
-      #           "<br />",
-      #           "<strong>% Single Housholds with a 60+ member</strong>",
-      #           round(olderadults$hhsixty_nonfam, 2)),
-      #     htmltools::HTML
-      #   )
-      #   
-      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-      #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam), 
-      #                 fillOpacity = 0.6, 
-      #                 stroke = FALSE,
-      #                 label = labels,
-      #                 labelOptions = labelOptions(direction = "bottom",
-      #                                             style = list(
-      #                                               "font-size" = "12px",
-      #                                               "border-color" = "rgba(0,0,0,0.5)",
-      #                                               direction = "auto"
-      #                                             ))) %>%
-      #     # addMarkers(data = residential) %>%
-      #     addLegend("bottomleft",
-      #               pal = pal,
-      #               values =  ~(olderadults$hhsixty_nonfam),
-      #               title = "Percent by<br>Quintile Group",
-      #               opacity = 0.6,
-      #               labFormat = function(type, cuts, p) {
-      #                 n = length(cuts)
-      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-      #               })
-      # }else{
-      #   
-      #   pal <- colorQuantile("Blues", domain = olderadults$hhsixty_marr, probs = seq(0, 1, length = 6), right = TRUE)
-      #   
-      #   labels <- lapply(
-      #     paste("<strong>Area: </strong>",
-      #           olderadults$NAME.y,
-      #           "<br />",
-      #           "<strong>% Married Housholds with a 60+ member</strong>",
-      #           round(olderadults$hhsixty_marr, 2)),
-      #     htmltools::HTML
-      #   )
-      #   
-      #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-      #     addTiles() %>%
-      #     addPolygons(fillColor = ~pal(olderadults$hhsixty_marr), 
-      #                 fillOpacity = 0.6, 
-      #                 stroke = FALSE,
-      #                 label = labels,
-      #                 labelOptions = labelOptions(direction = "bottom",
-      #                                             style = list(
-      #                                               "font-size" = "12px",
-      #                                               "border-color" = "rgba(0,0,0,0.5)",
-      #                                               direction = "auto"
-      #                                             ))) %>%
-      #     # addMarkers(data = residential) %>%
-      #     addLegend("bottomleft",
-      #               pal = pal,
-      #               values =  ~(olderadults$hhsixty_marr),
-      #               title = "Percent by<br>Quintile Group",
-      #               opacity = 0.6,
-      #               labFormat = function(type, cuts, p) {
-      #                 n = length(cuts)
-      #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-      #               })
-      #}
-  })
+      # else 
+        if(var_hh() == "hhsixty_total") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$hhsixty_total,
+                       "_f" = olderadults$hhsixty_total,
+                       "_m" = olderadults$hhsixty_total)
+
+        pal <- colorQuantile("Blues", domain = olderadults$hhsixty_total, probs = seq(0, 1, length = 5), right = TRUE)
+
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% Housholds with a 60+ member</strong>",
+                round(olderadults$hhsixty_total, 2)),
+          htmltools::HTML
+        )
+
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(olderadults$hhsixty_total),
+                      fillOpacity = 0.6,
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(olderadults$hhsixty_total),
+                    title = "Percent by<br>Quartile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_hh() == "hhsixty_fhh") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$hhsixty_fhh,
+                       "_f" = olderadults$hhsixty_fhh,
+                       "_m" = olderadults$hhsixty_fhh)
+
+        pal <- colorQuantile("Blues", domain = olderadults$hhsixty_fhh, probs = seq(0, 1, length = 5), right = TRUE)
+
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% Housholds with a Female 60+ member</strong>",
+                round(olderadults$hhsixty_fhh, 2)),
+          htmltools::HTML
+        )
+
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh),
+                      fillOpacity = 0.6,
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(olderadults$hhsixty_fhh),
+                    title = "Percent by<br>Quartile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_hh() == "hhsixty_mhh") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$hhsixty_mhh,
+                       "_f" = olderadults$hhsixty_mhh,
+                       "_m" = olderadults$hhsixty_mhh)
+
+        pal <- colorQuantile("Blues", domain = olderadults$hhsixty_mhh, probs = seq(0, 1, length = 5), right = TRUE)
+
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% Housholds with a Male 60+ member</strong>",
+                round(olderadults$hhsixty_mhh, 2)),
+          htmltools::HTML
+        )
+
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh),
+                      fillOpacity = 0.6,
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(olderadults$hhsixty_mhh),
+                    title = "Percent by<br>Quartile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else if(var_hh() == "hhsixty_nonfam") {
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$hhsixty_nonfam,
+                       "_f" = olderadults$hhsixty_nonfam,
+                       "_m" = olderadults$hhsixty_nonfam)
+
+        pal <- colorQuantile("Blues", domain = olderadults$hhsixty_nonfam, probs = seq(0, 1, length = 5), right = TRUE)
+
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% Single Housholds with a 60+ member</strong>",
+                round(olderadults$hhsixty_nonfam, 2)),
+          htmltools::HTML
+        )
+
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam),
+                      fillOpacity = 0.6,
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(olderadults$hhsixty_nonfam),
+                    title = "Percent by<br>Quartile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }else{
+        data <- switch(input$oldspecdrop,
+                       "Total" = olderadults$hhsixty_marr,
+                       "_f" = olderadults$hhsixty_marr,
+                       "_m" = olderadults$hhsixty_marr)
+
+        pal <- colorQuantile("Blues", domain = olderadults$hhsixty_marr, probs = seq(0, 1, length = 5), right = TRUE)
+
+        labels <- lapply(
+          paste("<strong>Area: </strong>",
+                olderadults$NAME.y,
+                "<br />",
+                "<strong>% Married Housholds with a 60+ member</strong>",
+                round(olderadults$hhsixty_marr, 2)),
+          htmltools::HTML
+        )
+
+        leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
+          addTiles() %>%
+          addPolygons(fillColor = ~pal(olderadults$hhsixty_marr),
+                      fillOpacity = 0.6,
+                      stroke = FALSE,
+                      label = labels,
+                      labelOptions = labelOptions(direction = "bottom",
+                                                  style = list(
+                                                    "font-size" = "12px",
+                                                    "border-color" = "rgba(0,0,0,0.5)",
+                                                    direction = "auto"
+                                                  ))) %>%
+          # addMarkers(data = residential) %>%
+          addLegend("bottomleft",
+                    pal = pal,
+                    values =  ~(olderadults$hhsixty_marr),
+                    title = "Percent by<br>Quartile Group",
+                    opacity = 0.6,
+                    labFormat = function(type, cuts, p) {
+                      n = length(cuts)
+                      paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                    })
+      }
+})
   
   
-  # data and measures table: not done ----------------------------------------
+  # data and measures table: done ----------------------------------------
+    var_topic <- reactive({
+      input$topic
+    })
   output$datatable <- renderDataTable({
-    data <- switch(input$topic,
-                   "Connectivity" = "connectivity",
-                   "Demographics" = "demographics",
-                   "Food Access" = "food access",
-                   "Health" = "health",
-                   "Older Adults" = "olderadults")
-  table <- subset(measures_table, Topic == data)
-  table <- as.data.frame(table)
+    if(var_topic() == "All"){
+  table <- as.data.frame(measures_table)
   table
+    }
+    else{
+      data <- switch(input$topic,
+                     "Connectivity" = "connectivity",
+                     "Demographics" = "demographics",
+                     "Food Access" = "food access",
+                     "Health" = "health",
+                     "Older Adults" = "older adults")
+      table <- subset(measures_table, Topic == data)
+      table <- as.data.frame(table)
+      table
+    }
   })
   
   
-  # device ---------------------------------------------------------
+  # device: done ---------------------------------------------------------
   var_device <- reactive({
     input$devicedrop
   })
@@ -1340,7 +1398,7 @@ if(var_old() == "visdiff") {
   })
   
   
-  # wifi -----------------------------------------------------------
+  # wifi - need to update with new locations and isochrones -----------------------------------------------------------
   var_wifi <- reactive({
     input$wifidrop
   })
@@ -1409,7 +1467,7 @@ if(var_old() == "visdiff") {
     table
   })
   
-  # ems ------------------------------------------------------------
+  # ems: done ------------------------------------------------------------
   
   var_ems <- reactive({
     input$emsdrop
@@ -1489,7 +1547,7 @@ if(var_old() == "visdiff") {
     table
     })
   
-  # usda - problems  -----------------------------------------------------------
+  # usda - lahunv10share  -----------------------------------------------------------
   var_usda <- reactive({
     input$usdadrop
   })
@@ -1610,7 +1668,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[3])
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1621,7 +1679,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[4])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[3])
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1656,70 +1714,78 @@ if(var_old() == "visdiff") {
     table
   })
   
-  # output$othermap <- renderLeaflet({
-  #   patrickcty <- counties(state = "51", year = 2018)
-  #   patrickcty <- st_as_sf(patrickcty)
-  #   patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
-  #   
-  #   
-  #   # Other food
-  #   pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
-  #   leaflet(otherfood) %>%
-  #     addProviderTiles(providers$CartoDB.Positron) %>%
-  #     addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
-  #     addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
-  #     addLegend("bottomleft", 
-  #               pal = pal, 
-  #               values =  ~type,
-  #               title = "Type", 
-  #               opacity = 1)
-  #   
-  #   
-  #   # Other food
-  #   otherfood$latitude <- jitter(otherfood$latitude, factor = 1)
-  #   otherfood$longitude <- jitter(otherfood$longitude, factor = 1)
-  #   
-  #   pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
-  #   
-  #   labels <- lapply(
-  #     paste("<strong>Name: </strong>",
-  #           otherfood$name,
-  #           "<br />",
-  #           "<strong>Address:</strong>",
-  #           otherfood$fulladdress,
-  #           "<br />",
-  #           "<strong>Type:</strong>",
-  #           otherfood$type,
-  #           "<br />",
-  #           "<strong>Open to:</strong>",
-  #           otherfood$audience,
-  #           "<br />",
-  #           "<strong>Notes:</strong>",
-  #           otherfood$notes),
-  #     htmltools::HTML
-  #   )
-  #   
-  #   leaflet(data = otherfood, 
-  #           options = leafletOptions(minZoom = 10)) %>%
-  #     addProviderTiles(providers$CartoDB.Positron) %>%
-  #     addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
-  #     addCircleMarkers(stroke = FALSE, 
-  #                      fillOpacity = 0.7, 
-  #                      color = ~pal(type), 
-  #                      radius = 7, 
-  #                      opacity = 0.7,
-  #                      label = labels, 
-  #                      labelOptions = labelOptions(direction = "bottom",
-  #                                                  style = list(
-  #                                                    "font-size" = "12px",
-  #                                                    "border-color" = "rgba(0,0,0,0.5)",
-  #                                                    direction = "auto"))) %>%
-  #     addLegend("bottomleft", 
-  #               pal = pal, 
-  #               values =  ~type,
-  #               title = "Type", 
-  #               opacity = 0.7)
-  # })
+  output$othermap <- renderLeaflet({
+    
+    patrickcty <- counties(state = "51", year = 2018)
+    patrickcty <- st_as_sf(patrickcty)
+    patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
+
+
+    # # Other food
+    # pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
+    # leaflet(otherfood) %>%
+    #   addProviderTiles(providers$CartoDB.Positron) %>%
+    #   addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
+    #   addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
+    #   addLegend("bottomleft",
+    #             pal = pal,
+    #             values =  ~type,
+    #             title = "Type",
+    #             opacity = 1)
+
+
+    # Other food
+     otherfood <- otherfood %>% 
+      geocode(fulladdress, lat = latitude, long = longitude, method = "cascade")
+    
+    otherfood$latitude[7] <- 36.735423
+    otherfood$longitude[7] <- -80.403206
+    otherfood$geo_method[7] <- "manual"
+    
+    otherfood$latitude <- jitter(otherfood$latitude, factor = 1)
+    otherfood$longitude <- jitter(otherfood$longitude, factor = 1)
+
+    pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
+
+    labels <- lapply(
+      paste("<strong>Name: </strong>",
+            otherfood$name,
+            "<br />",
+            "<strong>Address:</strong>",
+            otherfood$fulladdress,
+            "<br />",
+            "<strong>Type:</strong>",
+            otherfood$type,
+            "<br />",
+            "<strong>Open to:</strong>",
+            otherfood$audience,
+            "<br />",
+            "<strong>Notes:</strong>",
+            otherfood$notes),
+      htmltools::HTML
+    )
+
+    leaflet(data = otherfood,
+            options = leafletOptions(minZoom = 10)) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
+      addCircleMarkers(stroke = FALSE,
+                       fillOpacity = 0.7,
+                       color = ~pal(type),
+                       radius = 7,
+                       opacity = 0.7,
+                       label = labels,
+                       labelOptions = labelOptions(direction = "bottom",
+                                                   style = list(
+                                                     "font-size" = "12px",
+                                                     "border-color" = "rgba(0,0,0,0.5)",
+                                                     direction = "auto"))) %>%
+      addLegend("bottomleft",
+                pal = pal,
+                values =  ~type,
+                title = "Type",
+                opacity = 0.7)
+  })
 }
 
 shinyApp(ui = ui, server = server)
