@@ -277,7 +277,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      withSpinner(leafletOutput("othermap"))
                                    )
                          ),
-  # data -----------------------------------------------------------
+  # datag -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
                      h1("Data and Measures"),
