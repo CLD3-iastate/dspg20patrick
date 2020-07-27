@@ -28,6 +28,7 @@ library(tigris)
 #                           secret=shinysecret)
 
 prettyblue <- "#232D4B"
+navBarBlue <- '#427EDC'
 options(spinner.color = prettyblue, spinner.color.background = '#ffffff',spinner.size = 3, spinner.type = 7)
 
 colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
@@ -76,18 +77,39 @@ measures_table <- read_excel("data/Measures.xlsx")
 
 
 # user -------------------------------------------------------------
-ui <-fluidPage(theme = shinytheme("cosmo"),
-               navbarPage("Patrick County Dashboard",
+ui <- navbarPage("Patrick County Dashboard",
+                          theme = shinytheme("cosmo"),
+                          tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
   # main -----------------------------------------------------------
                           tabPanel("Main", value = "main",
                                    mainPanel(
+                                     div(
                                      h1("Addressing Barriers to Health Care Access in Patrick County, Virginia"),
                                      br(),
-                                     p("Patrick county is fun and I love it, but it's rural so sometimes 
-                        we have issues with health care access..."),
+                                     h2("Barriers to Health Care", style=paste0("color:",navBarBlue)),
+                                     p("Rural counties face challenges in providing health care access to its residents given few health facilities available, lack of broadband infrastructure that limits providing telemedicine access or communicating health information, and individual-level inequalities that pose barriers to health care access and use. Further, identifying areas of high need or potential solutions may be difficult for rural areas without adequate resources to acquire, analyze, and interpret relevant data. This University of Virginia Biocomplexity Institute Data Science for Public Good (DSPG) project aimed to build local capacity, leverage social and data science to address current and future resident well-being, and enhance data-driven decision making about rural health in Patrick County, Virginia."),
                                      div(),
-                                     p("our team is made up of...")
-                                   )
+                                     h2("Community Shortages", style=paste0("color:",navBarBlue,";text-align:left;")),
+                                     p("Patrick County is a rural area in Virginia’s Central Piedmont area, bordering North Carolina, with a declining population of approximately 17,600 people. Like many other rural areas in the United States, Patrick County is facing challenges in addressing its residents’ health and quality of life needs. The county’s doctor to patient ratios of 3,530 to 1 for primary care providers, 8,840 to 1 for dentists, and 2,520 to 1 for mental health providers are 3- to 8-times higher than statewide, and the county’s only hospital closed in 2017. At the same time, the median income for Patrick County residents is $42,900, 46% of children living in the county are eligible for free or reduced-price school lunch, and 12% of residents are food insecure. "),
+                                    div(),
+                                    h2("Data Science for the Public Good", style=paste0("color:",navBarBlue,";text-align:left;")),
+                                    div(),
+                                    column(4,
+                                      div(
+                                      img(src='https://www.dropbox.com/s/e4ubv2drscr91ji/DSPG3StateLogo.jpg?raw=1',style='max-height:40vh;width:100%'),
+                                      style='text-align:left')),
+                                    column(8,
+                                    div(
+                                    p("Our DSPG research team worked closely with Patrick County Extension Office, Virginia Department of Health, and Healthy Patrick County coalition stakeholders to identify the county’s priority challenges in the area of health. The research team reviewed a prior community health assessment, situation analysis, relevant funding applications, and held a listening meeting with extension professionals and stakeholders to identify these challenges. During a listening session, lack of data on health care access, food access as related to diabetes and heart disease prevalence, older adult health, and digital connectivity that would facilitate access to telemedicine emerged as key problems where providing actionable insights could address barriers to Patrick County residents’ health"),
+                                    div(),
+                                    p("In the past three months, our team implemented the data science framework—identified, acquired, profiled, and used publicly available data to provide actionable information in each of the four priority areas. We constructed isochrones (areas of equal travel time) of residents’ grocery store and farmers’ market access, identifying food deserts in the county that could benefit from programs facilitating access to produce. We produced census block group-level maps of computing device and internet availability, and provided maps free wi-fi hotspot access isochrones; this equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where new wi-fi hotspots could be optimally placed to provide internet access to more residents. Further, we used emergency medical service (EMS) station locations to examine county coverage and map residential properties that are difficult to reach in standard EMS travel time thresholds. We assembled data on older adults in the county to supplement EMS access information, identifying areas where providing telehealth or travelling preventive care services may be particularly important. Finally, we compiled our findings on a dashboard that allows extension professionals, stakeholders, and other users to explore all features interactively. "),
+                                    style='text-align:left')),
+                                    div(),
+                                    h2("Dashboard Aims", style=paste0("color:",navBarBlue,";text-align:left;")),
+                                    
+                                    p("Our dashboard is aimed at Patrick County extension professionals and the communities they serve. Information available through the interface helps extension agents identify areas where residents may not have access to internet, or areas with a high smartphone ownership share, suggesting what channels agents may want to use to disseminate health-related information most effectively. Information on older adult populations and grocery store access can help extension agents better understand where underserved populations live and how to advocate on their behalf. Our second audience group are local health departments seeking data insights to inform their decision-making. For local health department stakeholders, identifying broadband access gaps that limit access to telemedicine, grocery store access gaps, and areas with high proportions of older adults with independent living difficulty can suggest optimal locations for placing free wi-fi hotspots, providing grocery delivery services, devising mobile health unit routes, or can inform other solutions that would benefit a broad population base. Finally, our project may be of interest to state government representatives in the Virginia Department of Health and the State Office of Rural Health who may need small or rural area-specific insights that Centers for Disease Control and other county-level datasets cannot provide. ")
+                                     ),style="text-align:left;width:100%")
+                                   
                           ),
                           
   # socio -----------------------------------------------------------
@@ -95,9 +117,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                    mainPanel(
                                      h1("Sociodemographics of Patrick County"),
                                      br(),
-                                     p(""),
+                                     p("Patrick County is a rural area in Virginia’s Central Piedmont area, bordering North Carolina, with a population of approximately 17,600 people. Like many other rural areas in the United States, Patrick County is facing challenges in addressing its residents’ health and quality of life needs. Our research team worked closely with Patrick County Extension Office, Virginia Department of Health, and Healthy Patrick County coalition stakeholders to identify the county’s priority challenges. Lack of data on health care access, food access as related to diabetes and heart disease prevalence, older adult health, and digital connectivity that would facilitate access to telemedicine emerged as key issues. We addressed each topic, providing Patrick County with actionable insights that can inform decision-making to improve their residents’ quality of life. "),
                                      div(),
-                                     p("Currenty this is important for these reasons..."),
+                                     p("Before delving into each issue, we examined Patrick County population sociodemographic and socioeconomic characteristics to better understand the residents that the county serves. We retrieved American Community Survey (ACS) data to calculate this information at census block group and census tract levels. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 1-year and 5-year datasets. We used the most recently available 5-year estimates from 2014/18 to compute percent Patrick County residents in a given block group or tract by age, race, ethnicity, employment, health insurance coverage, and other relevant characteristics. "),
                                      br(),
                                      selectInput("sociodrop", "Variables", choices = c(
                                        "65 and Older" = "age65",
@@ -122,10 +144,13 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      h1("Older Adult Well-Being"),
                                      h3("Individual Level Information"),
                                      br(),
-                                     p("Older adults have the hardest time getting healthcare..."),
+                                     p("The US population is aging, and in Patrick County, over 30% of residents are older adults aged 65 years and over. This represents more than 5,000 individuals with varying health conditions that may benefit from locally accessible health care and social services resources. However, access to health care resources is limited in rural areas, particularly for older adults in need of assistance with activities of daily life.  "),
                                      div(),
-                                     p("Currenty this is important for these reasons..."),
+                                     p("To help Patrick County better understand their older adult population, we used American Community Survey (ACS) data and obtained census tract level information for the age group. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 1-year and 5-year datasets with population sociodemographic and socioeconomic characteristics. We used the most recently available 5-year estimates from 2014/18 to calculate the percentage of the Patrick County older adults with different types of disability, as well as provided information on their living arrangements and socioeconomic condition. We provided all information at census tract level and by gender.  "),
+                                     div(),
+                                     p("These insights on the health and socioeconomic status of older adults in Patrick County can assist the county in identifying areas of high need for health care resources that will reach older adults. "),
                                      br(),
+                                     
                                      selectInput("olddrop", "Individual Variables", choices = c(
                                        "Vision Difficulty" = "visdiff",
                                        "Ambulatory Difficulty" = "ambdiff",
@@ -163,9 +188,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      h1("Connectivity"),
                                      h3("Device and Internet Access"),
                                      br(),
-                                     p("This is a paragraph about connectivity status"),
+                                     p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to provide the county with insights on where increasing connectivity would facilitate communicating health information and improve online health service access. "),
                                      div(),
-                                     p("This is a second paragraph about why it's important"),
+                                     p("We first examined access to computing devices and internet connection types in Patrick County. We used American Community Survey (ACS) data to obtain this information at census block group level. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 1-year and 5-year datasets containing information on population sociodemographic and socioeconomic characteristics. We used the most recently available 5-year estimates from 2014/18 to calculate the percentage of the Patrick County residents with access to various technologies like smartphones, broadband internet, and computers by block group. "),
                                      br(),
                                      selectInput("devicedrop", "Connectivity Variables", choices = c(
                                        "No Computer" = "nocomputer",
@@ -180,9 +205,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      withSpinner(leafletOutput("deviceplot")),
                                      h3("Wi-Fi Hotspot Access"),
                                      br(),
-                                     p("This is a paragraph about coverage maps because we love coverage maps"),
+                                     p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to the internet for free, decreasing constraints placed on families that do not have internet access at home. We retrieved free internet locations in Patrick County from the data. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 10- and 15-minute car travel time isochrones—areas of equal travel time given a departure time and mode of transportation—from wi-fi hotspots. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. Isochrones allowed us to identify hotspot gaps, or clusters of residential properties that cannot reach a free hotspot location within a selected travel time range.  "),
                                      div(),
-                                     p("This is a second paragraph"),
+                                     p("This information equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where new wi-fi hotspots could be optimally placed to provide internet access to more residents. "),
                                      br(),
                                      selectInput("wifidrop", "Free Wifi Locations", choices = c(
                                        "Meadows of Dan Elementary School",
@@ -210,9 +235,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      h1("Health Care Access"),
                                      h3("Emergency Medical Service Locations"),
                                      br(),
-                                     p("This is a paragraph about coverage maps because we love coverage maps"),
+                                     p("Access to health care resources in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency medical services (EMS) stations to obtain care and transportation to other health care facilities.  "),
                                      div(),
-                                     p("This is a second paragraph"),
+                                     p("In order to better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is frequently exceeded by 20% to 40% in rural areas. "),
                                      br(),
                                      selectInput("emsdrop", "EMS Locations", choices = c(
                                        "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
@@ -240,9 +265,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      h1("Food Access"),
                                      h3("USDA Data Explorer"),
                                      br(),
-                                     p("This is a paragraph about food access"),
+                                     p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all. "),
                                      div(),
-                                     p("This is a second paragraph about current importance"),
+                                     p("First, we examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United State Department of Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas where this is the case for particularly vulnerable groups like low-income individuals and older adults. "),
                                      br(),
                                      selectInput("usdadrop", "USDA Variables", choices = c(
                                        "Low Vehicle Access at 1 Mile" = "lahunv1share",
@@ -259,9 +284,9 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      withSpinner(leafletOutput("usdaplot")),
                                      h3("Grocery and Farmers Market Access"),
                                      br(),
-                                     p("This is a paragraph about food access"),
+                                     p("Second, to better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot reach a location with healthy food within a selected travel time range.  "),
                                      div(),
-                                     p("This is a second paragraph about current importance"),
+                                     p("These areas in the county could benefit from programs facilitating access to produce. "),
                                      br(),
                                      selectInput("grocdrop", "Grocery Locations", choices = c(
                                        "Mountain Meadow Farm and Craft Market",
@@ -280,7 +305,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
                                      withSpinner(leafletOutput("othermap"))
                                    )
                          ),
-  # datag -----------------------------------------------------------
+  # data -----------------------------------------------------------
           tabPanel("Data and Measures", value = "data",
                    mainPanel(
                      h1("Data and Measures"),
@@ -309,7 +334,7 @@ ui <-fluidPage(theme = shinytheme("cosmo"),
           ),
   inverse = T
     )
-)
+
 
 
 # server -----------------------------------------------------------
@@ -1425,7 +1450,7 @@ if(var_old() == "visdiff") {
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
       m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1436,7 +1461,7 @@ if(var_old() == "visdiff") {
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",1,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
       m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1500,7 +1525,7 @@ if(var_old() == "visdiff") {
     ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
     
     
-    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
     m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
     m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
     m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
@@ -1513,7 +1538,7 @@ if(var_old() == "visdiff") {
     ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",1,".RDS"))
     
     
-    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+    residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
     m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
     m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
     m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
@@ -1675,7 +1700,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1686,7 +1711,7 @@ if(var_old() == "visdiff") {
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
       
       
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5])
+      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
       m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
       m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
       m1 = m1 + m2 + residential_map
@@ -1726,19 +1751,6 @@ if(var_old() == "visdiff") {
     patrickcty <- counties(state = "51", year = 2018)
     patrickcty <- st_as_sf(patrickcty)
     patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
-
-
-    # # Other food
-    # pal <- colorFactor(palette = disco(palette = "vibrant", n = 3), domain = otherfood$type)
-    # leaflet(otherfood) %>%
-    #   addProviderTiles(providers$CartoDB.Positron) %>%
-    #   addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
-    #   addCircleMarkers(stroke = FALSE, fillOpacity = 1, color = ~pal(type), radius = 4) %>%
-    #   addLegend("bottomleft",
-    #             pal = pal,
-    #             values =  ~type,
-    #             title = "Type",
-    #             opacity = 1)
 
 
     # Other food
