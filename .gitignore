@@ -42,3 +42,10 @@ vignettes/*.pdf
 
 .Rds
 *.Rds
+*.RDS
+.RDS
+
+*.xlsx
+.xlsx
+
+/patrickdash/data/*
