@@ -12,11 +12,21 @@ library(data.table)
 library(rsconnect)
 library(shinycssloaders)
 library(readxl)
-library(tidygeocoder)
-library(disco)
 library(readr)
 library(stringr)
 library(tigris)
+
+#
+#
+#
+#
+# ISOCHRONES FOR GROCERY STORES ARE MISMATCHED. AT LEAST WALMART IS SHOWING UP INCORRECTLY (SOUTH BORDER INSTEAD OF STUART). ALSO CHECK ALL OTHER ISOCHRONES
+# FOR GROCERIES, WIFI SPOTS, AND EMS!
+#
+# DATASET DESCRIPTIONS NEED TO BE ADDED
+#
+#
+
 
 # readRenviron("~/.Renviron")
 # shinyname <- Sys.getenv("SHINYNAME")
@@ -78,18 +88,20 @@ measures_table <- read_excel("data/Measures.xlsx")
 
 # user -------------------------------------------------------------
 ui <- navbarPage(selected = "home",
-                 theme = shinytheme("cosmo"),
+                 theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  # main -----------------------------------------------------------
                  tabPanel("Home", value = "home",
                           fluidRow(style = "margin: 6px;",
-                                   column(4, 
-                                          img(src = "uva-dspg-logo.jpg", class = "topimage", width = "80%", style = "display: block; margin-left: auto; margin-right: auto;")),
-                                   column(8,
-                                          h4("University of Virginia"),
-                                          h4("Biocomplexity Insititute"),
-                                          h4("Data Science for the Public Good Program"),
-                                          h2(strong("Addressing Barriers to Health in Patrick County, Virginia")))
+                                   align = "center",
+                                   br("", style = "padding-top:10px;"),
+                                   img(src = "uva-dspg-logo.jpg", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                   br(""),
+                                   h2(strong("Addressing Barriers to Health in Patrick County, Virginia"),
+                                   br(""),
+                                   h4("Data Science for the Public Good Program"),
+                                   h4("University of Virginia"),
+                                   h4("Biocomplexity Insititute"))
                           )
                  ),
                  
@@ -97,7 +109,7 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Overview", value = "overview",
                           fluidRow(style = "margin: 6px;",
                                    column(4,
-                                          h2("Project Background"),
+                                          h2(strong("Project Background")),
                                           p("Rural counties face challenges in providing health care access to its residents given few health facilities available, lack of broadband infrastructure 
                                             that limits providing telemedicine access or communicating health information, and individual-level inequalities that pose barriers to health care access and use. 
                                             Further, identifying areas of high need or potential solutions may be difficult for rural areas without adequate resources to acquire, analyze, and interpret 
@@ -115,7 +127,7 @@ ui <- navbarPage(selected = "home",
                                             data on health care access, food access as related to diabetes and heart disease prevalence, older adult health, and digital connectivity that would facilitate 
                                             access to telemedicine emerged as key problems where providing actionable insights could address barriers to Patrick County residents’ health.")),
                                    column(4,
-                                          h2("Our Work "),
+                                          h2(strong("Our Work")),
                                           p("In the past three months, our team implemented the data science framework—identified, acquired, profiled, and used publicly available data to provide actionable 
                                             information in each of the four priority areas. We constructed isochrones (areas of equal travel time) of residents’ grocery store and farmers’ market access, 
                                             identifying food deserts in the county that could benefit from programs facilitating access to produce. We produced census block group-level maps of computing 
@@ -126,7 +138,7 @@ ui <- navbarPage(selected = "home",
                                             telehealth or travelling preventive care services may be particularly important. Finally, we compiled our findings on a dashboard that allows extension 
                                             professionals, stakeholders, and other users to explore all features interactively.")),
                                    column(4,
-                                          h2("Dashboard Aims"),
+                                          h2(strong("Dashboard Aims")),
                                           p("Our dashboard is aimed at Patrick County extension professionals and the communities they serve. Information available through the interface helps extension 
                                             agents identify areas where residents may not have access to internet, or areas with a high smartphone ownership share, suggesting what channels agents may 
                                             want to use to disseminate health-related information most effectively. Information on older adult populations and grocery store access can help extension agents 
@@ -142,20 +154,16 @@ ui <- navbarPage(selected = "home",
                  # socio -----------------------------------------------------------
                  tabPanel("Sociodemographics", value = "socio",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Patrick County Residents' Sociodemographic Characteristics")),
+                                   h1(strong("Patrick County Residents' Sociodemographic Characteristics"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(4,
-                                          p("Patrick County is a rural area in Virginia’s Central Piedmont area, bordering North Carolina, with a population of approximately 17,600 people.
-                                            Like many other rural areas in the United States, Patrick County is facing challenges in addressing its residents’ health and quality of life needs. 
-                                            Our research team worked closely with Patrick County Extension Office, Virginia Department of Health, and Healthy Patrick County coalition stakeholders 
-                                            to identify the county’s priority challenges. Lack of data on health care access, food access as related to diabetes and heart disease prevalence, 
-                                            older adult health, and digital connectivity that would facilitate access to telemedicine emerged as key issues. 
-                                            We addressed each topic, providing Patrick County with actionable insights that can inform decision-making to improve their residents’ quality of life."),
-                                          p("Before delving into each issue, we examined Patrick County population sociodemographic and socioeconomic characteristics to better understand the 
+                                          h4(strong("Who does Patrick County Serve?")),
+                                          p("We examined Patrick County population sociodemographic and socioeconomic characteristics to better understand the 
                                             residents that the county serves. We retrieved American Community Survey (ACS) data to calculate this information at census block group and census 
                                             tract levels. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 1-year and 5-year datasets. We used 
                                             the most recently available 5-year estimates from 2014/18 to compute percent Patrick County residents in a given block group or tract by age, race, ethnicity, 
-                                            employment, health insurance coverage, and other relevant characteristics.")),
+                                            employment, health insurance coverage, and other relevant characteristics."),
+                                          p("Our interactive plots visualize census block-group level sociodemographic characteristics of Patrick County residents.")),
                                    column(8,
                                           h4(strong("Map of Resident Socioeconomic Characteristics by Census Block Group")),
                                           selectInput("sociodrop", "Select Variable:", width = "100%", choices = c(
@@ -179,7 +187,7 @@ ui <- navbarPage(selected = "home",
                  # older -----------------------------------------------------------
                  tabPanel("Older Adults", value = "older",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Older Adults in Patrick County")),
+                                   h1(strong("Older Adults in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    p("The US population is aging, and in Patrick County, over 30% of residents are older adults aged 65 years and over. This represents more than 5,000
                                      individuals with varying health conditions that may benefit from locally accessible health care and social services resources. However, access to 
@@ -192,8 +200,8 @@ ui <- navbarPage(selected = "home",
                                    p("These insights on the health and socioeconomic status of older adults in Patrick County can assist the county in identifying areas of high need 
                                      for health care resources that will reach older adults.")),
                           fluidRow(style = "margin: 6px;",
-                                   column(6, 
-                                          h4("Map of Older Adult Characteristics by Census Tract"),
+                                   column(6,
+                                          h4(strong("Map of Older Adult Characteristics by Census Tract"), align = "center"),
                                           column(6,
                                                  selectInput("olddrop", "1. Select Variable:", width = "100%", choices = c(
                                                    "Percent with Vision Difficulty" = "visdiff",
@@ -213,8 +221,8 @@ ui <- navbarPage(selected = "home",
                                                  )),
                                           withSpinner(leafletOutput("oldplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
-                                   column(6,
-                                          h4("Map of Older Adult Household Characteristics by Census Tract"),
+                                   column(6, 
+                                          h4(strong("Map of Older Adult Household Characteristics by Census Tract"), align = "center"),
                                           selectInput("hhdrop", "1. Select Variable:", width = "100%", choices = c(
                                             "Percent Married Couple Households with one or more 60+ Member" = "hhsixty_married",
                                             "Percent Households with one or more 60+ Members" = "hhsixty_total",
@@ -230,15 +238,13 @@ ui <- navbarPage(selected = "home",
                  # wifi-----------------------------------------------------------
                  tabPanel("Connectivity", value =  "connectivity",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Connectivity")),
-                                   p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
-                                     telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
-                                     than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to 
-                                     provide the county with insights on where increasing connectivity would facilitate communicating health information and improve online health service access.")),
-                          fluidRow(style = "margin: 6px;",
-                                   column(6,
-                                          h3("Computing Device Ownership and Internet Access Type"),
-                                          br(),
+                                   h1(strong("Digital Connectivity"), align = "center"),
+                                   column(5,
+                                          h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
+                                          p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
+                                             telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
+                                             than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to 
+                                             provide the county with insights on where increasing connectivity would facilitate communicating health information and improve online health service access."),
                                           p("We first examined access to computing devices and internet connection types in Patrick County. We used American Community Survey (ACS) data to 
                                             obtain this information at census block group level. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households 
                                             to compile 1-year and 5-year datasets containing information on population sociodemographic and socioeconomic characteristics. We used the most 
@@ -257,9 +263,8 @@ ui <- navbarPage(selected = "home",
                                           ),
                                           withSpinner(leafletOutput("deviceplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
-                                   column(6,
-                                          h3("Free Wi-Fi Hotspot Access"),
-                                          br(),
+                                   column(7,
+                                          h4(strong("Free Wi-Fi Hotspot Access"), align = "center"),
                                           p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations 
                                             using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to 
                                             the internet for free, decreasing constraints placed on families that do not have internet access at home. We retrieved free internet locations in Patrick 
@@ -271,6 +276,7 @@ ui <- navbarPage(selected = "home",
                                           p("This information equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where 
                                             new wi-fi hotspots could be optimally placed to provide internet access to more residents."),
                                           br(),
+                                          column(8, 
                                           selectInput("wifidrop", "Select Free Wifi Location:", width = "100%", choices = c(
                                             "Meadows of Dan Elementary School",
                                             "Woolwine Elementary School",
@@ -283,23 +289,36 @@ ui <- navbarPage(selected = "home",
                                             "Stuart Baptist Church",                        
                                             "Patrick Henry Community College Stuart Campus")),
                                           withSpinner(leafletOutput("wifiplot")),
-                                          p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API.")),
-                                          h3("Percent Residential Properties Covered"),
+                                          p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))),
+                                          column(4, 
+                                          p("Percent Residential Properties Covered"),
                                           br(),
-                                          withSpinner(DTOutput("wifitable")))
-                                          )
-                          ),
+                                          withSpinner(tableOutput("wifitable"))))
+                          )
+                 ),
                  # ems -----------------------------------------------------------
-                 tabPanel("Health Care Access", value ="ems",
-                          fluidRow(
-                            h1("Health Care Access"),
-                            h3("Emergency Medical Service Locations"),
-                            br(),
-                            p("Access to health care resources in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency medical services (EMS) stations to obtain care and transportation to other health care facilities.  "),
-                            div(),
-                            p("In order to better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is frequently exceeded by 20% to 40% in rural areas. "),
-                            br(),
-                            selectInput("emsdrop", "EMS Locations", width = "100%", choices = c(
+                 tabPanel("Health Care Access", value = "ems",
+                          fluidRow(style = "margin: 6px;",
+                            h1(strong("Health Care Access"), align = "center"),
+                            column(4,
+                            h3(strong("Accessing Emergency Medical Service Stations"), align = "center"),
+                            p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
+                              counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
+                              provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
+                              medical services (EMS) stations to obtain care and transportation to other health care facilities."),
+                            p("To better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland 
+                              Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of 
+                              facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential 
+                              properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime
+                              Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and 
+                              mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. 
+                              Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel 
+                              time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is 
+                              frequently exceeded by 20% to 40% in rural areas.")
+                            ),
+                            column(8,
+                            h3(strong("Resident Coverage"), align = "center"),
+                            selectInput("emsdrop", "Select EMS Location:", width = "100%", choices = c(
                               "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
                               "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
                               "Blue Ridge Volunteer Rescue Squad" = "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
@@ -311,72 +330,90 @@ ui <- navbarPage(selected = "home",
                               "Smith River Rescue Squad" = "SMITH RIVER RESCUE SQUAD"                                                                                     
                             )),
                             withSpinner(leafletOutput("emsplot")),
-                            h3("TravelTime Coverage"),
+                            p("Percent Residents Covered"),
                             br(),
-                            withSpinner(DTOutput("emstable"))
+                            withSpinner(tableOutput("emstable"))
+                          )
                           )
                  ),
                  
                  # food -----------------------------------------------------------
                  tabPanel("Food Access", value =  "food",
-                          fluidRow(
-                            h1("Food Access"),
-                            h3("USDA Data Explorer"),
-                            br(),
-                            p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all. "),
-                            div(),
-                            p("First, we examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United State Department of Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas where this is the case for particularly vulnerable groups like low-income individuals and older adults. "),
-                            br(),
-                            selectInput("usdadrop", "USDA Variables", width = "100%", choices = c(
-                              "Percent Population with Low Vehicle Access at 1 Mile" = "lahunv1share",
-                              "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
-                              "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
-                              "Percent Children with Low Food Access at 1 Mile" = "lakids1share",
-                              "Percent Children with Low Food Access at 10 Miles" = "lakids10share",
-                              "Percent Low Income Population with Low Food Access at 1 Mile" = "lalowi1share",
-                              "Percent Low Income Population with Low Food Access at 10 Miles" = "lalowi10share",
-                              "Percent Older Adults with Low Food Access at 1 Mile" = "laseniors1share",
-                              "Percent Older Adults with Low Food Access at 10 Miles" = "laseniors10share")
-                            ),
-                            withSpinner(leafletOutput("usdaplot")),
-                            p(tags$small("Data Source: USDA Food Access Research Atlas, 2017")),
-                            h3("Grocery and Farmers Market Access"),
-                            br(),
-                            p("Second, to better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot reach a location with healthy food within a selected travel time range.  "),
-                            div(),
-                            p("These areas in the county could benefit from programs facilitating access to produce. "),
-                            br(),
-                            selectInput("grocdrop", "Grocery Locations", width = "100%", choices = c(
-                              "Mountain Meadow Farm and Craft Market",
-                              "Lowes Foods of Stuart",
-                              "Patrick County Local Farmers Market",
-                              "Stuart Farmers Market",                
-                              "W & W Produce",
-                              "Walmart Supercenter",
-                              "Poor Farmers Farm")),
-                            withSpinner(leafletOutput("grocplot")),
-                            h3("TravelTime Coverage"),
-                            br(),
-                            withSpinner(DTOutput("groctable")),
-                            h3("Other Food Access"),
-                            br(),
-                            withSpinner(leafletOutput("othermap"))
+                          fluidRow(style = "margin: 6px;",
+                                   h1(strong("Food Access"), align = "center"),
+                                   column(5,
+                                          h3(strong("Low Food Access"), align = "center"),
+                                          p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing 
+                              healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
+                              life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
+                              Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two 
+                              approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all."),
+                                          p("First, we examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United States Department of 
+                              Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators 
+                              at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We 
+                              developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas 
+                              where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
+                                          br(),
+                                          selectInput("usdadrop", "Select Variable:", width = "100%", choices = c(
+                                            "Percent Population with Low Vehicle Access at 1 Mile" = "lahunv1share",
+                                            "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
+                                            "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
+                                            "Percent Children with Low Food Access at 1 Mile" = "lakids1share",
+                                            "Percent Children with Low Food Access at 10 Miles" = "lakids10share",
+                                            "Percent Low Income Population with Low Food Access at 1 Mile" = "lalowi1share",
+                                            "Percent Low Income Population with Low Food Access at 10 Miles" = "lalowi10share",
+                                            "Percent Older Adults with Low Food Access at 1 Mile" = "laseniors1share",
+                                            "Percent Older Adults with Low Food Access at 10 Miles" = "laseniors10share")
+                                          ),
+                                          withSpinner(leafletOutput("usdaplot")),
+                                          p(tags$small("Data Source: USDA Food Access Research Atlas, 2017")),
+                                          h3(strong("County Food Security Resources"), align = "center"),
+                                          br(),
+                                          withSpinner(leafletOutput("othermap"))
+                                   ),
+                                   column(7,
+                                          h3(strong("Grocery and Farmers Market Coverage"), align = "center"),
+                                          p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
+                                            same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
+                                            convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude 
+                                            and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real 
+                                            estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to 
+                                            calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport 
+                                            timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot 
+                                            reach a location with healthy food within a selected travel time range. These areas in the county could benefit from programs facilitating 
+                                            access to produce."),
+                                          br(),
+                                          selectInput("grocdrop", "Select Location:", width = "100%", choices = c(
+                                            "Mountain Meadow Farm and Craft Market",
+                                            "Lowes Foods of Stuart",
+                                            "Patrick County Local Farmers Market",
+                                            "Stuart Farmers Market",                
+                                            "W & W Produce",
+                                            "Walmart Supercenter",
+                                            "Poor Farmers Farm")),
+                                          withSpinner(leafletOutput("grocplot")),
+                                          p("Percent Households Covered"),
+                                          br(),
+                                          withSpinner(tableOutput("groctable"))
+                                   )
                           )
                  ),
                  # data -----------------------------------------------------------
                  tabPanel("Data and Measures", value = "data",
-                          mainPanel(
-                            h1("Data and Measures"),
+                          fluidRow(style = "margin: 6px;",
+                            h1(strong("Data and Measures"), align = "center"),
                             br(),
-                            p("paragraph about data."),
+                            h3(strong("Data Sources")),
+                            p("Description of data sources."),
                             br(),
-                            selectInput("topic", "Data Topics", choices = c(
-                              "All",
-                              "Connectivity",
-                              "Demographics",
-                              "Food Access",
-                              "Health",
-                              "Older Adults")
+                            h3(strong("Table of Measures")),
+                            selectInput("topic", "Select Topic:", width = "100%", choices = c(
+                              "All Measures",
+                              "Sociodemographic Measures",
+                              "Older Adult Population Measures",
+                              "Connectivity Measures",
+                              "Food Access Measures",
+                              "Health Care Access Measures")
                             ),
                             withSpinner(DTOutput("datatable"))
                           )
@@ -384,14 +421,13 @@ ui <- navbarPage(selected = "home",
                  
                  # contact -----------------------------------------------------------
                  tabPanel("Contact", value = "contact",
-                          mainPanel(
-                            h1("Contact"),
+                          fluidRow(style = "margin: 6px;",
+                            h1(strong("Contact"), align = "center"),
                             br(),
                             p("This is a paragraph about contacting us")
                           )
                  ),
-                 inverse = T
-                          )
+                 inverse = T)
 
 
 
@@ -413,13 +449,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population age 65 or over:</strong>",
               round(socdem_block$age65, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$age65), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -430,7 +466,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$age65),
@@ -448,13 +483,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population age 18 or under: </strong>",
               round(socdem_block$under18, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$under18), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -465,7 +500,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$under18),
@@ -482,13 +516,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population Black: </strong>",
               round(socdem_block$black, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$black), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -499,7 +533,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$black),
@@ -516,13 +549,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population without BA degree: /strong>",
               round(socdem_block$noba, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$noba), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -533,7 +566,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$noba),
@@ -550,13 +582,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population in labor force unemployed: </strong>",
               round(socdem_block$unempl, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$unempl), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -567,7 +599,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$unempl),
@@ -584,13 +615,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population without health insurance: </strong>",
               round(socdem_block$nohealthins2, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$nohealthins2), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -601,7 +632,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$nohealthins2),
@@ -618,13 +648,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population receiving public assistance or SNAP benefits: </strong>",
               round(socdem_block$snap, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$snap), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -635,7 +665,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_block$snap),
@@ -652,13 +681,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_tract$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population in poverty: </strong>",
               round(socdem_tract$inpov, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$inpov), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -669,7 +698,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$inpov),
@@ -686,13 +714,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_tract$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population Hispanic or Latino: </strong>",
               round(socdem_tract$hispanic, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$hispanic), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -703,7 +731,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$hispanic),
@@ -720,13 +747,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_tract$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population with private health insurance: </strong>",
               round(socdem_tract$privateins, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$privateins), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -737,7 +764,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$privateins),
@@ -754,13 +780,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_tract$NAME.y,
               "<br />",
-              "<strong>% population with public assistance or SNAP benefits</strong>",
+              "<strong>% Population with public health insurance: </strong>",
               round(socdem_tract$publicins, 2)),
         htmltools::HTML
       )
       
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$publicins), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -771,7 +797,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(socdem_tract$publicins),
@@ -806,13 +831,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with vision difficulties</strong>",
+              "<strong>% Older adults with vision difficulties: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -823,7 +848,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -845,13 +869,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with ambulatory difficulties</strong>",
+              "<strong>% Older adults with ambulatory difficulties: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -862,7 +886,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -884,13 +907,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with cognitive difficulties</strong>",
+              "<strong>% Older adults with cognitive difficulties: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -901,7 +924,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -923,13 +945,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with self-care difficulties</strong>",
+              "<strong>% Older adults with self-care difficulties: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -940,7 +962,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -962,13 +983,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with independent living difficulties</strong>",
+              "<strong>% Older adults with independent living difficulties: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -979,7 +1000,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1001,13 +1021,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with any disability</strong>",
+              "<strong>% Older adults with any disability: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1018,7 +1038,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1040,13 +1059,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults with income below poverty line</strong>",
+              "<strong>% Older adults in poverty: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1057,7 +1076,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1081,13 +1099,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% older adults in the labor force</strong>",
+              "<strong>% Older adults in the labor force: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1098,7 +1116,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1142,7 +1159,7 @@ server <- function(input, output, session) {
     #   )
     # 
     #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-    #     addTiles() %>%
+    #     addProviderTiles(providers$CartoDB.Positron) %>%
     #     addPolygons(fillColor = ~pal(data),
     #                 fillOpacity = 0.6,
     #                 stroke = FALSE,
@@ -1177,13 +1194,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% Housholds with a 60+ member</strong>",
+              "<strong>% Housholds with a 60+ member: </strong>",
               round(olderadults$hhsixty_total, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_total),
                     fillOpacity = 0.6,
                     stroke = FALSE,
@@ -1194,7 +1211,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(olderadults$hhsixty_total),
@@ -1216,13 +1232,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% Housholds with a Female 60+ member</strong>",
+              "<strong>% Housholds with a female 60+ member:</strong>",
               round(olderadults$hhsixty_fhh, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh),
                     fillOpacity = 0.6,
                     stroke = FALSE,
@@ -1233,7 +1249,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(olderadults$hhsixty_fhh),
@@ -1255,13 +1270,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% Housholds with a Male 60+ member</strong>",
+              "<strong>% Housholds with a male 60+ member: </strong>",
               round(olderadults$hhsixty_mhh, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh),
                     fillOpacity = 0.6,
                     stroke = FALSE,
@@ -1272,7 +1287,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(olderadults$hhsixty_mhh),
@@ -1294,13 +1308,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% Single Housholds with a 60+ member</strong>",
+              "<strong>% Single housholds with a 60+ member: </strong>",
               round(olderadults$hhsixty_nonfam, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam),
                     fillOpacity = 0.6,
                     stroke = FALSE,
@@ -1311,7 +1325,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(olderadults$hhsixty_nonfam),
@@ -1333,13 +1346,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               olderadults$NAME.y,
               "<br />",
-              "<strong>% Married Housholds with a 60+ member</strong>",
+              "<strong>% Married households with a 60+ member: </strong>",
               round(olderadults$hhsixty_marr, 2)),
         htmltools::HTML
       )
       
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_marr),
                     fillOpacity = 0.6,
                     stroke = FALSE,
@@ -1350,7 +1363,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(olderadults$hhsixty_marr),
@@ -1369,23 +1381,22 @@ server <- function(input, output, session) {
     input$topic
   })
   output$datatable <- renderDataTable({
-    if(var_topic() == "All"){
+    if(var_topic() == "All Measures"){
       table <- as.data.frame(measures_table)
       table
     }
     else{
       data <- switch(input$topic,
-                     "Connectivity" = "connectivity",
-                     "Demographics" = "demographics",
-                     "Food Access" = "food access",
-                     "Health" = "health",
-                     "Older Adults" = "older adults")
+                     "Connectivity Measures" = "connectivity",
+                     "Sociodemographic Measures" = "demographics",
+                     "Food Access Measures" = "food access",
+                     "Health Care Access Measures" = "health",
+                     "Older Adult Population Measures" = "older adults")
       table <- subset(measures_table, Topic == data)
       table <- as.data.frame(table)
       table
     }
   })
-  
   
   # device: done ---------------------------------------------------------
   var_device <- reactive({
@@ -1419,13 +1430,13 @@ server <- function(input, output, session) {
               "<br />",
               "<strong>% Population with",
               device_spec,
-              "access</strong>",
+              "access: </strong>",
               round(data, 2)),
         htmltools::HTML
       )
       
       leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1436,7 +1447,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1453,13 +1463,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               connectivity$NAME.y,
               "<br />",
-              "<strong>% Population without computer access</strong>",
+              "<strong>% Population without computer access: </strong>",
               round(connectivity$nocomputer, 2)),
         htmltools::HTML
       )
       
       leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(connectivity$nocomputer), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1470,7 +1480,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(connectivity$nocomputer),
@@ -1504,31 +1513,31 @@ server <- function(input, output, session) {
                      "Patrick Henry Community College Stuart Campus" = 10
       )
       
-      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
-      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_", data, ".RDS"))
+      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_", data, ".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
-      m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
-      m1 = m1 + m2 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + residential_map
       
       m1@map
+      
+      
     }else{
       wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",1,".RDS"))
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",1,".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
-      m2 = mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
-      m1 = m1 + m2 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + residential_map
       
       m1@map
     } 
   })
   
-  output$wifitable <- renderDataTable({
+  output$wifitable <- renderTable({
     data <- switch(input$wifidrop,
                    "Meadows of Dan Elementary School" = 1,
                    "Woolwine Elementary School" = 2,
@@ -1555,7 +1564,7 @@ server <- function(input, output, session) {
     table$Coverage <- c(coverage_10, coverage_15)
     colnames(table) <- c("Time", "Coverage")
     table
-  })
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
   # ems: done ------------------------------------------------------------
   
@@ -1582,12 +1591,11 @@ server <- function(input, output, session) {
       ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
       ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
-      m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
-      m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
-      m1 = m1 + m2 + m3 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m3 <- mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + m3 + residential_map
       
       m1@map
     }else{
@@ -1595,18 +1603,17 @@ server <- function(input, output, session) {
       ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",1,".RDS"))
       ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",1,".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1])
-      m2 = mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2])
-      m3 = mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3])
-      m1 = m1 + m2 + m3 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m3 <- mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + m3 + residential_map
       
       m1@map
     } 
   })
   
-  output$emstable <- renderDataTable({
+  output$emstable <- renderTable({
     data <- switch(input$emsdrop,
                    "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
                    "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,
@@ -1617,7 +1624,6 @@ server <- function(input, output, session) {
                    "JEB STUART RESCUE SQUAD" = 7,
                    "SMITH RIVER RESCUE SQUAD" = 8,
                    "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
-    
     
     ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
     ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
@@ -1635,7 +1641,7 @@ server <- function(input, output, session) {
     table$Coverage <- c(coverage_8, coverage_10, coverage_12)
     colnames(table) <- c("Time", "Coverage")
     table
-  })
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
   # usda - lahunv10share  -----------------------------------------------------------
   var_usda <- reactive({
@@ -1678,7 +1684,7 @@ server <- function(input, output, session) {
       )
       
       leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1689,7 +1695,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(data),
@@ -1706,13 +1711,13 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               usda$NAME.y,
               "<br />",
-              "<strong>% Population with low vehicle access at 1 mile</strong>",
+              "<strong>% Population with low vehicle access at 1 mile: </strong>",
               round(usda$lahunv1share, 2)),
         htmltools::HTML
       )
       
       leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
-        addTiles() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(usda$lahunv1share), 
                     fillOpacity = 0.6, 
                     stroke = FALSE,
@@ -1723,7 +1728,6 @@ server <- function(input, output, session) {
                                                   "border-color" = "rgba(0,0,0,0.5)",
                                                   direction = "auto"
                                                 ))) %>%
-        # addMarkers(data = residential) %>%
         addLegend("bottomleft",
                   pal = pal,
                   values =  ~(usda$lahunv1share),
@@ -1757,28 +1761,26 @@ server <- function(input, output, session) {
       groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
-      m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
-      m1 = m1 + m2 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + residential_map
       
       m1@map
     }else{
       groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",3,".RDS"))
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
       
-      
-      residential_map = mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F)
-      m1 = mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1])
-      m2 = mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2])
-      m1 = m1 + m2 + residential_map
+      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
+      m1 <- mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
+      m2 <- mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
+      m1 <- m1 + m2 + residential_map
       
       m1@map
     } 
   })
   
-  output$groctable <- renderDataTable({
+  output$groctable <- renderTable({
     data <- switch(input$grocdrop,
                    "Mountain Meadow Farm and Craft Market" = 3,
                    "Lowes Foods of Stuart" = 4,
@@ -1802,7 +1804,7 @@ server <- function(input, output, session) {
     table$Coverage <- c(coverage_10, coverage_15)
     colnames(table) <- c("Time", "Coverage")
     table
-  })
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
   output$othermap <- renderLeaflet({
     
@@ -1810,18 +1812,7 @@ server <- function(input, output, session) {
     patrickcty <- st_as_sf(patrickcty)
     patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
     
-    
     # Other food
-    otherfood <- otherfood %>% 
-      geocode(fulladdress, lat = latitude, long = longitude, method = "cascade")
-    
-    otherfood$latitude[7] <- 36.735423
-    otherfood$longitude[7] <- -80.403206
-    otherfood$geo_method[7] <- "manual"
-    
-    otherfood$latitude <- jitter(otherfood$latitude, factor = 1)
-    otherfood$longitude <- jitter(otherfood$longitude, factor = 1)
-    
     pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
     
     labels <- lapply(
