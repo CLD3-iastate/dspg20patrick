@@ -16,30 +16,9 @@ library(readr)
 library(stringr)
 library(tigris)
 
-#
-#
-#
-#
-# ISOCHRONES FOR GROCERY STORES ARE MISMATCHED. AT LEAST WALMART IS SHOWING UP INCORRECTLY (SOUTH BORDER INSTEAD OF STUART). ALSO CHECK ALL OTHER ISOCHRONES
-# FOR GROCERIES, WIFI SPOTS, AND EMS!
-#
-# DATASET DESCRIPTIONS NEED TO BE ADDED
-#
-#
-
-
-# readRenviron("~/.Renviron")
-# shinyname <- Sys.getenv("SHINYNAME")
-# shinytoken <- Sys.getenv("SHINYTOKEN")
-# shinysecret <- Sys.getenv("SHINYSECRET")
-# 
-# rsconnect::setAccountInfo(name=shinyname,
-#                           token=shinytoken,
-#                           secret=shinysecret)
-
 prettyblue <- "#232D4B"
 navBarBlue <- '#427EDC'
-options(spinner.color = prettyblue, spinner.color.background = '#ffffff',spinner.size = 3, spinner.type = 7)
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff', spinner.size = 3, spinner.type = 7)
 
 colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
 
@@ -236,7 +215,7 @@ ui <- navbarPage(selected = "home",
                                    ),
                  
                  # wifi-----------------------------------------------------------
-                 tabPanel("Connectivity", value =  "connectivity",
+                 tabPanel("Connectivity", value = "connectivity",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Digital Connectivity"), align = "center"),
                                    column(5,
@@ -355,7 +334,6 @@ ui <- navbarPage(selected = "home",
                               where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
                                           br(),
                                           selectInput("usdadrop", "Select Variable:", width = "100%", choices = c(
-                                            "Percent Population with Low Vehicle Access at 1 Mile" = "lahunv1share",
                                             "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
                                             "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
                                             "Percent Children with Low Food Access at 1 Mile" = "lakids1share",
@@ -392,8 +370,8 @@ ui <- navbarPage(selected = "home",
                                             "Walmart Supercenter",
                                             "Poor Farmers Farm")),
                                           withSpinner(leafletOutput("grocplot")),
+                                          br(""),
                                           p("Percent Households Covered"),
-                                          br(),
                                           withSpinner(tableOutput("groctable"))
                                    )
                           )
@@ -1128,60 +1106,6 @@ server <- function(input, output, session) {
     }
   })
   output$householdplot <- renderLeaflet({
-    #if(var_hh() == "snap"){
-    
-    # data <- switch(input$hhdrop,
-    #                "hhsixty_married" = olderadults$hhsixty_marr,
-    #                "hhsixty_total" = olderadults$hhsixty_total,
-    #                "hhsixty_nonfam" = olderadults$hhsixty_nonfam,
-    #                "hhsixty_mhh" = olderadults$hhsixty_mhh,
-    #                "hhsixty_fhh" = olderadults$hhsixty_fhh,
-    #                "snap" = olderadults$snap)
-    # spec <- switch(input$hhdrop,
-    #                "hhsixty_married" = "Married",
-    #                "hhsixty_total" = "Total",
-    #                "hhsixty_nonfam" = "Single",
-    #                "hhsixty_mhh" = "Male",
-    #                "hhsixty_fhh" = "Female",
-    #                "snap" = "SNAP Benefit")
-    
-    #   pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-    # 
-    #   labels <- lapply(
-    #     paste("<strong>Area: </strong>",
-    #           olderadults$NAME.y,
-    #           "<br />",
-    #           "<strong>% </strong>",
-    #           spec,
-    #           "<strong>Households with a 60+ member</strong>",
-    #           round(data, 2)),
-    #     htmltools::HTML
-    #   )
-    # 
-    #   leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-    #     addProviderTiles(providers$CartoDB.Positron) %>%
-    #     addPolygons(fillColor = ~pal(data),
-    #                 fillOpacity = 0.6,
-    #                 stroke = FALSE,
-    #                 label = labels,
-    #                 labelOptions = labelOptions(direction = "bottom",
-    #                                             style = list(
-    #                                               "font-size" = "12px",
-    #                                               "border-color" = "rgba(0,0,0,0.5)",
-    #                                               direction = "auto"
-    #                                             ))) %>%
-    #     # addMarkers(data = residential) %>%
-    #     addLegend("bottomleft",
-    #               pal = pal,
-    #               values =  ~(data),
-    #               title = "Percent by<br>Quartile Group",
-    #               opacity = 0.6,
-    #               labFormat = function(type, cuts, p) {
-    #                 n = length(cuts)
-    #                 paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-    #               })
-    #   }
-    # else 
     if(var_hh() == "hhsixty_total") {
       data <- switch(input$oldspecdrop,
                      "Total" = olderadults$hhsixty_total,
@@ -1399,12 +1323,10 @@ server <- function(input, output, session) {
   })
   
   # device: done ---------------------------------------------------------
-  var_device <- reactive({
-    input$devicedrop
-  })
+
   output$deviceplot <- renderLeaflet({
-    if(var_device() != "nocomputer"){
       data <- switch(input$devicedrop,
+                     "nocomputer" = connectivity$nocomputer,
                      "laptop" = connectivity$laptop,
                      "smartphone" = connectivity$smartphone,
                      "tablet" = connectivity$tablet, 
@@ -1414,6 +1336,7 @@ server <- function(input, output, session) {
                      "broadband" = connectivity$broadband)
       
       device_spec <- switch(input$devicedrop,
+                            "nocomputer" = "no computer",
                             "laptop" = "laptop",
                             "smartphone" = "smartphone",
                             "tablet" = "tablet", 
@@ -1456,52 +1379,16 @@ server <- function(input, output, session) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
-    }else{
-      pal <- colorQuantile("Blues", domain = connectivity$nocomputer, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              connectivity$NAME.y,
-              "<br />",
-              "<strong>% Population without computer access: </strong>",
-              round(connectivity$nocomputer, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(connectivity$nocomputer), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(connectivity$nocomputer),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }
   })
   
   
   # wifi: done -----------------------------------------------------------
-  var_wifi <- reactive({
-    input$wifidrop
-  })
+
   output$wifiplot <- renderLeaflet({
-    if(var_wifi() != "Meadows of Dan Elementary School"){
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
       data <- switch(input$wifidrop,
+                     "Meadows of Dan Elementary School" = 1,
                      "Woolwine Elementary School" = 2,
                      "Patrick Springs Primary School" = 3,
                      "Blue Ridge Elementary School" = 4,
@@ -1510,31 +1397,35 @@ server <- function(input, output, session) {
                      "Patrick County Branch Library" = 7,
                      "Hardin Reynolds Memorial School" = 8,
                      "Stuart Baptist Church" = 9,                       
-                     "Patrick Henry Community College Stuart Campus" = 10
-      )
+                     "Patrick Henry Community College Stuart Campus" = 10)
       
       wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_", data, ".RDS"))
       wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_", data, ".RDS"))
       
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + residential_map
-      
-      m1@map
-      
-      
-    }else{
-      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",1,".RDS"))
-      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",1,".RDS"))
-      
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(wifi_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(wifi_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + residential_map
-      
-      m1@map
-    } 
+      m1 <- leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addCircles(data = residential, 
+                   fillColor = colors[5],
+                   fillOpacity = .8, 
+                   stroke = FALSE, 
+                   group = "Residential Properties") %>%
+        addPolygons(data = wifi_iso10, 
+                    fillColor = colors[1],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "10 Minute Isochrone") %>%
+        addPolygons(data = wifi_iso15,
+                    fillColor = colors[2],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "15 Minute Isochrone") %>%
+        addLayersControl(
+          position = "topright",
+          overlayGroups = c("15 Minute Isochrone",
+                            "10 Minute Isochrone",
+                            "Residential Properties"),
+          options = layersControlOptions(collapsed = FALSE))
+      m1 
   })
   
   output$wifitable <- renderTable({
@@ -1567,16 +1458,12 @@ server <- function(input, output, session) {
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
   # ems: done ------------------------------------------------------------
-  
-  var_ems <- reactive({
-    input$emsdrop
-  })
+
   output$emsplot <- renderLeaflet({
-    if(var_ems() != "STUART VOLUNTEER FIRE DEPARTMENT"){
-      
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
       data <- switch(input$emsdrop,
+                     "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
                      "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
                      "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
                      "VESTA RESCUE SQUAD" = 4,                                                                                           
@@ -1584,33 +1471,42 @@ server <- function(input, output, session) {
                      "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
                      "JEB STUART RESCUE SQUAD" = 7,                                                                                      
                      "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9
-      )
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
       
       ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
       ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
       ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
       
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m3 <- mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + m3 + residential_map
-      
-      m1@map
-    }else{
-      ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",1,".RDS"))
-      ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",1,".RDS"))
-      ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",1,".RDS"))
-      
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(ems_iso8, layer.name = "8 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(ems_iso10, layer.name = "10 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m3 <- mapview(ems_iso12, layer.name = "12 minute isochrone", col.regions = colors[3], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + m3 + residential_map
-      
-      m1@map
-    } 
+      m1 <- leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addCircles(data = residential, 
+                   fillColor = colors[5],
+                   fillOpacity = .8, 
+                   stroke = FALSE, 
+                   group = "Residential Properties") %>%
+        addPolygons(data = ems_iso8, 
+                    fillColor = colors[1],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "8 Minute Isochrone") %>%
+        addPolygons(data = ems_iso10,
+                    fillColor = colors[2],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "10 Minute Isochrone") %>%
+        addPolygons(data = ems_iso12,
+                    fillColor = colors[2],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "12 Minute Isochrone") %>%
+        addLayersControl(
+          position = "topright",
+          overlayGroups = c("8 Minute Isochrone",
+                            "10 Minute Isochrone",
+                            "12 Minute Isochrone",
+                            "Residential Properties"),
+          options = layersControlOptions(collapsed = FALSE))
+      m1 
   })
   
   output$emstable <- renderTable({
@@ -1648,9 +1544,7 @@ server <- function(input, output, session) {
     input$usdadrop
   })
   output$usdaplot <- renderLeaflet({
-    if(var_usda() != "lahunv1share"){
       data <- switch(input$usdadrop,
-                     # "lahunv10share" = usda$lahunv10share,
                      "lakids1share" = usda$lakids1share,
                      "lakids10share" = usda$lakids10share,
                      "lalowi1share" = usda$lalowi1share,
@@ -1661,7 +1555,6 @@ server <- function(input, output, session) {
                      "laseniors10share" = usda$laseniors10share)
       
       usda_spec <- switch(input$usdadrop,
-                          # "lahunv10share" = "low vehicle access at 10 miles",
                           "lakids1share" = "low food access for children at 1 mile",
                           "lakids10share" = "low food access for children at 10 miles",
                           "lalowi1share" = "low food access for low income population at 1 mile",
@@ -1704,52 +1597,15 @@ server <- function(input, output, session) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
                   })
-    }else{
-      pal <- colorQuantile("Blues", domain = usda$lahunv1share, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              usda$NAME.y,
-              "<br />",
-              "<strong>% Population with low vehicle access at 1 mile: </strong>",
-              round(usda$lahunv1share, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(usda$lahunv1share), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(usda$lahunv1share),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }
   })
   
   # grocery --------------------------------------------------------
-  
-  var_groc <- reactive({
-    input$grocdrop
-  })
+
   output$grocplot <- renderLeaflet({
-    if(var_groc() != "Mountain Meadow Farm and Craft Market"){
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
       data <- switch(input$grocdrop,
+                     "Mountain Meadow Farm and Craft Market" = 3,
                      "Lowes Foods of Stuart" = 4,
                      "Patrick County Local Farmers Market" = 5,
                      "Stuart Farmers Market" = 6,                
@@ -1761,23 +1617,30 @@ server <- function(input, output, session) {
       groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
       groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
       
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + residential_map
-      
-      m1@map
-    }else{
-      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",3,".RDS"))
-      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",3,".RDS"))
-      
-      residential_map <- mapview(residential, cex =.5, layer.name = "residential areas", color = colors[5], legend = F, map.types = "CartoDB.Positron")
-      m1 <- mapview(groc_iso10, layer.name = "10 minute isochrone", col.regions = colors[1], legend = F, map.types = "CartoDB.Positron")
-      m2 <- mapview(groc_iso15, layer.name = "15 minute isochrone", col.regions = colors[2], legend = F, map.types = "CartoDB.Positron")
-      m1 <- m1 + m2 + residential_map
-      
-      m1@map
-    } 
+      m1 <- leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addCircles(data = residential, 
+                   fillColor = colors[5],
+                   fillOpacity = .8, 
+                   stroke = FALSE, 
+                   group = "Residential Properties") %>%
+        addPolygons(data = wifi_iso10, 
+                    fillColor = colors[1],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "10 Minute Isochrone") %>%
+        addPolygons(data = wifi_iso15,
+                    fillColor = colors[2],
+                    fillOpacity = .8, 
+                    stroke = FALSE, 
+                    group = "15 Minute Isochrone") %>%
+        addLayersControl(
+          position = "topright",
+          overlayGroups = c("15 Minute Isochrone",
+                            "10 Minute Isochrone",
+                            "Residential Properties"),
+          options = layersControlOptions(collapsed = FALSE))
+      m1 
   })
   
   output$groctable <- renderTable({
