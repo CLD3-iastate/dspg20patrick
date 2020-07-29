@@ -1527,39 +1527,19 @@ server <- function(input, output, session) {
   
   # Coverage table
   output$wifitable <- renderTable({
-    wifi_iso10 <- switch(input$wifidrop,
-                         "Meadows of Dan Elementary School" = wifi_iso_10_1,
-                         "Woolwine Elementary School" = wifi_iso_10_2,
-                         "Patrick Springs Primary School" = wifi_iso_10_3,
-                         "Blue Ridge Elementary School" = wifi_iso_10_4,
-                         "Patrick County High School" = wifi_iso_10_5,
-                         "Stuart Elementary School" = wifi_iso_10_6,
-                         "Patrick County Branch Library" = wifi_iso_10_7,
-                         "Hardin Reynolds Memorial School" = wifi_iso_10_8,
-                         "Stuart Baptist Church" = wifi_iso_10_9,                       
-                         "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
+    data <- switch(input$wifidrop,
+                         "Meadows of Dan Elementary School" = 1,
+                         "Woolwine Elementary School" = 2,
+                         "Patrick Springs Primary School" = 3,
+                         "Blue Ridge Elementary School" = 4,
+                         "Patrick County High School" = 5,
+                         "Stuart Elementary School" = 6,
+                         "Patrick County Branch Library" = 7,
+                         "Hardin Reynolds Memorial School" = 8,
+                         "Stuart Baptist Church" = 9,                       
+                         "Patrick Henry Community College Stuart Campus" = 10)
     
-    wifi_iso15 <- switch(input$wifidrop,
-                         "Meadows of Dan Elementary School" = wifi_iso_15_1,
-                         "Woolwine Elementary School" = wifi_iso_15_2,
-                         "Patrick Springs Primary School" = wifi_iso_15_3,
-                         "Blue Ridge Elementary School" = wifi_iso_15_4,
-                         "Patrick County High School" = wifi_iso_15_5,
-                         "Stuart Elementary School" = wifi_iso_15_6,
-                         "Patrick County Branch Library" = wifi_iso_15_7,
-                         "Hardin Reynolds Memorial School" = wifi_iso_15_8,
-                         "Stuart Baptist Church" = wifi_iso_15_9,                       
-                         "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
-    
-    pp_10 <- st_intersection(residential, wifi_iso10)
-    pp_15 <- st_intersection(residential, wifi_iso15)
-    
-    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
-    coverage_15 <- (nrow(pp_15)/nrow(residential)*100)
-    
-    table <- as.data.frame(c("10 Minutes", "15 Minutes"))
-    table$Coverage <- c(coverage_10, coverage_15)
-    colnames(table) <- c("Time", "Coverage")
+    table <- read.csv(paste0("data/isochrones/tables/wifi_iso_table_",data,".csv"))
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
@@ -1747,50 +1727,19 @@ server <- function(input, output, session) {
   })
   
   output$emstable <- renderTable({
-    ems_iso8 <- switch(input$emsdrop,
-                       "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
-                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
-                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
-                       "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
-                       "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
-                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
-                       "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
-                       "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
-                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
+    data <- switch(input$emsdrop,
+                       "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
+                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
+                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
+                       "VESTA RESCUE SQUAD" = 4,                                                                                           
+                       "ARARAT RESCUE SQUAD" = 5,                                                                                          
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
+                       "JEB STUART RESCUE SQUAD" = 7,                                                                                      
+                       "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
     
-    ems_iso10 <- switch(input$emsdrop,
-                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
-                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
-                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
-                        "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
-                        "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
-                        "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
-                        "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
     
-    ems_iso12 <- switch(input$emsdrop,
-                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
-                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
-                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
-                        "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
-                        "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
-                        "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
-                        "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
-    
-    pp_8 <- st_intersection(residential, ems_iso8)
-    pp_10 <- st_intersection(residential, ems_iso10)
-    pp_12 <- st_intersection(residential, ems_iso12)
-    
-    coverage_8 <- (nrow(pp_8)/nrow(residential)*100)
-    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
-    coverage_12 <- (nrow(pp_12)/nrow(residential)*100)
-    
-    table <- as.data.frame(c("8 Minutes", "10 Minutes", "12 Minutes"))
-    table$Coverage <- c(coverage_8, coverage_10, coverage_12)
-    colnames(table) <- c("Time", "Coverage")
+    table <- read.csv(paste0("data/isochrones/tables/ems_iso_table_",data,".csv"))
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
@@ -2061,33 +2010,17 @@ server <- function(input, output, session) {
    
   # Grocery table
   output$groctable <- renderTable({
-    groc_iso10 <- switch(input$grocdrop,
-                         "Mountain Meadow Farm and Craft Market" = grc_iso_10_1,
-                         "Lowes Foods of Stuart" = grc_iso_10_2,
-                         "Patrick County Local Farmers Market" = grc_iso_10_3,
-                         "Stuart Farmers Market" = grc_iso_10_4,                
-                         "W & W Produce" = grc_iso_10_5,
-                         "Walmart Supercenter" = grc_iso_10_6,
-                         "Poor Farmers Farm" = grc_iso_10_7)
+    data <- switch(input$grocdrop,
+                         "Mountain Meadow Farm and Craft Market" = 1,
+                         "Lowes Foods of Stuart" = 2,
+                         "Patrick County Local Farmers Market" = 3,
+                         "Stuart Farmers Market" = 4,                
+                         "W & W Produce" = 5,
+                         "Walmart Supercenter" = 6,
+                         "Poor Farmers Farm" = 7)
     
-    groc_iso15 <- switch(input$grocdrop,
-                         "Mountain Meadow Farm and Craft Market" = grc_iso_15_1,
-                         "Lowes Foods of Stuart" = grc_iso_15_2,
-                         "Patrick County Local Farmers Market" = grc_iso_15_3,
-                         "Stuart Farmers Market" = grc_iso_15_4,                
-                         "W & W Produce" = grc_iso_15_5,
-                         "Walmart Supercenter" = grc_iso_15_6,
-                         "Poor Farmers Farm" = grc_iso_15_7)
     
-    pp_10 <- st_intersection(residential, groc_iso10)
-    pp_15 <- st_intersection(residential, groc_iso15)
-    
-    coverage_10 <- (nrow(pp_10)/nrow(residential)*100)
-    coverage_15 <- (nrow(pp_15)/nrow(residential)*100)
-    
-    table <- as.data.frame(c("10 Minutes", "15 Minutes"))
-    table$Coverage <- c(coverage_10, coverage_15)
-    colnames(table) <- c("Time", "Coverage")
+    table <- read.csv(paste0("data/isochrones/tables/grc_iso_table_",data,".csv"))
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
