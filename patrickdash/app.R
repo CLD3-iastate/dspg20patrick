@@ -297,6 +297,7 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Connectivity", value = "connectivity",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Digital Connectivity"), align = "center"),
+                                   p("", style = "padding-top:10px;"),
                                    column(6,
                                           h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
                                           p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
@@ -368,43 +369,50 @@ ui <- navbarPage(selected = "home",
                  # ems -----------------------------------------------------------
                  tabPanel("Health Care Access", value = "ems",
                           fluidRow(style = "margin: 6px;",
-                            h1(strong("Health Care Access"), align = "center"),
-                            p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
-                              counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
-                              provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
-                              medical services (EMS) stations to obtain care and transportation to other health care facilities."),
-                            p("To better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland 
-                              Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of 
-                              facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential 
-                              properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime
-                              Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and 
-                              mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. 
-                              Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel 
-                              time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is 
-                              frequently exceeded by 20% to 40% in rural areas."),
-                            column(6,
-                            h4(strong("Accessing Emergency Medical Service Stations"), align = "center"),
-                            selectInput("emsdrop", "Select EMS Location:", width = "100%", choices = c(
-                              "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
-                              "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
-                              "Blue Ridge Volunteer Rescue Squad" = "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
-                              "Vesta Rescue Squad" = "VESTA RESCUE SQUAD",                                                                                           
-                              "Ararat Rescue Squad"  ="ARARAT RESCUE SQUAD",                                                                                          
-                              "Five Forks Volunteer Fire and Rescue Station 1" = "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
-                              "Five Forks Volunteer Fire and Rescue Station 2"= "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2",
-                              "Jeb Stuart Rescue Squad" = "JEB STUART RESCUE SQUAD",                                                                                      
-                              "Smith River Rescue Squad" = "SMITH RIVER RESCUE SQUAD"                                                                                     
-                            )),
-                            p(strong("Percent Residents Covered")),
-                            withSpinner(tableOutput("emstable")),
-                            withSpinner(leafletOutput("emsplot")),
-                            p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API."))
-                          ),
-                          column(6, 
-                                 h4(strong("Coverage Deserts"), align = "center"),
-                                 p("Text"),
-                                 withSpinner(leafletOutput("allems")),
-                                 p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API.")))
+                                   h1(strong("Health Care Access"), align = "center"),
+                                   p("", style = "padding-top:10px;"),
+                                   column(4,
+                                          h4(strong("Accessing Emergency Medical Service Stations"), align = "center"),
+                                          p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
+                                            counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
+                                            provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
+                                            medical services (EMS) stations to obtain care and transportation to other health care facilities."),
+                                          p("To better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland 
+                                            Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of 
+                                            facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential 
+                                            properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime
+                                            Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and 
+                                            mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. 
+                                            Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel 
+                                            time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is 
+                                            frequently exceeded by 20% to 40% in rural areas.")
+                                   ),
+                                   column(8,
+                                          tabsetPanel(
+                                            tabPanel("Explore Coverage",
+                                                     selectInput("emsdrop", "Select EMS Location:", width = "100%", choices = c(
+                                                       "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
+                                                       "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
+                                                       "Blue Ridge Volunteer Rescue Squad" = "BLUE RIDGE VOLUNTEER RESCUE SQUAD",                                                                   
+                                                       "Vesta Rescue Squad" = "VESTA RESCUE SQUAD",                                                                                           
+                                                       "Ararat Rescue Squad" = "ARARAT RESCUE SQUAD",                                                                                          
+                                                       "Five Forks Volunteer Fire and Rescue Station 1" = "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS",
+                                                       "Five Forks Volunteer Fire and Rescue Station 2"= "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2",
+                                                       "Jeb Stuart Rescue Squad" = "JEB STUART RESCUE SQUAD",                                                                                      
+                                                       "Smith River Rescue Squad" = "SMITH RIVER RESCUE SQUAD"                                                                                     
+                                                     )),
+                                                     p(strong("Percent Residents Covered")),
+                                                     withSpinner(tableOutput("emstable")),
+                                                     p(strong("Map of Coverage")),
+                                                     withSpinner(leafletOutput("emsplot")),
+                                                     p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API."))
+                                            ),
+                                            tabPanel("Explore 'Deserts'",
+                                                     p(strong("Map of Coverage Deserts")),
+                                                     withSpinner(leafletOutput("allems")),
+                                                     p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API.")))
+                                          )
+                                   )
                           )
                  ),
                  
