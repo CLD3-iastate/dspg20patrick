@@ -64,6 +64,74 @@ residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 measures_table <- read_excel("data/Measures.xlsx")
 
+grc_iso_10_1 <- readRDS("data/isochrones/grocery/grc_iso_10_1.RDS")
+grc_iso_10_2 <- readRDS("data/isochrones/grocery/grc_iso_10_2.RDS")
+grc_iso_10_3 <- readRDS("data/isochrones/grocery/grc_iso_10_3.RDS")
+grc_iso_10_4 <- readRDS("data/isochrones/grocery/grc_iso_10_4.RDS")
+grc_iso_10_5 <- readRDS("data/isochrones/grocery/grc_iso_10_5.RDS")
+grc_iso_10_6 <- readRDS("data/isochrones/grocery/grc_iso_10_6.RDS")
+grc_iso_10_7 <- readRDS("data/isochrones/grocery/grc_iso_10_7.RDS")
+
+grc_iso_15_1 <- readRDS("data/isochrones/grocery/grc_iso_15_1.RDS")
+grc_iso_15_2 <- readRDS("data/isochrones/grocery/grc_iso_15_2.RDS")
+grc_iso_15_3 <- readRDS("data/isochrones/grocery/grc_iso_15_3.RDS")
+grc_iso_15_4 <- readRDS("data/isochrones/grocery/grc_iso_15_4.RDS")
+grc_iso_15_5 <- readRDS("data/isochrones/grocery/grc_iso_15_5.RDS")
+grc_iso_15_6 <- readRDS("data/isochrones/grocery/grc_iso_15_6.RDS")
+grc_iso_15_7 <- readRDS("data/isochrones/grocery/grc_iso_15_7.RDS")
+
+wifi_iso_10_1 <- readRDS("data/isochrones/wifi/wifi_iso_10_1.RDS")
+wifi_iso_10_2 <- readRDS("data/isochrones/wifi/wifi_iso_10_2.RDS")
+wifi_iso_10_3 <- readRDS("data/isochrones/wifi/wifi_iso_10_3.RDS")
+wifi_iso_10_4 <- readRDS("data/isochrones/wifi/wifi_iso_10_4.RDS")
+wifi_iso_10_5 <- readRDS("data/isochrones/wifi/wifi_iso_10_5.RDS")
+wifi_iso_10_6 <- readRDS("data/isochrones/wifi/wifi_iso_10_6.RDS")
+wifi_iso_10_7 <- readRDS("data/isochrones/wifi/wifi_iso_10_7.RDS")
+wifi_iso_10_8 <- readRDS("data/isochrones/wifi/wifi_iso_10_8.RDS")
+wifi_iso_10_9 <- readRDS("data/isochrones/wifi/wifi_iso_10_9.RDS")
+wifi_iso_10_10 <- readRDS("data/isochrones/wifi/wifi_iso_10_10.RDS")
+
+wifi_iso_15_1 <- readRDS("data/isochrones/wifi/wifi_iso_15_1.RDS")
+wifi_iso_15_2 <- readRDS("data/isochrones/wifi/wifi_iso_15_2.RDS")
+wifi_iso_15_3 <- readRDS("data/isochrones/wifi/wifi_iso_15_3.RDS")
+wifi_iso_15_4 <- readRDS("data/isochrones/wifi/wifi_iso_15_4.RDS")
+wifi_iso_15_5 <- readRDS("data/isochrones/wifi/wifi_iso_15_5.RDS")
+wifi_iso_15_6 <- readRDS("data/isochrones/wifi/wifi_iso_15_6.RDS")
+wifi_iso_15_7 <- readRDS("data/isochrones/wifi/wifi_iso_15_7.RDS")
+wifi_iso_15_8 <- readRDS("data/isochrones/wifi/wifi_iso_15_8.RDS")
+wifi_iso_15_9 <- readRDS("data/isochrones/wifi/wifi_iso_15_9.RDS")
+wifi_iso_15_10 <- readRDS("data/isochrones/wifi/wifi_iso_15_10.RDS")
+
+ems_iso_8_1 <- readRDS("data/isochrones/ems/ems_iso_8_1.RDS")
+ems_iso_8_2 <- readRDS("data/isochrones/ems/ems_iso_8_2.RDS")
+ems_iso_8_3 <- readRDS("data/isochrones/ems/ems_iso_8_3.RDS")
+ems_iso_8_4 <- readRDS("data/isochrones/ems/ems_iso_8_4.RDS")
+ems_iso_8_5 <- readRDS("data/isochrones/ems/ems_iso_8_5.RDS")
+ems_iso_8_6 <- readRDS("data/isochrones/ems/ems_iso_8_6.RDS")
+ems_iso_8_7 <- readRDS("data/isochrones/ems/ems_iso_8_7.RDS")
+ems_iso_8_8 <- readRDS("data/isochrones/ems/ems_iso_8_8.RDS")
+ems_iso_8_9 <- readRDS("data/isochrones/ems/ems_iso_8_9.RDS")
+
+ems_iso_10_1 <- readRDS("data/isochrones/ems/ems_iso_10_1.RDS")
+ems_iso_10_2 <- readRDS("data/isochrones/ems/ems_iso_10_2.RDS")
+ems_iso_10_3 <- readRDS("data/isochrones/ems/ems_iso_10_3.RDS")
+ems_iso_10_4 <- readRDS("data/isochrones/ems/ems_iso_10_4.RDS")
+ems_iso_10_5 <- readRDS("data/isochrones/ems/ems_iso_10_5.RDS")
+ems_iso_10_6 <- readRDS("data/isochrones/ems/ems_iso_10_6.RDS")
+ems_iso_10_7 <- readRDS("data/isochrones/ems/ems_iso_10_7.RDS")
+ems_iso_10_8 <- readRDS("data/isochrones/ems/ems_iso_10_8.RDS")
+ems_iso_10_9 <- readRDS("data/isochrones/ems/ems_iso_10_9.RDS")
+
+ems_iso_12_1 <- readRDS("data/isochrones/ems/ems_iso_12_1.RDS")
+ems_iso_12_2 <- readRDS("data/isochrones/ems/ems_iso_12_2.RDS")
+ems_iso_12_3 <- readRDS("data/isochrones/ems/ems_iso_12_3.RDS")
+ems_iso_12_4 <- readRDS("data/isochrones/ems/ems_iso_12_4.RDS")
+ems_iso_12_5 <- readRDS("data/isochrones/ems/ems_iso_12_5.RDS")
+ems_iso_12_6 <- readRDS("data/isochrones/ems/ems_iso_12_6.RDS")
+ems_iso_12_7 <- readRDS("data/isochrones/ems/ems_iso_12_7.RDS")
+ems_iso_12_8 <- readRDS("data/isochrones/ems/ems_iso_12_8.RDS")
+ems_iso_12_9 <- readRDS("data/isochrones/ems/ems_iso_12_9.RDS")
+
 
 # user -------------------------------------------------------------
 ui <- navbarPage(selected = "home",
@@ -218,7 +286,7 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Connectivity", value = "connectivity",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Digital Connectivity"), align = "center"),
-                                   column(5,
+                                   column(4,
                                           h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
                                           p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
                                              telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
@@ -242,7 +310,7 @@ ui <- navbarPage(selected = "home",
                                           ),
                                           withSpinner(leafletOutput("deviceplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
-                                   column(7,
+                                   column(8,
                                           h4(strong("Free Wi-Fi Hotspot Access"), align = "center"),
                                           p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations 
                                             using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to 
@@ -255,7 +323,7 @@ ui <- navbarPage(selected = "home",
                                           p("This information equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where 
                                             new wi-fi hotspots could be optimally placed to provide internet access to more residents."),
                                           br(),
-                                          column(8, 
+                                          column(6, 
                                           selectInput("wifidrop", "Select Free Wifi Location:", width = "100%", choices = c(
                                             "Meadows of Dan Elementary School",
                                             "Woolwine Elementary School",
@@ -267,12 +335,15 @@ ui <- navbarPage(selected = "home",
                                             "Hardin Reynolds Memorial School",
                                             "Stuart Baptist Church",                        
                                             "Patrick Henry Community College Stuart Campus")),
+                                          p(strong("Percent Residential Properties Covered:")),
+                                          withSpinner(tableOutput("wifitable")),
                                           withSpinner(leafletOutput("wifiplot")),
                                           p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))),
-                                          column(4, 
-                                          p("Percent Residential Properties Covered"),
+                                          column(6, 
+                                          p(strong("Free Wi-Fi Deserts")),
                                           br(),
-                                          withSpinner(tableOutput("wifitable"))))
+                                          withSpinner(leafletOutput("allwifi")),
+                                          p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))))
                           )
                  ),
                  # ems -----------------------------------------------------------
@@ -320,7 +391,7 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Food Access", value =  "food",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Food Access"), align = "center"),
-                                   column(5,
+                                   column(6,
                                           h3(strong("Low Food Access"), align = "center"),
                                           p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing 
                               healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
@@ -344,12 +415,9 @@ ui <- navbarPage(selected = "home",
                                             "Percent Older Adults with Low Food Access at 10 Miles" = "laseniors10share")
                                           ),
                                           withSpinner(leafletOutput("usdaplot")),
-                                          p(tags$small("Data Source: USDA Food Access Research Atlas, 2017")),
-                                          h3(strong("County Food Security Resources"), align = "center"),
-                                          br(),
-                                          withSpinner(leafletOutput("othermap"))
+                                          p(tags$small("Data Source: USDA Food Access Research Atlas, 2017"))
                                    ),
-                                   column(7,
+                                   column(6,
                                           h3(strong("Grocery and Farmers Market Coverage"), align = "center"),
                                           p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
                                             same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
@@ -370,9 +438,26 @@ ui <- navbarPage(selected = "home",
                                             "Walmart Supercenter",
                                             "Poor Farmers Farm")),
                                           withSpinner(leafletOutput("grocplot")),
+                                          p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019.")),
                                           br(""),
                                           p("Percent Households Covered"),
                                           withSpinner(tableOutput("groctable"))
+                                   )
+                          ),
+                          fluidRow(style = "margin: 6px;",
+                                   column(6,
+                                          h3(strong("Food Acccess Deserts"), align = "center"),
+                                          p("Text here"),
+                                          br(),
+                                          withSpinner(leafletOutput("allgroc")),
+                                          p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
+                                   ),
+                                   column(6,
+                                          h3(strong("County Food Security Resources"), align = "center"),
+                                          p("Text here"),
+                                          br(),
+                                          withSpinner(leafletOutput("othermap")),
+                                          p(tags$small("Data Source: Google Maps."))
                                    )
                           )
                  ),
@@ -1383,26 +1468,36 @@ server <- function(input, output, session) {
   
   
   # wifi: done -----------------------------------------------------------
-
+  
+  # Iso selector
   output$wifiplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$wifidrop,
-                     "Meadows of Dan Elementary School" = 1,
-                     "Woolwine Elementary School" = 2,
-                     "Patrick Springs Primary School" = 3,
-                     "Blue Ridge Elementary School" = 4,
-                     "Patrick County High School" = 5,
-                     "Stuart Elementary School" = 6,
-                     "Patrick County Branch Library" = 7,
-                     "Hardin Reynolds Memorial School" = 8,
-                     "Stuart Baptist Church" = 9,                       
-                     "Patrick Henry Community College Stuart Campus" = 10)
+      wifi_iso10 <- switch(input$wifidrop,
+                     "Meadows of Dan Elementary School" = wifi_iso_10_1,
+                     "Woolwine Elementary School" = wifi_iso_10_2,
+                     "Patrick Springs Primary School" = wifi_iso_10_3,
+                     "Blue Ridge Elementary School" = wifi_iso_10_4,
+                     "Patrick County High School" = wifi_iso_10_5,
+                     "Stuart Elementary School" = wifi_iso_10_6,
+                     "Patrick County Branch Library" = wifi_iso_10_7,
+                     "Hardin Reynolds Memorial School" = wifi_iso_10_8,
+                     "Stuart Baptist Church" = wifi_iso_10_9,                       
+                     "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
       
-      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_", data, ".RDS"))
-      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_", data, ".RDS"))
+      wifi_iso15 <- switch(input$wifidrop,
+                           "Meadows of Dan Elementary School" = wifi_iso_15_1,
+                           "Woolwine Elementary School" = wifi_iso_15_2,
+                           "Patrick Springs Primary School" = wifi_iso_15_3,
+                           "Blue Ridge Elementary School" = wifi_iso_15_4,
+                           "Patrick County High School" = wifi_iso_15_5,
+                           "Stuart Elementary School" = wifi_iso_15_6,
+                           "Patrick County Branch Library" = wifi_iso_15_7,
+                           "Hardin Reynolds Memorial School" = wifi_iso_15_8,
+                           "Stuart Baptist Church" = wifi_iso_15_9,                       
+                           "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
       
-      m1 <- leaflet() %>%
+      m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
                    fillColor = colors[5],
@@ -1428,22 +1523,31 @@ server <- function(input, output, session) {
       m1 
   })
   
+  # Coverage table
   output$wifitable <- renderTable({
-    data <- switch(input$wifidrop,
-                   "Meadows of Dan Elementary School" = 1,
-                   "Woolwine Elementary School" = 2,
-                   "Patrick Springs Primary School" = 3,
-                   "Blue Ridge Elementary School" = 4,
-                   "Patrick County High School" = 5,
-                   "Stuart Elementary School" = 6,
-                   "Patrick County Branch Library" = 7,
-                   "Hardin Reynolds Memorial School" = 8,
-                   "Stuart Baptist Church" = 9,                       
-                   "Patrick Henry Community College Stuart Campus" = 10 
-    )
+    wifi_iso10 <- switch(input$wifidrop,
+                         "Meadows of Dan Elementary School" = wifi_iso_10_1,
+                         "Woolwine Elementary School" = wifi_iso_10_2,
+                         "Patrick Springs Primary School" = wifi_iso_10_3,
+                         "Blue Ridge Elementary School" = wifi_iso_10_4,
+                         "Patrick County High School" = wifi_iso_10_5,
+                         "Stuart Elementary School" = wifi_iso_10_6,
+                         "Patrick County Branch Library" = wifi_iso_10_7,
+                         "Hardin Reynolds Memorial School" = wifi_iso_10_8,
+                         "Stuart Baptist Church" = wifi_iso_10_9,                       
+                         "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
     
-    wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
-    wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+    wifi_iso15 <- switch(input$wifidrop,
+                         "Meadows of Dan Elementary School" = wifi_iso_15_1,
+                         "Woolwine Elementary School" = wifi_iso_15_2,
+                         "Patrick Springs Primary School" = wifi_iso_15_3,
+                         "Blue Ridge Elementary School" = wifi_iso_15_4,
+                         "Patrick County High School" = wifi_iso_15_5,
+                         "Stuart Elementary School" = wifi_iso_15_6,
+                         "Patrick County Branch Library" = wifi_iso_15_7,
+                         "Hardin Reynolds Memorial School" = wifi_iso_15_8,
+                         "Stuart Baptist Church" = wifi_iso_15_9,                       
+                         "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
     
     pp_10 <- st_intersection(residential, wifi_iso10)
     pp_15 <- st_intersection(residential, wifi_iso15)
@@ -1457,27 +1561,158 @@ server <- function(input, output, session) {
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
+  # Wifi deserts
+  output$allwifi <- renderLeaflet({
+    leaflet(options = leafletOptions(minZoom = 10)) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addCircles(data = residential, 
+                 fillColor = colors[5],
+                 fillOpacity = .5, 
+                 stroke = FALSE, 
+                 group = "Residential Properties") %>%
+      addPolygons(data = wifi_iso_10_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_8, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_10_9, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_8, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_9, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = wifi_iso_15_10, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addLayersControl(
+        position = "topright",
+        overlayGroups = c("15 Minute Isochrones",
+                          "10 Minute Isochrones",
+                          "Residential Properties"),
+        options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup("15 Minute Isochrones")
+  })
+  
   # ems: done ------------------------------------------------------------
 
   output$emsplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$emsdrop,
-                     "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                     "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
-                     "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
-                     "VESTA RESCUE SQUAD" = 4,                                                                                           
-                     "ARARAT RESCUE SQUAD" = 5,                                                                                          
-                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                     "JEB STUART RESCUE SQUAD" = 7,                                                                                      
-                     "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+      ems_iso8 <- switch(input$emsdrop,
+                     "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
+                     "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
+                     "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
+                     "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
+                     "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
+                     "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
+                     "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
       
-      ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
-      ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
-      ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
+      ems_iso10 <- switch(input$emsdrop,
+                         "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
+                         "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
+                         "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
+                         "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
+                         "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
+                         "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
+                         "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
       
-      m1 <- leaflet() %>%
+      ems_iso12 <- switch(input$emsdrop,
+                          "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
+                          "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
+                          "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
+                          "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
+                          "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
+                          "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
+                          "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
+                          "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
+                          "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
+      
+      m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
                    fillColor = colors[5],
@@ -1510,20 +1745,38 @@ server <- function(input, output, session) {
   })
   
   output$emstable <- renderTable({
-    data <- switch(input$emsdrop,
-                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                   "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,
-                   "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,
-                   "VESTA RESCUE SQUAD" = 4,
-                   "ARARAT RESCUE SQUAD" = 5,
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                   "JEB STUART RESCUE SQUAD" = 7,
-                   "SMITH RIVER RESCUE SQUAD" = 8,
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+    ems_iso8 <- switch(input$emsdrop,
+                       "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
+                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
+                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
+                       "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
+                       "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
+                       "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
+                       "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
     
-    ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
-    ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
-    ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
+    ems_iso10 <- switch(input$emsdrop,
+                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
+                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
+                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
+                        "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
+                        "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
+                        "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
+                        "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
+    
+    ems_iso12 <- switch(input$emsdrop,
+                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
+                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
+                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
+                        "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
+                        "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
+                        "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
+                        "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
     
     pp_8 <- st_intersection(residential, ems_iso8)
     pp_10 <- st_intersection(residential, ems_iso10)
@@ -1600,36 +1853,42 @@ server <- function(input, output, session) {
   })
   
   # grocery --------------------------------------------------------
-
+  
+  # Iso selector
   output$grocplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$grocdrop,
-                     "Mountain Meadow Farm and Craft Market" = 3,
-                     "Lowes Foods of Stuart" = 4,
-                     "Patrick County Local Farmers Market" = 5,
-                     "Stuart Farmers Market" = 6,                
-                     "W & W Produce" = 7,
-                     "Walmart Supercenter" = 8,
-                     "Poor Farmers Farm" = 9
-      )
+      groc_iso10 <- switch(input$grocdrop,
+                     "Mountain Meadow Farm and Craft Market" = grc_iso_10_1,
+                     "Lowes Foods of Stuart" = grc_iso_10_2,
+                     "Patrick County Local Farmers Market" = grc_iso_10_3,
+                     "Stuart Farmers Market" = grc_iso_10_4,                
+                     "W & W Produce" = grc_iso_10_5,
+                     "Walmart Supercenter" = grc_iso_10_6,
+                     "Poor Farmers Farm" = grc_iso_10_7)
       
-      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
-      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
+      groc_iso15 <- switch(input$grocdrop,
+                           "Mountain Meadow Farm and Craft Market" = grc_iso_15_1,
+                           "Lowes Foods of Stuart" = grc_iso_15_2,
+                           "Patrick County Local Farmers Market" = grc_iso_15_3,
+                           "Stuart Farmers Market" = grc_iso_15_4,                
+                           "W & W Produce" = grc_iso_15_5,
+                           "Walmart Supercenter" = grc_iso_15_6,
+                           "Poor Farmers Farm" = grc_iso_15_7)
       
-      m1 <- leaflet() %>%
+      m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
                    fillColor = colors[5],
                    fillOpacity = .8, 
                    stroke = FALSE, 
                    group = "Residential Properties") %>%
-        addPolygons(data = wifi_iso10, 
+        addPolygons(data = groc_iso10, 
                     fillColor = colors[1],
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "10 Minute Isochrone") %>%
-        addPolygons(data = wifi_iso15,
+        addPolygons(data = groc_iso15,
                     fillColor = colors[2],
                     fillOpacity = .8, 
                     stroke = FALSE, 
@@ -1642,20 +1901,26 @@ server <- function(input, output, session) {
           options = layersControlOptions(collapsed = FALSE))
       m1 
   })
-  
+   
+  # Grocery table
   output$groctable <- renderTable({
-    data <- switch(input$grocdrop,
-                   "Mountain Meadow Farm and Craft Market" = 3,
-                   "Lowes Foods of Stuart" = 4,
-                   "Patrick County Local Farmers Market" = 5,
-                   "Stuart Farmers Market" = 6,                
-                   "W & W Produce" = 7,
-                   "Walmart Supercenter" = 8,
-                   "Poor Farmers Farm" = 9
-    )
+    groc_iso10 <- switch(input$grocdrop,
+                         "Mountain Meadow Farm and Craft Market" = grc_iso_10_1,
+                         "Lowes Foods of Stuart" = grc_iso_10_2,
+                         "Patrick County Local Farmers Market" = grc_iso_10_3,
+                         "Stuart Farmers Market" = grc_iso_10_4,                
+                         "W & W Produce" = grc_iso_10_5,
+                         "Walmart Supercenter" = grc_iso_10_6,
+                         "Poor Farmers Farm" = grc_iso_10_7)
     
-    groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
-    groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
+    groc_iso15 <- switch(input$grocdrop,
+                         "Mountain Meadow Farm and Craft Market" = grc_iso_15_1,
+                         "Lowes Foods of Stuart" = grc_iso_15_2,
+                         "Patrick County Local Farmers Market" = grc_iso_15_3,
+                         "Stuart Farmers Market" = grc_iso_15_4,                
+                         "W & W Produce" = grc_iso_15_5,
+                         "Walmart Supercenter" = grc_iso_15_6,
+                         "Poor Farmers Farm" = grc_iso_15_7)
     
     pp_10 <- st_intersection(residential, groc_iso10)
     pp_15 <- st_intersection(residential, groc_iso15)
@@ -1669,6 +1934,95 @@ server <- function(input, output, session) {
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
+  # Food deserts
+  output$allgroc <- renderLeaflet({
+    leaflet(options = leafletOptions(minZoom = 10)) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addCircles(data = residential, 
+                 fillColor = colors[5],
+                 fillOpacity = .5, 
+                 stroke = FALSE, 
+                 group = "Residential Properties") %>%
+      addPolygons(data = grc_iso_10_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_10_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addPolygons(data = grc_iso_15_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrones") %>%
+      addLayersControl(
+        position = "topright",
+        overlayGroups = c("15 Minute Isochrones",
+                          "10 Minute Isochrones",
+                          "Residential Properties"),
+        options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup("15 Minute Isochrones")
+  })
+  
+   # Other food resources
   output$othermap <- renderLeaflet({
     
     patrickcty <- counties(state = "51", year = 2018)
