@@ -297,7 +297,7 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Connectivity", value = "connectivity",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Digital Connectivity"), align = "center"),
-                                   column(4,
+                                   column(6,
                                           h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
                                           p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
                                              telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
@@ -319,9 +319,10 @@ ui <- navbarPage(selected = "home",
                                             "Percent Households with Cellular Internet" = "cellular",
                                             "Percent Households with Broadband Internet" = "broadband")
                                           ),
+                                          p(strong("Map of Access by Census Block Group")),
                                           withSpinner(leafletOutput("deviceplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
-                                   column(8,
+                                   column(6,
                                           h4(strong("Free Wi-Fi Hotspot Access"), align = "center"),
                                           p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations 
                                             using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to 
@@ -334,29 +335,36 @@ ui <- navbarPage(selected = "home",
                                           p("This information equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where 
                                             new wi-fi hotspots could be optimally placed to provide internet access to more residents."),
                                           br(),
-                                          column(6, 
-                                          selectInput("wifidrop", "Select Free Wifi Location:", width = "100%", choices = c(
-                                            "Meadows of Dan Elementary School",
-                                            "Woolwine Elementary School",
-                                            "Patrick Springs Primary School",
-                                            "Blue Ridge Elementary School",
-                                            "Patrick County High School",
-                                            "Stuart Elementary School",
-                                            "Patrick County Branch Library",
-                                            "Hardin Reynolds Memorial School",
-                                            "Stuart Baptist Church",                        
-                                            "Patrick Henry Community College Stuart Campus")),
-                                          p(strong("Percent Residential Properties Covered:")),
-                                          withSpinner(tableOutput("wifitable")),
-                                          withSpinner(leafletOutput("wifiplot")),
-                                          p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))),
-                                          column(6, 
-                                          p(strong("Free Wi-Fi Deserts")),
-                                          br(),
-                                          withSpinner(leafletOutput("allwifi")),
-                                          p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))))
+                                          tabsetPanel(
+                                            tabPanel("Explore Hotspot Coverage",
+                                                     selectInput("wifidrop", "Select Free Wifi Location:", width = "100%", choices = c(
+                                                       "Meadows of Dan Elementary School",
+                                                       "Woolwine Elementary School",
+                                                       "Patrick Springs Primary School",
+                                                       "Blue Ridge Elementary School",
+                                                       "Patrick County High School",
+                                                       "Stuart Elementary School",
+                                                       "Patrick County Branch Library",
+                                                       "Hardin Reynolds Memorial School",
+                                                       "Stuart Baptist Church",                        
+                                                       "Patrick Henry Community College Stuart Campus")),
+                                                     p(strong("Percent Residential Properties Covered")),
+                                                     withSpinner(tableOutput("wifitable")),
+                                                     p(strong("Map of Coverage")),
+                                                     withSpinner(leafletOutput("wifiplot")),
+                                                     p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))
+                                            ),
+                                            tabPanel("Explore 'Deserts'",
+                                                     p(""),
+                                                     p(strong("Map of Free Wi-Fi Deserts")),
+                                                     withSpinner(leafletOutput("allwifi")),
+                                                     p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))
+                                            )
+                                          )
+                                   )
                           )
                  ),
+                 
                  # ems -----------------------------------------------------------
                  tabPanel("Health Care Access", value = "ems",
                           fluidRow(style = "margin: 6px;",
