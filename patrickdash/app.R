@@ -350,8 +350,6 @@ ui <- navbarPage(selected = "home",
                  tabPanel("Health Care Access", value = "ems",
                           fluidRow(style = "margin: 6px;",
                             h1(strong("Health Care Access"), align = "center"),
-                            column(4,
-                            h3(strong("Accessing Emergency Medical Service Stations"), align = "center"),
                             p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
                               counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
                               provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
@@ -364,10 +362,9 @@ ui <- navbarPage(selected = "home",
                               mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. 
                               Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel 
                               time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is 
-                              frequently exceeded by 20% to 40% in rural areas.")
-                            ),
-                            column(8,
-                            h3(strong("Resident Coverage"), align = "center"),
+                              frequently exceeded by 20% to 40% in rural areas."),
+                            column(6,
+                            h4(strong("Accessing Emergency Medical Service Stations"), align = "center"),
                             selectInput("emsdrop", "Select EMS Location:", width = "100%", choices = c(
                               "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
                               "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
@@ -379,11 +376,16 @@ ui <- navbarPage(selected = "home",
                               "Jeb Stuart Rescue Squad" = "JEB STUART RESCUE SQUAD",                                                                                      
                               "Smith River Rescue Squad" = "SMITH RIVER RESCUE SQUAD"                                                                                     
                             )),
+                            p(strong("Percent Residents Covered")),
+                            withSpinner(tableOutput("emstable")),
                             withSpinner(leafletOutput("emsplot")),
-                            p("Percent Residents Covered"),
-                            br(),
-                            withSpinner(tableOutput("emstable"))
-                          )
+                            p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API."))
+                          ),
+                          column(6, 
+                                 h4(strong("Coverage Deserts"), align = "center"),
+                                 p("Text"),
+                                 withSpinner(leafletOutput("allems")),
+                                 p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API.")))
                           )
                  ),
                  
@@ -1668,7 +1670,7 @@ server <- function(input, output, session) {
       addLayersControl(
         position = "topright",
         overlayGroups = c("15 Minute Isochrones",
-                          "10 Minute Isochrones",
+                       "10 Minute Isochrones",
                           "Residential Properties"),
         options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("15 Minute Isochrones")
@@ -1791,6 +1793,161 @@ server <- function(input, output, session) {
     colnames(table) <- c("Time", "Coverage")
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  
+  # EMS deserts
+  output$allems <- renderLeaflet({
+    leaflet(options = leafletOptions(minZoom = 10)) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addCircles(data = residential, 
+                 fillColor = colors[5],
+                 fillOpacity = .5, 
+                 stroke = FALSE, 
+                 group = "Residential Properties") %>%
+      addPolygons(data = ems_iso_8_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_8, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_8_9, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "8 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_8, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_10_9, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_1, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_2, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_3, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_4, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_5, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_6, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_7, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_8, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addPolygons(data = ems_iso_12_9, 
+                  fillColor = colors[1],
+                  fillOpacity = .5, 
+                  stroke = FALSE, 
+                  group = "12 Minute Isochrones") %>%
+      addLayersControl(
+        position = "topright",
+        overlayGroups = c("12 Minute Isochrones",
+                          "10 Minute Isochrones",
+                          "8 Minute Isochrones",
+                          "Residential Properties"),
+        options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup("12 Minute Isochrones") %>%
+      hideGroup("10 Minute Isochrones")
+  })
   
   # usda - lahunv10share  -----------------------------------------------------------
   var_usda <- reactive({
