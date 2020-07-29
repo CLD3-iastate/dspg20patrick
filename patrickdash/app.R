@@ -64,6 +64,74 @@ residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 measures_table <- read_excel("data/Measures.xlsx")
 
+grc_iso_10_3 <- readRDS("data/isochrones/grocery/grc_iso_10_3.RDS")
+grc_iso_10_4 <- readRDS("data/isochrones/grocery/grc_iso_10_4.RDS")
+grc_iso_10_5 <- readRDS("data/isochrones/grocery/grc_iso_10_5.RDS")
+grc_iso_10_6 <- readRDS("data/isochrones/grocery/grc_iso_10_6.RDS")
+grc_iso_10_7 <- readRDS("data/isochrones/grocery/grc_iso_10_7.RDS")
+grc_iso_10_8 <- readRDS("data/isochrones/grocery/grc_iso_10_8.RDS")
+grc_iso_10_9 <- readRDS("data/isochrones/grocery/grc_iso_10_9.RDS")
+
+grc_iso_15_3 <- readRDS("data/isochrones/grocery/grc_iso_15_3.RDS")
+grc_iso_15_4 <- readRDS("data/isochrones/grocery/grc_iso_15_4.RDS")
+grc_iso_15_5 <- readRDS("data/isochrones/grocery/grc_iso_15_5.RDS")
+grc_iso_15_6 <- readRDS("data/isochrones/grocery/grc_iso_15_6.RDS")
+grc_iso_15_7 <- readRDS("data/isochrones/grocery/grc_iso_15_7.RDS")
+grc_iso_15_8 <- readRDS("data/isochrones/grocery/grc_iso_15_8.RDS")
+grc_iso_15_9 <- readRDS("data/isochrones/grocery/grc_iso_15_9.RDS")
+
+wifi_iso_10_1 <- readRDS("data/isochrones/wifi/wifi_iso_10_1.RDS")
+wifi_iso_10_2 <- readRDS("data/isochrones/wifi/wifi_iso_10_2.RDS")
+wifi_iso_10_3 <- readRDS("data/isochrones/wifi/wifi_iso_10_3.RDS")
+wifi_iso_10_4 <- readRDS("data/isochrones/wifi/wifi_iso_10_4.RDS")
+wifi_iso_10_5 <- readRDS("data/isochrones/wifi/wifi_iso_10_5.RDS")
+wifi_iso_10_6 <- readRDS("data/isochrones/wifi/wifi_iso_10_6.RDS")
+wifi_iso_10_7 <- readRDS("data/isochrones/wifi/wifi_iso_10_7.RDS")
+wifi_iso_10_8 <- readRDS("data/isochrones/wifi/wifi_iso_10_8.RDS")
+#wifi_iso_10_9 <- readRDS("data/isochrones/wifi/wifi_iso_10_9.RDS")
+#wifi_iso_10_10 <- readRDS("data/isochrones/wifi/wifi_iso_10_10.RDS")
+
+wifi_iso_15_1 <- readRDS("data/isochrones/wifi/wifi_iso_15_1.RDS")
+wifi_iso_15_2 <- readRDS("data/isochrones/wifi/wifi_iso_15_2.RDS")
+wifi_iso_15_3 <- readRDS("data/isochrones/wifi/wifi_iso_15_3.RDS")
+wifi_iso_15_4 <- readRDS("data/isochrones/wifi/wifi_iso_15_4.RDS")
+wifi_iso_15_5 <- readRDS("data/isochrones/wifi/wifi_iso_15_5.RDS")
+wifi_iso_15_6 <- readRDS("data/isochrones/wifi/wifi_iso_15_6.RDS")
+wifi_iso_15_7 <- readRDS("data/isochrones/wifi/wifi_iso_15_7.RDS")
+wifi_iso_15_8 <- readRDS("data/isochrones/wifi/wifi_iso_15_8.RDS")
+#wifi_iso_15_9 <- readRDS("data/isochrones/wifi/wifi_iso_15_9.RDS")
+#wifi_iso_15_10 <- readRDS("data/isochrones/wifi/wifi_iso_15_10.RDS")
+
+ems_iso_8_1 <- readRDS("data/isochrones/ems/ems_iso_8_1.RDS")
+ems_iso_8_2 <- readRDS("data/isochrones/ems/ems_iso_8_2.RDS")
+ems_iso_8_3 <- readRDS("data/isochrones/ems/ems_iso_8_3.RDS")
+ems_iso_8_4 <- readRDS("data/isochrones/ems/ems_iso_8_4.RDS")
+ems_iso_8_5 <- readRDS("data/isochrones/ems/ems_iso_8_5.RDS")
+ems_iso_8_6 <- readRDS("data/isochrones/ems/ems_iso_8_6.RDS")
+ems_iso_8_7 <- readRDS("data/isochrones/ems/ems_iso_8_7.RDS")
+ems_iso_8_8 <- readRDS("data/isochrones/ems/ems_iso_8_8.RDS")
+ems_iso_8_9 <- readRDS("data/isochrones/ems/ems_iso_8_9.RDS")
+
+ems_iso_10_1 <- readRDS("data/isochrones/ems/ems_iso_10_1.RDS")
+ems_iso_10_2 <- readRDS("data/isochrones/ems/ems_iso_10_2.RDS")
+ems_iso_10_3 <- readRDS("data/isochrones/ems/ems_iso_10_3.RDS")
+ems_iso_10_4 <- readRDS("data/isochrones/ems/ems_iso_10_4.RDS")
+ems_iso_10_5 <- readRDS("data/isochrones/ems/ems_iso_10_5.RDS")
+ems_iso_10_6 <- readRDS("data/isochrones/ems/ems_iso_10_6.RDS")
+ems_iso_10_7 <- readRDS("data/isochrones/ems/ems_iso_10_7.RDS")
+ems_iso_10_8 <- readRDS("data/isochrones/ems/ems_iso_10_8.RDS")
+ems_iso_10_9 <- readRDS("data/isochrones/ems/ems_iso_10_9.RDS")
+
+ems_iso_12_1 <- readRDS("data/isochrones/ems/ems_iso_12_1.RDS")
+ems_iso_12_2 <- readRDS("data/isochrones/ems/ems_iso_12_2.RDS")
+ems_iso_12_3 <- readRDS("data/isochrones/ems/ems_iso_12_3.RDS")
+ems_iso_12_4 <- readRDS("data/isochrones/ems/ems_iso_12_4.RDS")
+ems_iso_12_5 <- readRDS("data/isochrones/ems/ems_iso_12_5.RDS")
+ems_iso_12_6 <- readRDS("data/isochrones/ems/ems_iso_12_6.RDS")
+ems_iso_12_7 <- readRDS("data/isochrones/ems/ems_iso_12_7.RDS")
+ems_iso_12_8 <- readRDS("data/isochrones/ems/ems_iso_12_8.RDS")
+ems_iso_12_9 <- readRDS("data/isochrones/ems/ems_iso_12_9.RDS")
+
 
 # user -------------------------------------------------------------
 ui <- navbarPage(selected = "home",
@@ -1387,20 +1455,29 @@ server <- function(input, output, session) {
   output$wifiplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$wifidrop,
-                     "Meadows of Dan Elementary School" = 1,
-                     "Woolwine Elementary School" = 2,
-                     "Patrick Springs Primary School" = 3,
-                     "Blue Ridge Elementary School" = 4,
-                     "Patrick County High School" = 5,
-                     "Stuart Elementary School" = 6,
-                     "Patrick County Branch Library" = 7,
-                     "Hardin Reynolds Memorial School" = 8,
-                     "Stuart Baptist Church" = 9,                       
-                     "Patrick Henry Community College Stuart Campus" = 10)
+      wifi_iso10 <- switch(input$wifidrop,
+                     "Meadows of Dan Elementary School" = wifi_iso_10_1,
+                     "Woolwine Elementary School" = wifi_iso_10_2,
+                     "Patrick Springs Primary School" = wifi_iso_10_3,
+                     "Blue Ridge Elementary School" = wifi_iso_10_4,
+                     "Patrick County High School" = wifi_iso_10_5,
+                     "Stuart Elementary School" = wifi_iso_10_6,
+                     "Patrick County Branch Library" = wifi_iso_10_7,
+                     "Hardin Reynolds Memorial School" = wifi_iso_10_8,
+                     "Stuart Baptist Church" = wifi_iso_10_9,                       
+                     "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
       
-      wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_", data, ".RDS"))
-      wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_", data, ".RDS"))
+      wifi_iso15 <- switch(input$wifidrop,
+                           "Meadows of Dan Elementary School" = wifi_iso_15_1,
+                           "Woolwine Elementary School" = wifi_iso_15_2,
+                           "Patrick Springs Primary School" = wifi_iso_15_3,
+                           "Blue Ridge Elementary School" = wifi_iso_15_4,
+                           "Patrick County High School" = wifi_iso_15_5,
+                           "Stuart Elementary School" = wifi_iso_15_6,
+                           "Patrick County Branch Library" = wifi_iso_15_7,
+                           "Hardin Reynolds Memorial School" = wifi_iso_15_8,
+                           "Stuart Baptist Church" = wifi_iso_15_9,                       
+                           "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
       
       m1 <- leaflet() %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1429,21 +1506,29 @@ server <- function(input, output, session) {
   })
   
   output$wifitable <- renderTable({
-    data <- switch(input$wifidrop,
-                   "Meadows of Dan Elementary School" = 1,
-                   "Woolwine Elementary School" = 2,
-                   "Patrick Springs Primary School" = 3,
-                   "Blue Ridge Elementary School" = 4,
-                   "Patrick County High School" = 5,
-                   "Stuart Elementary School" = 6,
-                   "Patrick County Branch Library" = 7,
-                   "Hardin Reynolds Memorial School" = 8,
-                   "Stuart Baptist Church" = 9,                       
-                   "Patrick Henry Community College Stuart Campus" = 10 
-    )
+    wifi_iso10 <- switch(input$wifidrop,
+                         "Meadows of Dan Elementary School" = wifi_iso_10_1,
+                         "Woolwine Elementary School" = wifi_iso_10_2,
+                         "Patrick Springs Primary School" = wifi_iso_10_3,
+                         "Blue Ridge Elementary School" = wifi_iso_10_4,
+                         "Patrick County High School" = wifi_iso_10_5,
+                         "Stuart Elementary School" = wifi_iso_10_6,
+                         "Patrick County Branch Library" = wifi_iso_10_7,
+                         "Hardin Reynolds Memorial School" = wifi_iso_10_8,
+                         "Stuart Baptist Church" = wifi_iso_10_9,                       
+                         "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
     
-    wifi_iso10 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_10_",data,".RDS"))
-    wifi_iso15 <- readRDS(paste0("data/isochrones/wifi/wifi_iso_15_",data,".RDS"))
+    wifi_iso15 <- switch(input$wifidrop,
+                         "Meadows of Dan Elementary School" = wifi_iso_15_1,
+                         "Woolwine Elementary School" = wifi_iso_15_2,
+                         "Patrick Springs Primary School" = wifi_iso_15_3,
+                         "Blue Ridge Elementary School" = wifi_iso_15_4,
+                         "Patrick County High School" = wifi_iso_15_5,
+                         "Stuart Elementary School" = wifi_iso_15_6,
+                         "Patrick County Branch Library" = wifi_iso_15_7,
+                         "Hardin Reynolds Memorial School" = wifi_iso_15_8,
+                         "Stuart Baptist Church" = wifi_iso_15_9,                       
+                         "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
     
     pp_10 <- st_intersection(residential, wifi_iso10)
     pp_15 <- st_intersection(residential, wifi_iso15)
@@ -1462,20 +1547,38 @@ server <- function(input, output, session) {
   output$emsplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$emsdrop,
-                     "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                     "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
-                     "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
-                     "VESTA RESCUE SQUAD" = 4,                                                                                           
-                     "ARARAT RESCUE SQUAD" = 5,                                                                                          
-                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                     "JEB STUART RESCUE SQUAD" = 7,                                                                                      
-                     "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+      ems_iso8 <- switch(input$emsdrop,
+                     "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
+                     "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
+                     "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
+                     "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
+                     "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
+                     "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
+                     "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
+                     "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
       
-      ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
-      ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
-      ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
+      ems_iso10 <- switch(input$emsdrop,
+                         "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
+                         "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
+                         "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
+                         "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
+                         "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
+                         "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
+                         "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
+      
+      ems_iso12 <- switch(input$emsdrop,
+                          "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
+                          "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
+                          "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
+                          "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
+                          "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
+                          "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
+                          "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
+                          "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
+                          "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
       
       m1 <- leaflet() %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1510,20 +1613,38 @@ server <- function(input, output, session) {
   })
   
   output$emstable <- renderTable({
-    data <- switch(input$emsdrop,
-                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                   "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,
-                   "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,
-                   "VESTA RESCUE SQUAD" = 4,
-                   "ARARAT RESCUE SQUAD" = 5,
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                   "JEB STUART RESCUE SQUAD" = 7,
-                   "SMITH RIVER RESCUE SQUAD" = 8,
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+    ems_iso8 <- switch(input$emsdrop,
+                       "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
+                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
+                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
+                       "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
+                       "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
+                       "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
+                       "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
+                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
     
-    ems_iso8 <- readRDS(paste0("data/isochrones/ems/ems_iso_8_",data,".RDS"))
-    ems_iso10 <- readRDS(paste0("data/isochrones/ems/ems_iso_10_",data,".RDS"))
-    ems_iso12 <- readRDS(paste0("data/isochrones/ems/ems_iso_12_",data,".RDS"))
+    ems_iso10 <- switch(input$emsdrop,
+                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
+                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
+                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
+                        "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
+                        "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
+                        "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
+                        "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
+    
+    ems_iso12 <- switch(input$emsdrop,
+                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
+                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
+                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
+                        "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
+                        "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
+                        "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
+                        "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
+                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
     
     pp_8 <- st_intersection(residential, ems_iso8)
     pp_10 <- st_intersection(residential, ems_iso10)
@@ -1604,18 +1725,23 @@ server <- function(input, output, session) {
   output$grocplot <- renderLeaflet({
       colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
       
-      data <- switch(input$grocdrop,
-                     "Mountain Meadow Farm and Craft Market" = 3,
-                     "Lowes Foods of Stuart" = 4,
-                     "Patrick County Local Farmers Market" = 5,
-                     "Stuart Farmers Market" = 6,                
-                     "W & W Produce" = 7,
-                     "Walmart Supercenter" = 8,
-                     "Poor Farmers Farm" = 9
-      )
+      groc_iso10 <- switch(input$grocdrop,
+                     "Mountain Meadow Farm and Craft Market" = grc_iso_10_3,
+                     "Lowes Foods of Stuart" = grc_iso_10_4,
+                     "Patrick County Local Farmers Market" = grc_iso_10_5,
+                     "Stuart Farmers Market" = grc_iso_10_6,                
+                     "W & W Produce" = grc_iso_10_7,
+                     "Walmart Supercenter" = grc_iso_10_8,
+                     "Poor Farmers Farm" = grc_iso_10_9)
       
-      groc_iso10 <- readRDS(paste0("data/isochrones/grocery/grc_iso_10_",data,".RDS"))
-      groc_iso15 <- readRDS(paste0("data/isochrones/grocery/grc_iso_15_",data,".RDS"))
+      groc_iso15 <- switch(input$grocdrop,
+                           "Mountain Meadow Farm and Craft Market" = grc_iso_15_3,
+                           "Lowes Foods of Stuart" = grc_iso_15_4,
+                           "Patrick County Local Farmers Market" = grc_iso_15_5,
+                           "Stuart Farmers Market" = grc_iso_15_6,                
+                           "W & W Produce" = grc_iso_15_7,
+                           "Walmart Supercenter" = grc_iso_15_8,
+                           "Poor Farmers Farm" = grc_iso_15_9)
       
       m1 <- leaflet() %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1624,12 +1750,12 @@ server <- function(input, output, session) {
                    fillOpacity = .8, 
                    stroke = FALSE, 
                    group = "Residential Properties") %>%
-        addPolygons(data = wifi_iso10, 
+        addPolygons(data = groc_iso10, 
                     fillColor = colors[1],
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "10 Minute Isochrone") %>%
-        addPolygons(data = wifi_iso15,
+        addPolygons(data = groc_iso15,
                     fillColor = colors[2],
                     fillOpacity = .8, 
                     stroke = FALSE, 
@@ -1668,6 +1794,44 @@ server <- function(input, output, session) {
     colnames(table) <- c("Time", "Coverage")
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  
+  
+  output$allgroc <- renderLeaflet({
+    
+    groc1 <- readRDS("data/isochrones/grocery/grc_iso_10_3.RDS")
+    groc2 <- readRDS("data/isochrones/grocery/grc_iso_10_4.RDS")
+    groc3 <- readRDS("data/isochrones/grocery/grc_iso_10_5.RDS")
+    groc4 <- readRDS("data/isochrones/grocery/grc_iso_10_6.RDS")
+    groc5 <- readRDS("data/isochrones/grocery/grc_iso_10_7.RDS")
+    groc6 <- readRDS("data/isochrones/grocery/grc_iso_10_8.RDS")
+    groc7 <- readRDS("data/isochrones/grocery/grc_iso_10_9.RDS")
+    
+    m1 <- leaflet() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addCircles(data = residential, 
+                 fillColor = colors[5],
+                 fillOpacity = .8, 
+                 stroke = FALSE, 
+                 group = "Residential Properties") %>%
+      addPolygons(data = groc_iso10, 
+                  fillColor = colors[1],
+                  fillOpacity = .8, 
+                  stroke = FALSE, 
+                  group = "10 Minute Isochrone") %>%
+      addPolygons(data = groc_iso15,
+                  fillColor = colors[2],
+                  fillOpacity = .8, 
+                  stroke = FALSE, 
+                  group = "15 Minute Isochrone") %>%
+      addLayersControl(
+        position = "topright",
+        overlayGroups = c("15 Minute Isochrone",
+                          "10 Minute Isochrone",
+                          "Residential Properties"),
+        options = layersControlOptions(collapsed = FALSE))
+    m1 
+  })
+  
   
   output$othermap <- renderLeaflet({
     
