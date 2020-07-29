@@ -296,7 +296,7 @@ ui <- navbarPage(selected = "home",
                  # wifi-----------------------------------------------------------
                  tabPanel("Connectivity", value = "connectivity",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Digital Connectivity"), align = "center"),
+                                   h1(strong("Digital Connectivity in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(6,
                                           h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
@@ -369,7 +369,7 @@ ui <- navbarPage(selected = "home",
                  # ems -----------------------------------------------------------
                  tabPanel("Health Care Access", value = "ems",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Health Care Access"), align = "center"),
+                                   h1(strong("Health Care Access in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(4,
                                           h4(strong("Accessing Emergency Medical Service Stations"), align = "center"),
@@ -419,74 +419,78 @@ ui <- navbarPage(selected = "home",
                  # food -----------------------------------------------------------
                  tabPanel("Food Access", value =  "food",
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Food Access"), align = "center"),
-                                   column(6,
-                                          h3(strong("Low Food Access"), align = "center"),
+                                   h1(strong("Food Access in Patrick County"), align = "center"),
+                                   p("", style = "padding-top:10px;"),
+                                   column(4,
+                                          h4(strong("Food Access in Rural Areas"), align = "center"),
                                           p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing 
-                              healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
-                              life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
-                              Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two 
-                              approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all."),
-                                          p("First, we examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United States Department of 
-                              Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators 
-                              at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We 
-                              developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas 
-                              where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
-                                          br(),
-                                          selectInput("usdadrop", "Select Variable:", width = "100%", choices = c(
-                                            "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
-                                            "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
-                                            "Percent Children with Low Food Access at 1 Mile" = "lakids1share",
-                                            "Percent Children with Low Food Access at 10 Miles" = "lakids10share",
-                                            "Percent Low Income Population with Low Food Access at 1 Mile" = "lalowi1share",
-                                            "Percent Low Income Population with Low Food Access at 10 Miles" = "lalowi10share",
-                                            "Percent Older Adults with Low Food Access at 1 Mile" = "laseniors1share",
-                                            "Percent Older Adults with Low Food Access at 10 Miles" = "laseniors10share")
-                                          ),
-                                          withSpinner(leafletOutput("usdaplot")),
-                                          p(tags$small("Data Source: USDA Food Access Research Atlas, 2017"))
+                                          healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
+                                          life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
+                                          Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two 
+                                          approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all.")
                                    ),
-                                   column(6,
-                                          h3(strong("Grocery and Farmers Market Coverage"), align = "center"),
-                                          p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
-                                            same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
-                                            convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude 
-                                            and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real 
-                                            estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to 
-                                            calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport 
-                                            timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot 
-                                            reach a location with healthy food within a selected travel time range. These areas in the county could benefit from programs facilitating 
-                                            access to produce."),
-                                          br(),
-                                          selectInput("grocdrop", "Select Location:", width = "100%", choices = c(
-                                            "Mountain Meadow Farm and Craft Market",
-                                            "Lowes Foods of Stuart",
-                                            "Patrick County Local Farmers Market",
-                                            "Stuart Farmers Market",                
-                                            "W & W Produce",
-                                            "Walmart Supercenter",
-                                            "Poor Farmers Farm")),
-                                          withSpinner(leafletOutput("grocplot")),
-                                          p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019.")),
-                                          br(""),
-                                          p("Percent Households Covered"),
-                                          withSpinner(tableOutput("groctable"))
-                                   )
-                          ),
-                          fluidRow(style = "margin: 6px;",
-                                   column(6,
-                                          h3(strong("Food Acccess Deserts"), align = "center"),
-                                          p("Text here"),
-                                          br(),
-                                          withSpinner(leafletOutput("allgroc")),
-                                          p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
-                                   ),
-                                   column(6,
-                                          h3(strong("County Food Security Resources"), align = "center"),
-                                          p("Text here"),
-                                          br(),
-                                          withSpinner(leafletOutput("othermap")),
-                                          p(tags$small("Data Source: Google Maps."))
+                                   column(8,
+                                          tabsetPanel(
+                                            tabPanel("Food Access",
+                                                     p("We examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United States Department of 
+                                                        Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators 
+                                                         at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We 
+                                                         developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas 
+                                                         where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
+                                                     selectInput("usdadrop", "Select Variable:", width = "100%", choices = c(
+                                                       "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
+                                                       "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
+                                                       "Percent Children with Low Food Access at 1 Mile" = "lakids1share",
+                                                       "Percent Children with Low Food Access at 10 Miles" = "lakids10share",
+                                                       "Percent Low Income Population with Low Food Access at 1 Mile" = "lalowi1share",
+                                                       "Percent Low Income Population with Low Food Access at 10 Miles" = "lalowi10share",
+                                                       "Percent Older Adults with Low Food Access at 1 Mile" = "laseniors1share",
+                                                       "Percent Older Adults with Low Food Access at 10 Miles" = "laseniors10share")
+                                                     ),
+                                                     p(strong("Map of Access at Census Tract Level")),
+                                                     withSpinner(leafletOutput("usdaplot")),
+                                                     p(tags$small("Data Source: USDA Food Access Research Atlas, 2017"))
+                                            ),
+                                            tabPanel("Grocery and Farmers' Market Coverage",
+                                                     p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
+                                                        same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
+                                                        convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude 
+                                                        and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real 
+                                                        estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to 
+                                                        calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport 
+                                                        timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot 
+                                                        reach a location with healthy food within a selected travel time range. These areas in the county could benefit from programs facilitating 
+                                                        access to produce."),
+                                                     br(),
+                                                     selectInput("grocdrop", "Select Location:", width = "100%", choices = c(
+                                                       "Mountain Meadow Farm and Craft Market",
+                                                       "Lowes Foods of Stuart",
+                                                       "Patrick County Local Farmers Market",
+                                                       "Stuart Farmers Market",                
+                                                       "W & W Produce",
+                                                       "Walmart Supercenter",
+                                                       "Poor Farmers Farm")),
+                                                     p(strong("Percent Households Covered")),
+                                                     withSpinner(tableOutput("groctable")),
+                                                     p(strong("Map of Coverage")),
+                                                     withSpinner(leafletOutput("grocplot")),
+                                                     p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
+                                            ),
+                                            tabPanel("Food Deserts",
+                                                     p("Text here"),
+                                                     br(),
+                                                     p(strong("Map of Food Deserts")),
+                                                     withSpinner(leafletOutput("allgroc")),
+                                                     p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
+                                            ),
+                                            tabPanel("Food Security Resources",
+                                                     p("Text here"),
+                                                     br(),
+                                                     p(strong("Map of Food Security Resources")),
+                                                     withSpinner(leafletOutput("othermap")),
+                                                     p(tags$small("Data Source: Google Maps."))
+                                            )
+                                          )
                                    )
                           )
                  ),
