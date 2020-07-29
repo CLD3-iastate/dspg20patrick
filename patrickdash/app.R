@@ -40,6 +40,8 @@ groceries <- st_as_sf(groceries, coords = c("longitude", "latitude"))
 st_crs(groceries) <- "+proj=longlat +datum=WGS84"
 groceries <- st_transform(groceries, '+proj=longlat +datum=WGS84')
 groceries <- subset(groceries, type == "farmers market" | type == "supermarket")
+groceries_latlong <- readRDS("data/groceries.Rds")
+groceries_latlong <- subset(groceries_latlong, type == "farmers market" | type == "supermarket")
 
 otherfood <- readRDS("data/otherfood.Rds")
 otherfood <- st_as_sf(otherfood, coords = c("longitude", "latitude"))
@@ -53,6 +55,7 @@ wifi <- readRDS("data/wifi.Rds")
 wifi <- st_as_sf(wifi, coords = c("longitude", "latitude"))
 st_crs(wifi) <- "+proj=longlat +datum=WGS84"
 wifi <- st_transform(wifi, '+proj=longlat +datum=WGS84')
+wifi_latlong <- readRDS("data/wifi.Rds")
 
 olderadults <- readRDS("data/olderadults.Rds")
 olderadults <- st_transform(olderadults, '+proj=longlat +datum=WGS84')
@@ -1498,6 +1501,17 @@ server <- function(input, output, session) {
                            "Hardin Reynolds Memorial School" = wifi_iso_15_8,
                            "Stuart Baptist Church" = wifi_iso_15_9,                       
                            "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
+      data <- switch(input$wifidrop,
+                           "Meadows of Dan Elementary School" = 1,
+                           "Woolwine Elementary School" = 2,
+                           "Patrick Springs Primary School" = 3,
+                           "Blue Ridge Elementary School" = 4,
+                           "Patrick County High School" = 5,
+                           "Stuart Elementary School" = 6,
+                           "Patrick County Branch Library" = 7,
+                           "Hardin Reynolds Memorial School" = 8,
+                           "Stuart Baptist Church" = 9,                       
+                           "Patrick Henry Community College Stuart Campus" = 10)
       
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1516,6 +1530,7 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "15 Minute Isochrone") %>%
+        addMarkers(data = wifi_latlong, ~longitude[data], ~latitude[data])  %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("15 Minute Isochrone",
@@ -1693,6 +1708,16 @@ server <- function(input, output, session) {
                           "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
                           "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
                           "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
+      data <- switch(input$emsdrop,
+                         "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
+                         "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
+                         "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
+                         "VESTA RESCUE SQUAD" = 4,                                                                                           
+                         "ARARAT RESCUE SQUAD" = 5,                                                                                          
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
+                         "JEB STUART RESCUE SQUAD" = 7,                                                                                      
+                         "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
+                         "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
       
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1716,6 +1741,7 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "12 Minute Isochrone") %>%
+        addMarkers(data = ems, ~LONGITUDE[data], ~LATITUDE[data]) %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("8 Minute Isochrone",
@@ -1982,6 +2008,15 @@ server <- function(input, output, session) {
                            "Walmart Supercenter" = grc_iso_15_6,
                            "Poor Farmers Farm" = grc_iso_15_7)
       
+      data <- switch(input$grocdrop,
+                           "Mountain Meadow Farm and Craft Market" = 1,
+                           "Lowes Foods of Stuart" = 2,
+                           "Patrick County Local Farmers Market" = 3,
+                           "Stuart Farmers Market" = 4,                
+                           "W & W Produce" = 5,
+                           "Walmart Supercenter" = 6,
+                           "Poor Farmers Farm" = 7)
+      
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
@@ -1999,6 +2034,7 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "15 Minute Isochrone") %>%
+        addMarkers(data = groceries_latlong, ~longitude[data], ~latitude[data]) %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("15 Minute Isochrone",
