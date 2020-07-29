@@ -149,10 +149,13 @@ groceries <- groceries_full %>%
 groceries_sf <- st_as_sf(groceries, coords = c("longitude", "latitude"))
 
 st_crs(groceries_sf) <- "+proj=longlat +datum=WGS84"
+nrow(groceries_sf)
+
+groceries_sf$name
 
 #Creating RDS files
 for(e in 1:nrow(groceries_sf)){
-#  e=9
+ e=7
   grc_iso10 <- traveltime_map(appId= traveltime_id ,
                               apiKey = traveltime_api,
                               location=c(groceries_sf$lat[e], groceries_sf$long[e]),
@@ -194,7 +197,6 @@ st_crs(wifi_sf) <- "+proj=longlat +datum=WGS84"
 
 #Creating RDS files
 for(w in 1:nrow(wifi_sf)){
-    w = 9
   wifi_iso10 <- traveltime_map(appId= traveltime_id,
                               apiKey = traveltime_api,
                               location=c(wifi_sf$lat[w], wifi_sf$long[w]),
@@ -225,18 +227,17 @@ for(w in 1:nrow(wifi_sf)){
 # emsmap_5.png -> ARARAT RESCUE SQUAD
 # emsmap_6.png -> FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 HQ
 # emsmap_7.png -> JEB STUART RESCUE SQUAD
-# emsmap_8.png -> 	SMITH RIVER RESCUE SQUAD
+# emsmap_8.png -> SMITH RIVER RESCUE SQUAD
 # emsmap_9.png -> FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2
 
-# grcmap_1.png -> Flemings Orchard (Farmers Market)
-# grcmap_2.png -> Ayers Apple Cooler (Farmers Market)
-# grcmap_3.png -> Mountain Meadow Farm and Craft Market
-# grcmap_4.png -> Lowes Foods of Stuart (Supermarket)
-# grcmap_5.png -> Patrick County Local Farmers Market
-# grcmap_6.png -> Stuart Farmers Market
-# grcmap_7.png -> W & W Produce (Farmers Market)
-# grcmap_8.png -> Walmart Supercenter (Supermarket)
-# grcmap_9.png -> 	Poor Farmers Farm (Farmers Market)
+# 1 <- "Mountain Meadow Farm and Craft Market"
+# 2 <- "Lowes Foods of Stuart"                
+# 3 <- "Patrick County Local Farmers Market"
+# 4 <- "Stuart Farmers Market"                
+# 5 <- "W & W Produce"
+# 6 <- "Walmart Supercenter"                  
+# 7 <- "Poor Farmers Farm" 
+# I did not rerun the maps
 
 # wifimap_1.png -> Meadows of Dan Elementary School
 # wifimap_2.png -> Woolwine Elementary School
@@ -246,3 +247,5 @@ for(w in 1:nrow(wifi_sf)){
 # wifimap_6.png -> Stuart Elementary School
 # wifimap_7.png -> Patrick County Branch Library
 # wifimap_8.png -> Hardin Reynolds Memorial School
+# wifimap_9.png -> Stuart Baptist Church                      
+# wifimap_10.png -> Patrick Henry Community College Stuart Campus
