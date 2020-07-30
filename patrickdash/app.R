@@ -357,6 +357,8 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Explore 'Deserts'",
                                                      p(""),
+                                                     p(strong("Percent Residential Properties Covered")),
+                                                     withSpinner(tableOutput("allwifitable")),
                                                      p(strong("Map of Free Wi-Fi Deserts")),
                                                      withSpinner(leafletOutput("allwifi")),
                                                      p(tags$small("Data Sources: CommonwealthConnect, 2020; CoreLogic, 2019; TravelTime API."))
@@ -408,6 +410,8 @@ ui <- navbarPage(selected = "home",
                                                      p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API."))
                                             ),
                                             tabPanel("Explore 'Deserts'",
+                                                     p(strong("Percent Residents Covered")),
+                                                     withSpinner(tableOutput("allemstable")),
                                                      p(strong("Map of Coverage Deserts")),
                                                      withSpinner(leafletOutput("allems")),
                                                      p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API.")))
@@ -479,6 +483,8 @@ ui <- navbarPage(selected = "home",
                                             tabPanel("Food Deserts",
                                                      p("Text here"),
                                                      br(),
+                                                     p(strong("Percent Households Covered")),
+                                                     withSpinner(tableOutput("allgrctable")),
                                                      p(strong("Map of Food Deserts")),
                                                      withSpinner(leafletOutput("allgroc")),
                                                      p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
@@ -1752,6 +1758,11 @@ server <- function(input, output, session) {
       hideGroup("15 Minute Isochrones")
   })
   
+  output$allwifitable <- renderTable({
+    table <- read.csv("data/isochrones/tables/wifi_iso_table.csv")
+    table
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  
   # ems: done ------------------------------------------------------------
 
   output$emsplot <- renderLeaflet({
@@ -2004,6 +2015,12 @@ server <- function(input, output, session) {
       hideGroup("12 Minute Isochrones") %>%
       hideGroup("10 Minute Isochrones")
   })
+  
+  output$allemstable <- renderTable({
+    table <- read.csv("data/isochrones/tables/ems_iso_table.csv")
+    table
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  
   
   # usda - lahunv10share  -----------------------------------------------------------
   var_usda <- reactive({
@@ -2278,6 +2295,12 @@ server <- function(input, output, session) {
                 title = "Type",
                 opacity = 0.7)
   })
+  
+  output$allgrctable <- renderTable({
+    table <- read.csv("data/isochrones/tables/grc_iso_table.csv")
+    table
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  
 }
 
 shinyApp(ui = ui, server = server)
