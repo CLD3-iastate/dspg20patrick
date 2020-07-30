@@ -15,6 +15,7 @@ library(readxl)
 library(readr)
 library(stringr)
 library(tigris)
+library(stringr)
 
 prettyblue <- "#232D4B"
 navBarBlue <- '#427EDC'
@@ -1875,6 +1876,7 @@ server <- function(input, output, session) {
                           "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
                           "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
                           "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
+      
       data <- switch(input$emsdrop,
                          "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
                          "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
@@ -1885,6 +1887,18 @@ server <- function(input, output, session) {
                          "JEB STUART RESCUE SQUAD" = 7,                                                                                      
                          "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
                          "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
+      
+      labels <- lapply(
+        paste("<strong>Name: </strong>",
+              str_to_title(ems[data, ]$NAME),
+              "<br />",
+              "<strong>Address:</strong>",
+              str_to_title(ems[data, ]$ADDRESS), ",", str_to_title(ems[data, ]$CITY), ", VA", ems[data, ]$ZIP,
+              "<br />",
+              "<strong>Type:</strong>",
+              str_to_title(ems[data, ]$NAICSDESCR)),
+        htmltools::HTML
+      )
       
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -1908,13 +1922,20 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "12 Minute Isochrone") %>%
-        addMarkers(data = ems, ~LONGITUDE[data], ~LATITUDE[data]) %>%
+        addMarkers(data = ems, ~LONGITUDE[data], ~LATITUDE[data],
+                   group = "EMS Locations",
+                   label = labels,
+                   labelOptions = labelOptions(direction = "bottom",
+                                               style = list(
+                                                 "font-size" = "12px",
+                                                 "border-color" = "rgba(0,0,0,0.5)",
+                                                 direction = "auto"))) %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("8 Minute Isochrone",
-                            "10 Minute Isochrone",
-                            "12 Minute Isochrone",
-                            "Residential Properties"),
+                         "10 Minute Isochrone",
+                         "12 Minute Isochrone",
+                         "Residential Properties"),
           options = layersControlOptions(collapsed = FALSE))
       m1 
   })
@@ -1938,6 +1959,19 @@ server <- function(input, output, session) {
   
   # EMS deserts
   output$allems <- renderLeaflet({
+    
+    labels <- lapply(
+      paste("<strong>Name: </strong>",
+            str_to_title(ems$NAME),
+            "<br />",
+            "<strong>Address:</strong>",
+            paste0(str_to_title(ems$ADDRESS), ", ", str_to_title(ems$CITY), ", VA ", ems$ZIP),
+            "<br />",
+            "<strong>Type:</strong>",
+            str_to_title(ems$NAICSDESCR)),
+      htmltools::HTML
+    )
+    
     leaflet(options = leafletOptions(minZoom = 10)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addCircles(data = residential, 
@@ -2080,15 +2114,22 @@ server <- function(input, output, session) {
                   fillOpacity = .5, 
                   stroke = FALSE, 
                   group = "12 Minute Isochrones") %>%
+      addMarkers(data = ems,
+                 group = "EMS Locations",
+                 label = labels,
+                 labelOptions = labelOptions(direction = "bottom",
+                                             style = list(
+                                               "font-size" = "12px",
+                                               "border-color" = "rgba(0,0,0,0.5)",
+                                               direction = "auto"))) %>%
       addLayersControl(
         position = "topright",
-        overlayGroups = c("12 Minute Isochrones",
-                          "10 Minute Isochrones",
-                          "8 Minute Isochrones",
-                          "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup("12 Minute Isochrones") %>%
-      hideGroup("10 Minute Isochrones")
+        baseGroups = c("8 Minute Isochrones",
+                       "10 Minute Isochrones",
+                       "12 Minute Isochrones"),
+        overlayGroups = c("EMS Locations",
+                       "Residential Properties"),
+        options = layersControlOptions(collapsed = FALSE))
   })
   
   output$allemstable <- renderTable({
@@ -2190,6 +2231,18 @@ server <- function(input, output, session) {
                            "Walmart Supercenter" = 6,
                            "Poor Farmers Farm" = 7)
       
+      labels <- lapply(
+        paste("<strong>Name: </strong>",
+              groceries_latlong[data, ]$name,
+              "<br />",
+              "<strong>Address:</strong>",
+              groceries_latlong[data, ]$fulladdress,
+              "<br />",
+              "<strong>Type:</strong>",
+              groceries_latlong[data, ]$type),
+        htmltools::HTML
+      )
+      
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
@@ -2207,12 +2260,20 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "15 Minute Isochrone") %>%
-        addMarkers(data = groceries_latlong, ~longitude[data], ~latitude[data]) %>%
+        addMarkers(data = groceries_latlong, ~longitude[data], ~latitude[data],
+                   group = "Fresh Food Location",
+                   label = labels,
+                   labelOptions = labelOptions(direction = "bottom",
+                                               style = list(
+                                                 "font-size" = "12px",
+                                                 "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"))) %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("15 Minute Isochrone",
                             "10 Minute Isochrone",
-                            "Residential Properties"),
+                            "Residential Properties",
+                            "Fresh Food Location"),
           options = layersControlOptions(collapsed = FALSE))
       m1 
   })
@@ -2228,13 +2289,25 @@ server <- function(input, output, session) {
                          "Walmart Supercenter" = 6,
                          "Poor Farmers Farm" = 7)
     
-    
     table <- read.csv(paste0("data/isochrones/tables/grc_iso_table_",data,".csv"))
     table
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
   
   # Food deserts
   output$allgroc <- renderLeaflet({
+    
+    labels <- lapply(
+      paste("<strong>Name: </strong>",
+            groceries_latlong$name,
+            "<br />",
+            "<strong>Address:</strong>",
+            groceries_latlong$fulladdress,
+            "<br />",
+            "<strong>Type:</strong>",
+            groceries_latlong$type),
+      htmltools::HTML
+    )
+  
     leaflet(options = leafletOptions(minZoom = 10)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addCircles(data = residential, 
@@ -2312,13 +2385,21 @@ server <- function(input, output, session) {
                   fillOpacity = .5, 
                   stroke = FALSE, 
                   group = "15 Minute Isochrones") %>%
+      addMarkers(data = groceries_latlong,
+                 group = "Fresh Food Locations",
+                 label = labels,
+                 labelOptions = labelOptions(direction = "bottom",
+                                             style = list(
+                                               "font-size" = "12px",
+                                               "border-color" = "rgba(0,0,0,0.5)",
+                                               direction = "auto")))  %>%
       addLayersControl(
         position = "topright",
-        overlayGroups = c("15 Minute Isochrones",
-                          "10 Minute Isochrones",
-                          "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup("15 Minute Isochrones")
+        baseGroups = c("10 Minute Isochrones",
+                       "15 Minute Isochrones"),
+        overlayGroups = c("Residential Properties",
+                          "Fresh Food Locations"),
+        options = layersControlOptions(collapsed = FALSE))
   })
   
    # Other food resources
