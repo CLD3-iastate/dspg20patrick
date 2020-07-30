@@ -14,7 +14,6 @@ library(shinycssloaders)
 library(readxl)
 library(readr)
 library(stringr)
-library(tigris)
 library(stringr)
 
 prettyblue <- "#232D4B"
@@ -47,7 +46,7 @@ groceries_latlong <- subset(groceries_latlong, type == "farmers market" | type =
 otherfood <- readRDS("data/otherfood.Rds")
 otherfood <- st_as_sf(otherfood, coords = c("longitude", "latitude"))
 st_crs(otherfood) <- "+proj=longlat +datum=WGS84"
-otherfood <- st_transform(otherfood, '+proj=longlat +datum=WGS84')
+otherfood <- st_transform(otherfood, "+proj=longlat +datum=WGS84")
 
 usda <- readRDS("data/usda.Rds")
 usda <- st_transform(usda, '+proj=longlat +datum=WGS84')
@@ -67,6 +66,9 @@ st_crs(residential) <- "+proj=longlat +datum=WGS84"
 residential <- st_transform(residential, '+proj=longlat +datum=WGS84')
 
 measures_table <- read_excel("data/Measures.xlsx")
+
+patrickborder <- readRDS("data/patrickborder.Rds")
+patrickborder <- st_transform(patrickborder, '+proj=longlat +datum=WGS84')
 
 grc_iso_10_1 <- readRDS("data/isochrones/grocery/grc_iso_10_1.RDS")
 grc_iso_10_2 <- readRDS("data/isochrones/grocery/grc_iso_10_2.RDS")
@@ -2412,36 +2414,12 @@ server <- function(input, output, session) {
    # Other food resources
   output$othermap <- renderLeaflet({
     
-    patrickcty <- counties(state = "51", year = 2018)
-    patrickcty <- st_as_sf(patrickcty)
-    patrickcty <- patrickcty %>% filter(COUNTYFP == 141)
-    
-    # Other food
-    pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            otherfood$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            otherfood$fulladdress,
-            "<br />",
-            "<strong>Type:</strong>",
-            otherfood$type,
-            "<br />",
-            "<strong>Open to:</strong>",
-            otherfood$audience,
-            "<br />",
-            "<strong>Notes:</strong>",
-            otherfood$notes),
-      htmltools::HTML
-    )
-    
     leaflet(data = otherfood,
             options = leafletOptions(minZoom = 10)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(data = patrickcty, stroke = T, weight = 2, color = "black", fillOpacity = 0) %>%
-      addCircleMarkers(stroke = FALSE,
+      addPolygons(data = patrickborder, stroke = T, weight = 2, color = "grey", fillOpacity = 0) %>%
+      addCircleMarkers(data = otherfood,
+                       stroke = FALSE,
                        fillOpacity = 0.7,
                        color = ~pal(type),
                        radius = 7,
