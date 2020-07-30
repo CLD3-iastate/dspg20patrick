@@ -299,7 +299,7 @@ ui <- navbarPage(selected = "home",
                                    h1(strong("Digital Connectivity in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(6,
-                                          h4(strong("Computing Device Ownership and Internet Access Type"), align = "center"),
+                                          h4(strong("Computing Device Ownership and Internet Access Type")),
                                           p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
                                              telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
                                              than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to 
@@ -324,7 +324,7 @@ ui <- navbarPage(selected = "home",
                                           withSpinner(leafletOutput("deviceplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
                                    column(6,
-                                          h4(strong("Free Wi-Fi Hotspot Access"), align = "center"),
+                                          h4(strong("Free Wi-Fi Hotspot Access")),
                                           p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations 
                                             using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to 
                                             the internet for free, decreasing constraints placed on families that do not have internet access at home. We retrieved free internet locations in Patrick 
@@ -374,7 +374,7 @@ ui <- navbarPage(selected = "home",
                                    h1(strong("Health Care Access in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(4,
-                                          h4(strong("Accessing Emergency Medical Service Stations"), align = "center"),
+                                          h4(strong("Accessing Emergency Medical Service Stations")),
                                           p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
                                             counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
                                             provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
@@ -426,7 +426,7 @@ ui <- navbarPage(selected = "home",
                                    h1(strong("Food Access in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(4,
-                                          h4(strong("Food Access in Rural Areas"), align = "center"),
+                                          h4(strong("Food Access in Rural Areas")),
                                           p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing 
                                           healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
                                           life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
@@ -576,10 +576,45 @@ ui <- navbarPage(selected = "home",
                  
                  # contact -----------------------------------------------------------
                  tabPanel("Contact", value = "contact",
-                          fluidRow(style = "margin: 6px;",
+                          fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                             h1(strong("Contact"), align = "center"),
                             br(),
-                            p("This is a paragraph about contacting us")
+                            h4(strong("UVA Data Science for the Public Good")),
+                            p("The", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics/dspg-program', 'Data Science for the Public Good (DSPG) Young Scholars program', target = "_blank"), 
+                              "is a summer immersive program held at the", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics', 'University of Virginia Biocomplexity Institute’s Social and Decision Analytics division (SDAD).'), 
+                              "In its seventh year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges around 
+                              critical social issues relevant in the world today. DSPG young scholars conduct research at the intersection of statistics, computation, and the social sciences 
+                              to determine how information generated within every community can be leveraged to improve quality of life and inform public policy. For more information on program 
+                              highlights, how to apply, and our annual symposium, please visit", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics/dspg-program', 'the official Biocomplexity DSPG website.', target = "_blank")),
+                            p("", style = "padding-top:10px;")
+                            ),
+                          fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                            column(6, align = "center",
+                            h4(strong("DSPG Team Members")),
+                            img(src = "team-morgan.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
+                            img(src = "team-tasfia.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
+                            img(src = "team-isabel.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                            p(a(href = 'https://www.linkedin.com/in/morgan-stockham/', 'Morgan Stockham', target = '_blank'), "(Claremont Graduate University, Applied Microeconomics);",
+                              a(href = 'https://www.linkedin.com/in/tasfia-chowdhury-89005a1b2/', 'Tasfia Chowdhury', target = '_blank'), "(Indiana University Bloomington, Political Science);",
+                              a(href = 'https://www.linkedin.com/in/igomez-3099/', 'Isabel Gomez', target = '_blank'), "(Smith College, Statistical and Data Science)."),
+                            p("", style = "padding-top:10px;")
+                            ),
+                            column(6, align = "center",
+                            h4(strong("UVA SDAD Team Members")),
+                            img(src = "team-teja.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
+                            img(src = "team-sallie.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                            p(a(href = "https://www.linkedin.com/in/tejapristavec/", 'Teja Pristavec', target = '_blank'), "(Research Assistant Professor);",
+                              a(href = 'https://biocomplexity.virginia.edu/sallie-keller', 'Sallie Keller', target = '_blank'), "(Division Director and Distinguished Professor)."),
+                            p("", style = "padding-top:10px;")
+                            )
+                            ),
+                          fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                            h4(strong("Project Stakeholders")),
+                            p(a(href = 'https://www.linkedin.com/in/nancy-bell-aa293810/', 'Nancy Bell', target = '_blank'), "(Virginia Department of Health);",
+                              a(href = 'https://www.linkedin.com/in/terri-alt-3138b4101/', 'Terri Alt', target = '_blank'), "(Virginia Cooperative Extension, Patrick County at Virginia Tech)."),
+                            p("", style = "padding-top:10px;"),
+                            h4(strong("Acknowledgments")),
+                            p("We would like to thank Healthy Patrick County, an association of concerned Patrick County residents, and Brandon Kramer for their input to this project.")
                           )
                  ),
                  inverse = T)
