@@ -280,7 +280,7 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Older Adult Household Characteristics",
                                                      p(""),
-                                                     selectInput("hhdrop", "1. Select Variable:", width = "100%", choices = c(
+                                                     selectInput("hhdrop", "Select Variable:", width = "100%", choices = c(
                                                        "Percent Married Couple Households with one or more 60+ Member" = "hhsixty_married",
                                                        "Percent Households with one or more 60+ Members" = "hhsixty_total",
                                                        "Percent Single (no partner present) Households with one or more 60+ Member" = "hhsixty_nonfam",
@@ -339,6 +339,7 @@ ui <- navbarPage(selected = "home",
                                           br(),
                                           tabsetPanel(
                                             tabPanel("Explore Hotspot Coverage",
+                                                     p(""),
                                                      selectInput("wifidrop", "Select Free Wifi Location:", width = "100%", choices = c(
                                                        "Meadows of Dan Elementary School",
                                                        "Woolwine Elementary School",
@@ -393,6 +394,7 @@ ui <- navbarPage(selected = "home",
                                    column(8,
                                           tabsetPanel(
                                             tabPanel("Explore Coverage",
+                                                     p(""),
                                                      selectInput("emsdrop", "Select EMS Location:", width = "100%", choices = c(
                                                        "Stuart Volunteer Fire Department" = "STUART VOLUNTEER FIRE DEPARTMENT",
                                                        "Moorefield Store Volunteer Fire Department" = "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT",                                                         
@@ -411,6 +413,7 @@ ui <- navbarPage(selected = "home",
                                                      p(tags$small("Data Sources: Homeland Infrastructure Foundation-Level Data, 2010; CoreLogic, 2019; TravelTime API."))
                                             ),
                                             tabPanel("Explore 'Deserts'",
+                                                     p(""),
                                                      p(strong("Percent Residents Covered")),
                                                      withSpinner(tableOutput("allemstable")),
                                                      p(strong("Map of Coverage Deserts")),
@@ -437,6 +440,7 @@ ui <- navbarPage(selected = "home",
                                    column(8,
                                           tabsetPanel(
                                             tabPanel("Food Access",
+                                                     p(""),
                                                      p("We examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United States Department of 
                                                         Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators 
                                                          at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We 
@@ -457,6 +461,7 @@ ui <- navbarPage(selected = "home",
                                                      p(tags$small("Data Source: USDA Food Access Research Atlas, 2017"))
                                             ),
                                             tabPanel("Grocery and Farmers' Market Coverage",
+                                                     p(""),
                                                      p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
                                                         same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
                                                         convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude 
@@ -482,6 +487,7 @@ ui <- navbarPage(selected = "home",
                                                      p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
                                             ),
                                             tabPanel("Food Deserts",
+                                                     p(""),
                                                      p("Text here"),
                                                      br(),
                                                      p(strong("Percent Households Covered")),
@@ -491,6 +497,7 @@ ui <- navbarPage(selected = "home",
                                                      p(tags$small("Data Source: Google Maps; TravelTime API; CoreLogic, 2019."))
                                             ),
                                             tabPanel("Food Security Resources",
+                                                     p(""),
                                                      p("Text here"),
                                                      br(),
                                                      p(strong("Map of Food Security Resources")),
