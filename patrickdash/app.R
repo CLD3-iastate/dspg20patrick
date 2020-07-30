@@ -1636,6 +1636,18 @@ server <- function(input, output, session) {
                            "Stuart Baptist Church" = 9,                       
                            "Patrick Henry Community College Stuart Campus" = 10)
       
+       labels <- lapply(
+         paste("<strong>Name: </strong>",
+               wifi_latlong[data, ]$name,
+               "<br />",
+               "<strong>Address:</strong>",
+               wifi_latlong[data, ]$fulladdress,
+               "<br />",
+               "<strong>Notes:</strong>",
+               wifi_latlong[data, ]$notes),
+         htmltools::HTML
+       )
+       
       m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addCircles(data = residential, 
@@ -1653,7 +1665,13 @@ server <- function(input, output, session) {
                     fillOpacity = .8, 
                     stroke = FALSE, 
                     group = "15 Minute Isochrone") %>%
-        addMarkers(data = wifi_latlong, ~longitude[data], ~latitude[data])  %>%
+        addMarkers(data = wifi_latlong, ~longitude[data], ~latitude[data],
+                   label = labels,
+                   labelOptions = labelOptions(direction = "bottom",
+                                               style = list(
+                                                 "font-size" = "12px",
+                                                 "border-color" = "rgba(0,0,0,0.5)",
+                                                 direction = "auto")))  %>%
         addLayersControl(
           position = "topright",
           overlayGroups = c("15 Minute Isochrone",
