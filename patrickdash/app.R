@@ -2414,6 +2414,26 @@ server <- function(input, output, session) {
    # Other food resources
   output$othermap <- renderLeaflet({
     
+    pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
+    
+    labels <- lapply(
+      paste("<strong>Name: </strong>",
+            otherfood$name,
+            "<br />",
+            "<strong>Address:</strong>",
+            otherfood$fulladdress,
+            "<br />",
+            "<strong>Type:</strong>",
+            otherfood$type,
+            "<br />",
+            "<strong>Open to:</strong>",
+            otherfood$audience,
+            "<br />",
+            "<strong>Notes:</strong>",
+            otherfood$notes),
+      htmltools::HTML
+    )
+    
     leaflet(data = otherfood,
             options = leafletOptions(minZoom = 10)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
