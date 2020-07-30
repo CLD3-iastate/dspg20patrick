@@ -1623,7 +1623,8 @@ server <- function(input, output, session) {
                            "Hardin Reynolds Memorial School" = wifi_iso_15_8,
                            "Stuart Baptist Church" = wifi_iso_15_9,                       
                            "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
-      data <- switch(input$wifidrop,
+     
+       data <- switch(input$wifidrop,
                            "Meadows of Dan Elementary School" = 1,
                            "Woolwine Elementary School" = 2,
                            "Patrick Springs Primary School" = 3,
@@ -1682,6 +1683,19 @@ server <- function(input, output, session) {
   
   # Wifi deserts
   output$allwifi <- renderLeaflet({
+    
+    labels <- lapply(
+      paste("<strong>Name: </strong>",
+            wifi_latlong$name,
+            "<br />",
+            "<strong>Address:</strong>",
+            wifi_latlong$fulladdress,
+            "<br />",
+            "<strong>Notes:</strong>",
+            wifi_latlong$notes),
+      htmltools::HTML
+    )
+    
     leaflet(options = leafletOptions(minZoom = 10)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addCircles(data = residential, 
@@ -1784,13 +1798,21 @@ server <- function(input, output, session) {
                   fillOpacity = .5, 
                   stroke = FALSE, 
                   group = "15 Minute Isochrones") %>%
+      addMarkers(data = wifi_latlong,
+                 group = "Free Wi-Fi Locations",
+                 label = labels,
+                 labelOptions = labelOptions(direction = "bottom",
+                                             style = list(
+                                               "font-size" = "12px",
+                                               "border-color" = "rgba(0,0,0,0.5)",
+                                               direction = "auto")))  %>%
       addLayersControl(
         position = "topright",
-        overlayGroups = c("15 Minute Isochrones",
-                       "10 Minute Isochrones",
+        overlayGroups = c("Free Wi-Fi Locations",
                           "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup("15 Minute Isochrones")
+        baseGroups = c("10 Minute Isochrones",
+                       "15 Minute Isochrones"),
+        options = layersControlOptions(collapsed = FALSE))
   })
   
   output$allwifitable <- renderTable({
