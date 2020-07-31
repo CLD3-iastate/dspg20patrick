@@ -490,7 +490,15 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Food Deserts",
                                                      p(""),
-                                                     p("Text here"),
+                                                     p("Food access is an important determinant of health outcomes. In rural counties, supermarkets and grocery stores are 
+                                                        few and far between. Patrick county is home to many convenience stores, but fewer healthy food stores. Therefore, health outcomes are across the county are going to be affected by driving access to these healthier options. 
+                                                        Isochrones give us a good understanding of driving access to healthy food and from these we can 
+                                                        determine that there are many residential areas within the county that struggle with food security. With the inclusion of our isochrone estimates, 
+                                                        we can determine that there are parts of the county that are food deserts. A food desert is a location
+                                                        that has no access to healthy food options or are limited because of geographies.
+                                                        This map identifies that there are parts of Patrick county where their ability to access 
+                                                        healthy food is limited and their driving times to 
+                                                       access food is longer than other members of the community."),
                                                      br(),
                                                      p(strong("Percent Households Covered")),
                                                      withSpinner(tableOutput("allgrctable")),
@@ -500,7 +508,10 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Food Security Resources",
                                                      p(""),
-                                                     p("Text here"),
+                                                     p("Patrick County contains multiple locations for access to free, healthy foods.
+                                                       For members of the community that struggle with food security, these locations can 
+                                                       have major effects on health outcomes. Food banks, food pantries, and meals are all important
+                                                       locations that help relieve stress on communities with limited food access or live in a food desert."),
                                                      br(),
                                                      p(strong("Map of Food Security Resources")),
                                                      withSpinner(leafletOutput("othermap")),
