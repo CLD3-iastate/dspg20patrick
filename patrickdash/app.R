@@ -561,7 +561,7 @@ ui <- navbarPage(selected = "home",
                                             br(""),
                                             img(src = "data-corelogic.png", style = "display: inline; float: left;", width = "120px"),
                                             p(strong("CoreLogic."), "CoreLogic is a supplier of proprietary US real estate and specialized business data at the property level. 
-                                           This company provides data spamming over 50 years at the latitude and longitude level. Information available in the dataset includes 
+                                           This company provides data spanning over 50 years at the latitude and longitude level. Information available in the dataset includes 
                                            property characteristics, mortgage, foreclosures and performance. We used 2019 CoreLogic data to obtain the locations of all residential
                                            properties in Patrick County.")
                                      ),
