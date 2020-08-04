@@ -201,11 +201,11 @@ ui <- navbarPage(selected = "home",
                                           tags$li("Provided census tract- and census block group-level maps of Patrick County residents'", strong("sociodemographic and socioeconomic characteristics"), ", highlighting underprivileged areas."),
                                           tags$li("Created census tract-level maps on", strong("older adult health"), "to show the geographic distribution of older adults in the county by gender and
                                                   type of disability, identifying areas where providing telehealth or travelling preventive care services may be particularly important."),
-                                          tags$li("Mapped residents'", strong("computing device and internet access"), "at census block group level, and constructed isochrones (areas of equal travel time) from households to free
+                                          tags$li("Mapped residents'", strong("computing device and internet access"), "at census block group level, and constructed 10- and 15-minute isochrones (areas of equal travel time) from households to free
                                                   wifi hotspots to highlight internet gaps that could suggest where new wi-fi hotspots could be optimally placed to provide internet access to more residents."),
-                                          tags$li("Calculated and mapped", strong("emergency medical service (EMS) station coverage"), "of households within 8-, 10-, and 12-minute travel times, identifying araes difficult to reach within 
+                                          tags$li("Calculated and mapped", strong("emergency medical service (EMS) station coverage"), "of households within 8-, 10-, and 12-minute travel times, identifying areas difficult to reach within 
                                                    standard EMS travel thresholds."),
-                                          tags$li("Constructed", strong("food access"), "maps by census tract, isochrones from households to grocery stores and farmers markets, and maps of food security resources in the county,
+                                          tags$li("Constructed", strong("food access"), "maps by census tract, 10- and 15-minute isochrones from households to grocery stores and farmers markets, and maps of food security resources in the county,
                                                 highlighting food deserts and areas that could benefit from programs facilitating access to fresh produce."),
                                           p(),
                                           p("This dashboard compiles our findings and allows extension professionals, stakeholders, and other users to explore the information interactively.")
@@ -235,7 +235,8 @@ ui <- navbarPage(selected = "home",
                                    column(4,
                                           h4(strong("Who does Patrick County Serve?")),
                                           p("We examined Patrick County population sociodemographic and socioeconomic characteristics to better understand the 
-                                            residents that the county serves. We retrieved American Community Survey (ACS) data to calculate this information at census block group and census 
+                                            residents that the county serves."),
+                                          p("We retrieved American Community Survey (ACS) data to calculate this information at census block group and census 
                                             tract levels. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 1-year and 5-year datasets. We used 
                                             the most recently available 5-year estimates from 2014/18 to compute percent Patrick County residents in a given block group or tract by age, race, ethnicity, 
                                             employment, health insurance coverage, and other relevant characteristics."),
@@ -272,11 +273,11 @@ ui <- navbarPage(selected = "home",
                                            health care resources is limited in rural areas, particularly for older adults in need of assistance with activities of daily life."),
                                           p("To help Patrick County better understand their older adult population, we used American Community Survey (ACS) data and obtained census tract 
                                            level information for the age group. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households to compile 
-                                           1-year and 5-year datasets with population sociodemographic and socioeconomic characteristics. We used the most recently available 5-year estimates
+                                           1-year and 5-year estimates of population sociodemographic and socioeconomic characteristics. We used the most recently available 5-year data
                                            from 2014/18 to calculate the percentage of the Patrick County older adults with different types of disability, as well as provided information 
-                                           on their living arrangements and socioeconomic condition. We provided all information at census tract level and by gender."),
+                                           on their living arrangements and socioeconomic status. We provided all information at census tract level and by gender."),
                                           p("These insights on the health and socioeconomic status of older adults in Patrick County can assist the county in identifying areas of high need 
-                                          for health care resources that will reach older adults.")
+                                          for health care resources.")
                                    ),
                                    column(8,
                                           h4(strong("Map of Older Adult Characteristics by Census Tract")),
@@ -326,22 +327,22 @@ ui <- navbarPage(selected = "home",
                                    p("", style = "padding-top:10px;"),
                                    column(6,
                                           h4(strong("Computing Device Ownership and Internet Access Type")),
-                                          p("Internet connection and computing devices are crucial for access to health information, resources, and participation in online health-related services like 
-                                             telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, pay higher subscription prices, have fewer internet providers available 
+                                          p("Internet connection and computing devices are crucial for access to health information and participation in online health-related services like 
+                                             telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, and have fewer internet providers available 
                                              than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to 
                                              provide the county with insights on where increasing connectivity would facilitate communicating health information and improve online health service access."),
                                           p("We first examined access to computing devices and internet connection types in Patrick County. We used American Community Survey (ACS) data to 
                                             obtain this information at census block group level. ACS is an ongoing yearly survey conducted by the U.S Census Bureau that samples households 
-                                            to compile 1-year and 5-year datasets containing information on population sociodemographic and socioeconomic characteristics. We used the most 
-                                            recently available 5-year estimates from 2014/18 to calculate the percentage of the Patrick County residents with access to various technologies 
-                                            like smartphones, broadband internet, and computers by block group. "),
+                                            to compile 1-year and 5-year estimates of population sociodemographic and socioeconomic characteristics. We used the most 
+                                            recently available 5-year data from 2014/18 to calculate the percentage of the Patrick County residents with access to devices
+                                            and internet by census block group."),
                                           br(),
                                           selectInput("devicedrop", "Select Variable:", width = "100%", choices = c(
                                             "Percent Households with No Computer" = "nocomputer",
                                             "Percent Households with Laptop" = "laptop",
                                             "Percent Households with Smartphone" = "smartphone",
                                             "Percent Households with Tablet" = "tablet",
-                                            "Percent Households Without Internet" = "nointernet",
+                                            "Percent Households without Internet" = "nointernet",
                                             "Percent Households with Satellite Internet" = "satellite",
                                             "Percent Households with Cellular Internet" = "cellular",
                                             "Percent Households with Broadband Internet" = "broadband")
@@ -350,15 +351,15 @@ ui <- navbarPage(selected = "home",
                                           withSpinner(leafletOutput("deviceplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))),
                                    column(6,
-                                          h4(strong("Free Wi-Fi Hotspot Access")),
-                                          p("To understand internet access at a more granular level, we then examined access to free wi-fi hotspots in the county. We obtained wi-fi hotspot locations 
-                                            using the publicly available Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect aims to highlight areas where people can connect to 
+                                          h4(strong("Free WiFi Hotspot Access")),
+                                          p("To understand internet access at a more granular level, we examined access to free wi-fi hotspots in the county."),
+                                          p("We obtained wifi hotspot locations using the Virginia Tech and CommonwealthConnect hotspot map. CommonwealthConnect identifies where people can connect to 
                                             the internet for free, decreasing constraints placed on families that do not have internet access at home. We retrieved free internet locations in Patrick 
                                             County from the data. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate that 
                                             includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to calculate 10- and 15-minute 
-                                            car travel time isochrones—areas of equal travel time given a departure time and mode of transportation—from wi-fi hotspots. TravelTime API aggregates data 
-                                            from Open Street Maps, transport timetables and speed profiles to generate isochrones. Isochrones allowed us to identify hotspot gaps, or clusters of 
-                                            residential properties that cannot reach a free hotspot location within a selected travel time range."),
+                                            car travel time isochrones—areas of equal travel time given a departure time and mode of transportation—from wifi hotspots. TravelTime API aggregates data 
+                                            from Open Street Maps, transport timetables and speed profiles to generate isochrones. Isochrones allowed us to identify wifi gaps, or clusters of 
+                                            residential properties that cannot reach a free internet location within a selected travel time range."),
                                           p("This information equips extension agents with knowledge on how best to reach their constituents, as well as identifies internet gaps that suggest where 
                                             new wi-fi hotspots could be optimally placed to provide internet access to more residents."),
                                           br(),
@@ -402,15 +403,15 @@ ui <- navbarPage(selected = "home",
                                    p("", style = "padding-top:10px;"),
                                    column(4,
                                           h4(strong("Accessing Emergency Medical Service Stations")),
-                                          p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to their urban 
+                                          p("Access to health care services in rural areas is limited by a lack of transportation and a shortage of healthcare professionals. Compared to urban 
                                             counterparts, rural residents must travel farther to obtain both preventive and specialty care. Patrick County’s general practitioner, dentist, and mental health
-                                            provider to patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
+                                            provider-to-patient ratios fall below state averages, and the county recently experienced the closure of its only hospital. Its residents often rely on emergency
                                             medical services (EMS) stations to obtain care and transportation to other health care facilities."),
                                           p("To better understand health service access limitations in the county, we examined residents’ access to EMS stations. We obtained EMS locations using Homeland 
                                             Infrastructure Foundation-Level Data (HIFLD) collected by the Department of Homeland Security. HIFLD is a public source dataset with information on a range of 
-                                            facilities; we used the data to retrieve locations of EMS stations at latitude and longitude level. We extracted locations of Patrick County residential 
+                                            facilities; we used the data to retrieve EMS station latitude and longitude. We extracted locations of Patrick County residential 
                                             properties from 2019 CoreLogic, a proprietary dataset for US real estate that includes information on building characteristics. Finally, we used the TravelTime
-                                            Application Programming Interface (API) to calculate 8-, 10-, and 12- minute car travel time isochrones—areas of equal travel time given a departure time and 
+                                            Application Programming Interface (API) to calculate 8-, 10-, and 12- minute drive time isochrones—areas of equal travel time given a departure time and 
                                             mode of transportation—from EMS stations. TravelTime API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. 
                                             Isochrones allowed us to identify EMS coverage gaps, or clusters of residential properties that cannot be reached from an EMS location within a selected travel 
                                             time range. We selected 8-, 10-, and 12-minute thresholds as EMS are expected to reach distressed individuals within 8 minutes. However, this threshold is 
@@ -454,23 +455,33 @@ ui <- navbarPage(selected = "home",
                           fluidRow(style = "margin: 6px;",
                                    h1(strong("Food Access in Patrick County"), align = "center"),
                                    p("", style = "padding-top:10px;"),
-                                   column(4,
+                                   column(5,
                                           h4(strong("Food Access in Rural Areas")),
                                           p("Social determinants of health shape food access, a key factor in negative health outcomes. Rural area residents frequently face difficulties in accessing 
-                                          healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
-                                          life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
-                                          Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention. We used two 
-                                          approaches to give Patrick County actionable information on their residents’ food access that can inform county efforts to provide equitable food access for all.")
+                                             healthy and nutritious food, and experience high rates of chronic illnesses like heart disease and diabetes, resulting in higher mortality rates and lower
+                                             life expectancy compared to urban areas. Facilitating  access to nutritional and high-quality foods can lead to decreases in chronic disease prevalence. 
+                                             Many Patrick County residents suffer from conditions like diabetes and obesity, and providing healthy food may support disease prevention."),
+                                          p("We analyzed multiple data sources to give Patrick County actionable information on their residents’ food access that can inform county efforts ensuring equitable food access for all."),
+                                          p("First, we examined", strong("food access at multiple distance thresholds by age and socioeconomic status."), "We used the 2017 United States Department of 
+                                             Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides access indicators for different social groups.
+                                             We created census tract-level maps that identify Patrick County areas where residents may have difficulty accessing nutritious foods, and highlight geographies 
+                                             where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
+                                          p("Second, to better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
+                                             same time frame given a start location and a mode of transportation—from Patrick County", strong("residential properties to locations of grocery stores 
+                                             and farmers’ markets."), "We used Google Maps to identify these locations' latitude and longitude. We extracted locations of 
+                                             Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real estate with information on building characteristics. 
+                                             Finally, we used the TravelTime Application Programming Interface (API) to calculate 10- and 15-minute car travel times from grocery locations. TravelTime 
+                                             API aggregates data from Open Street Maps, transport timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters 
+                                             of properties that cannot reach a location with healthy food within a selected travel time range. These areas in the county could benefit from programs 
+                                             facilitating access to produce."),
+                                          p("Finally, Patrick County offers", strong("access to free food"), "at multiple locations. For community members that struggle with food security, these locations can 
+                                             offer temporary assistance. We used GoogleMaps to locate food banks, food pantries, and community meal sites, geocoded their addresses, and mapped
+                                             these resources along with notes on their target audiences.")
                                    ),
-                                   column(8,
+                                   column(7,
                                           tabsetPanel(
                                             tabPanel("Food Access",
                                                      p(""),
-                                                     p("We examined food access at multiple distance thresholds and by both age and socioeconomic status. We used the 2017 United States Department of 
-                                                        Agriculture (USDA) Food Access Research Atlas, a central database created by the Economic Research Service that provides information on access indicators 
-                                                         at census tract level. The data allows individuals to understand food access in communities based on sociodemographic and socioeconomic factors. We 
-                                                         developed tract-level maps that identify Patrick County tracts where residents may have difficulty accessing nutritious foods, and highlight areas 
-                                                         where this is the case for particularly vulnerable groups like low-income individuals and older adults."),
                                                      selectInput("usdadrop", "Select Variable:", width = "100%", choices = c(
                                                        "Percent Population with Low Food Access at 1 Mile" = "lapop1share",  
                                                        "Percent Population with Low Food Access at 10 Miles" = "lapop10share",
@@ -487,16 +498,6 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Grocery and Farmers' Market Coverage",
                                                      p(""),
-                                                     p("To better understand how residents must travel to obtain food, we constructed isochrones—shapes covering places within reach in the 
-                                                        same timeframe given a start location and a mode of transportation—from Patrick County residential properties to locations of grocery stores, 
-                                                        convenience stores, and farmers’ markets. We used Google Maps, a comprehensive web mapping service, to identify these locations at latitude 
-                                                        and longitude level. We extracted locations of Patrick County residential properties from 2019 CoreLogic, a proprietary dataset for US real 
-                                                        estate that includes information on building characteristics. Finally, we used the TravelTime Application Programming Interface (API) to 
-                                                        calculate 10- and 15-minute car travel times from grocery locations. TravelTime API aggregates data from Open Street Maps, transport 
-                                                        timetables and speed profiles to generate isochrones. This allowed us to identify food deserts, or clusters of properties that cannot 
-                                                        reach a location with healthy food within a selected travel time range. These areas in the county could benefit from programs facilitating 
-                                                        access to produce."),
-                                                     br(),
                                                      selectInput("grocdrop", "Select Location:", width = "100%", choices = c(
                                                        "Mountain Meadow Farm and Craft Market",
                                                        "Lowes Foods of Stuart",
@@ -513,16 +514,6 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Food Deserts",
                                                      p(""),
-                                                     p("Food access is an important determinant of health outcomes. In rural counties, supermarkets and grocery stores are 
-                                                        few and far between. Patrick county is home to many convenience stores, but fewer healthy food stores. Therefore, health outcomes are across the county are going to be affected by driving access to these healthier options. 
-                                                        Isochrones give us a good understanding of driving access to healthy food and from these we can 
-                                                        determine that there are many residential areas within the county that struggle with food security. With the inclusion of our isochrone estimates, 
-                                                        we can determine that there are parts of the county that are food deserts. A food desert is a location
-                                                        that has no access to healthy food options or are limited because of geographies.
-                                                        This map identifies that there are parts of Patrick county where their ability to access 
-                                                        healthy food is limited and their driving times to 
-                                                       access food is longer than other members of the community."),
-                                                     br(),
                                                      p(strong("Percent Households Covered")),
                                                      withSpinner(tableOutput("allgrctable")),
                                                      p(strong("Map of Food Deserts")),
@@ -531,11 +522,6 @@ ui <- navbarPage(selected = "home",
                                             ),
                                             tabPanel("Food Security Resources",
                                                      p(""),
-                                                     p("Patrick County contains multiple locations for access to free, healthy foods.
-                                                       For members of the community that struggle with food security, these locations can 
-                                                       have major effects on health outcomes. Food banks, food pantries, and meals are all important
-                                                       locations that help relieve stress on communities with limited food access or live in a food desert."),
-                                                     br(),
                                                      p(strong("Map of Food Security Resources")),
                                                      withSpinner(leafletOutput("othermap")),
                                                      p(tags$small("Data Source: Google Maps."))
@@ -2474,10 +2460,10 @@ server <- function(input, output, session) {
       addPolygons(data = patrickborder, stroke = T, weight = 2, color = "grey", fillOpacity = 0) %>%
       addCircleMarkers(data = otherfood,
                        stroke = FALSE,
-                       fillOpacity = 0.7,
+                       fillOpacity = 1,
                        color = ~pal(type),
                        radius = 7,
-                       opacity = 0.7,
+                       opacity = 1,
                        label = labels,
                        labelOptions = labelOptions(direction = "bottom",
                                                    style = list(
@@ -2488,7 +2474,7 @@ server <- function(input, output, session) {
                 pal = pal,
                 values =  ~type,
                 title = "Type",
-                opacity = 0.7)
+                opacity = 0.9)
   })
   
   output$allgrctable <- renderTable({

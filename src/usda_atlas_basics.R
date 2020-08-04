@@ -46,6 +46,18 @@ usda <- usda_geo_data %>% select(GEOID, State, County,
                                  lahunv1share, lahunv10share, lakids1share, lakids10share, 
                                  lalowi1share, lalowi10share, lapop1share, lapop10share, 
                                  laseniors1share, laseniors10share)
+
+usda <- usda %>% mutate(lahunv1share = lahunv1share * 100,
+                        lahunv10share = lahunv10share * 100,
+                        lakids1share = lakids1share * 100,
+                        lakids10share = lakids10share * 100, 
+                        lalowi1share = lalowi1share * 100,
+                        lalowi10share = lalowi10share * 100,
+                        lapop1share = lapop1share * 100,
+                        lapop10share = lapop10share * 100,
+                        laseniors1share = laseniors1share * 100,
+                        laseniors10share = laseniors10share * 100)
+
 usda <- st_as_sf(usda)
 usda <- usda %>% st_transform(4269)
 write_rds(usda, "./data/web/usda.Rds")

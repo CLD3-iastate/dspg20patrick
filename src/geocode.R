@@ -48,9 +48,9 @@ groceries$longitude[10] <- -80.208900
 groceries$geo_method[10] <- "manual"
 
 # Meadows of Dan Community Building, lat = 36.735423, long = -80.403206
-otherfood$latitude[7] <- 36.735423
-otherfood$longitude[7] <- -80.403206
-otherfood$geo_method[7] <- "manual"
+otherfood$latitude[5] <- 36.735423
+otherfood$longitude[5] <- -80.403206
+otherfood$geo_method[5] <- "manual"
 
 
 #
