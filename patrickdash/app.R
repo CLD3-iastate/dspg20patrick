@@ -327,7 +327,7 @@ ui <- navbarPage(selected = "home",
                                    p("", style = "padding-top:10px;"),
                                    column(6,
                                           h4(strong("Computing Device Ownership and Internet Access Type")),
-                                          p("Internet connection and computing devices are crucial for access to health information and participation in online health-related services like 
+                                          p("Internet connection and computing devices are key for access to health information and participation in online health-related services like 
                                              telemedicine. Rural areas frequently lack broadband access, experience low internet speeds, and have fewer internet providers available 
                                              than urban areas. It is crucial to consider digital connectivity in improving health care access. We examined digital connectivity in Patrick County in two ways to 
                                              provide the county with insights on where increasing connectivity would facilitate communicating health information and improve online health service access."),
