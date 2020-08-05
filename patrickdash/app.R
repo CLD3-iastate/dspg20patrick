@@ -242,7 +242,7 @@ ui <- navbarPage(selected = "home",
                                             employment, health insurance coverage, and other relevant characteristics."),
                                           p("Our interactive plots visualize census block-group level sociodemographic characteristics of Patrick County residents.")),
                                    column(8,
-                                          h4(strong("Map of Resident Socioeconomic Characteristics by Census Block Group")),
+                                          h4(strong("Map of Resident Socioeconomic Characteristics by Census Tract or Block Group")),
                                           selectInput("sociodrop", "Select Variable:", width = "100%", choices = c(
                                             "Percent Population Age 65 and Older" = "age65",
                                             "Percent Population Age 18 and Younger" = "under18",
