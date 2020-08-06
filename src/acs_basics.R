@@ -33,6 +33,8 @@ Sys.getenv("CENSUS_API_KEY")
 # Load all variable names
 # load_variables(2018, "acs5", cache = TRUE)
 
+# total pop
+# B01003_001
 # % population age 65+
 # B01001_020:25 (male), B01001_044:49 (female) / B01001_001    
 # % population age <=18
@@ -52,6 +54,8 @@ Sys.getenv("CENSUS_API_KEY")
 
 # Select variables
 acsvars <- c(
+  # total pop
+  "B01003_001",
   # age 65 +
   "B01001_020", "B01001_021", "B01001_022", "B01001_023", "B01001_024", "B01001_025",
   "B01001_044", "B01001_045", "B01001_046", "B01001_047", "B01001_048", "B01001_049",
@@ -128,6 +132,7 @@ acs_tract <- data_tract %>% transmute(
   ALAND = ALAND,
   AWATER = AWATER,
   geometry = geometry,
+  totalpop_trct = B01003_001E,
   age65 = (B01001_020E + B01001_021E + B01001_022E + B01001_023E + B01001_024E + B01001_025E +
            B01001_044E + B01001_045E + B01001_046E + B01001_047E + B01001_048E + B01001_049E) / B01001_001E * 100,
   under18 = (B01001_003E + B01001_004E + B01001_005E + B01001_006E +
@@ -175,6 +180,7 @@ acs_bgrp <- data_bgrp %>% transmute(
   ALAND = ALAND,
   AWATER = AWATER,
   geometry = geometry,
+  totalpop_bgrp = B01003_001E,
   age65 = (B01001_020E + B01001_021E + B01001_022E + B01001_023E + B01001_024E + B01001_025E +
              B01001_044E + B01001_045E + B01001_046E + B01001_047E + B01001_048E + B01001_049E) / B01001_001E * 100,
   under18 = (B01001_003E + B01001_004E + B01001_005E + B01001_006E +
@@ -610,10 +616,10 @@ write_rds(connectivity, "./data/web/connectivity.Rds")
 # Sociodemographics
 socdem_block <- acs_bgrp %>% select(STATEFP, COUNTYFP, TRACTCE, BLKGRPCE, GEOID,
                                NAME.x, NAME.y, geometry,
-                               age65, under18, black, noba, unempl, nohealthins2, snap)
+                               totalpop_bgrp, age65, under18, black, noba, unempl, nohealthins2, snap)
 socdem_tract <- acs_tract %>% select(STATEFP, COUNTYFP, TRACTCE, GEOID,
                                     NAME.x, NAME.y, geometry,
-                                    hispanic, inpov, privateins, publicins)
+                                    totalpop_trct, hispanic, inpov, privateins, publicins)
 
 # Transform
 socdem_block <- st_as_sf(socdem_block)

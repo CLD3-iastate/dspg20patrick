@@ -254,7 +254,9 @@ ui <- navbarPage(selected = "home",
                                             "Percent Population With Private Health Insurance" = "privateins",
                                             "Percent Population With Public Health Insurance" = "publicins",
                                             "Percent Population in Poverty" = "inpov",
-                                            "Percent Population Receiving SNAP Benefits or Public Assistance" = "snap")
+                                            "Percent Population Receiving SNAP Benefits or Public Assistance" = "snap",
+                                            "Total Population by Census Block Group" = "totalpop_bgrp",
+                                            "Total Population by Census Tract" = "totalpop_trct")
                                           ),
                                           withSpinner(leafletOutput("socioplot")),
                                           p(tags$small("Data Source: American Community Survey 2014/18 5-Year Estimates."))
@@ -728,6 +730,74 @@ server <- function(input, output, session) {
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
+                  })
+      #population-tract
+    }else if(var() == "totalpop_trct"){
+      pal <- colorQuantile("Blues", domain = socdem_tract$totalpop_trct, probs = seq(0, 1, length = 5), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_tract$NAME.y,
+              "<br />",
+              "<strong>Total population: </strong>",
+              formatC(socdem_tract$totalpop_trct, format = "f", big.mark =",", digits = 0)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addPolygons(fillColor = ~pal(socdem_tract$totalpop_trct), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_tract$totalpop_trct),
+                  title = "Total Population<br>Quartile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
+                  })
+      #population-block group
+    }else if(var() == "totalpop_bgrp"){
+      pal <- colorQuantile("Blues", domain = socdem_block$totalpop_bgrp, probs = seq(0, 1, length = 6), right = TRUE)
+      
+      labels <- lapply(
+        paste("<strong>Area: </strong>",
+              socdem_block$NAME.y,
+              "<br />",
+              "<strong>Total population: </strong>",
+              formatC(socdem_block$totalpop_bgrp, format = "f", big.mark =",", digits = 0)),
+        htmltools::HTML
+      )
+      
+      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addPolygons(fillColor = ~pal(socdem_block$totalpop_bgrp), 
+                    fillOpacity = 0.6, 
+                    stroke = FALSE,
+                    label = labels,
+                    labelOptions = labelOptions(direction = "bottom",
+                                                style = list(
+                                                  "font-size" = "12px",
+                                                  "border-color" = "rgba(0,0,0,0.5)",
+                                                  direction = "auto"
+                                                ))) %>%
+        addLegend("bottomleft",
+                  pal = pal,
+                  values =  ~(socdem_block$totalpop_bgrp),
+                  title = "Total Population<br>Quintile Group",
+                  opacity = 0.6,
+                  labFormat = function(type, cuts, p) {
+                    n = length(cuts)
+                    paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
                   })
     }else if(var() == "black"){
       pal <- colorQuantile("Blues", domain = socdem_block$black, probs = seq(0, 1, length = 6), right = TRUE)
