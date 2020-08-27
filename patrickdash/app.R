@@ -196,7 +196,7 @@ ui <- navbarPage(selected = "home",
                                           p(),
                                           p("We implemented the", a(href = "https://doi.org/10.1162/99608f92.2d83f7f5", "data science framework", target = "_blank"), "and identified, acquired, profiled, and used 
                                             publicly available data to provide Patrick County with data-driven resources in each of the four priority areas. We:"),
-                                          tags$li("Provided census tract- and census block group-level maps of Patrick County residents'", strong("sociodemographic and socioeconomic characteristics"), ", highlighting underprivileged areas."),
+                                          tags$li("Provided census tract- and census block group-level maps of Patrick County residents'", strong("sociodemographic and socioeconomic characteristics,"), " highlighting underprivileged areas."),
                                           tags$li("Created census tract-level maps on", strong("older adult health"), "to show the geographic distribution of older adults in the county by gender and
                                                   type of disability, identifying areas where providing telehealth or travelling preventive care services may be particularly important."),
                                           tags$li("Mapped residents'", strong("computing device and internet access"), "at census block group level, and constructed 10- and 15-minute isochrones (areas of equal travel time) from households to free
@@ -246,7 +246,7 @@ ui <- navbarPage(selected = "home",
                                             "Percent Population Age 18 and Younger" = "under18",
                                             "Percent Population Black" = "black",
                                             "Percent Population Hispanic" = "hispanic",
-                                            "Percent Population Without Bachelor's Deegree" = "noba",
+                                            "Percent Population Without Bachelor's Degree" = "noba",
                                             "Percent Population In Labor Force Unemployed" = "unempl",
                                             "Percent Population Without Health Insurance" = "nohealthins2",
                                             "Percent Population With Private Health Insurance" = "privateins",
@@ -679,8 +679,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$age65), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -692,7 +692,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$age65),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -713,8 +713,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$under18), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -726,7 +726,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$under18),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -747,8 +747,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$totalpop_trct), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -760,7 +760,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_tract$totalpop_trct),
                   title = "Total Population<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
@@ -781,8 +781,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$totalpop_bgrp), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -794,7 +794,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$totalpop_bgrp),
                   title = "Total Population<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
@@ -814,8 +814,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$black), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -827,7 +827,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$black),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -839,7 +839,7 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               socdem_block$NAME.y,
               "<br />",
-              "<strong>% Population without BA degree: /strong>",
+              "<strong>% Population without BA degree: </strong>",
               round(socdem_block$noba, 2)),
         htmltools::HTML
       )
@@ -847,8 +847,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$noba), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -860,7 +860,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$noba),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -880,8 +880,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$unempl), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -893,7 +893,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$unempl),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -913,8 +913,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$nohealthins2), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -926,7 +926,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$nohealthins2),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -946,8 +946,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_block$snap), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -959,7 +959,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_block$snap),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -979,8 +979,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$inpov), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -992,7 +992,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_tract$inpov),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1012,8 +1012,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$hispanic), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1025,7 +1025,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_tract$hispanic),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1045,8 +1045,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$privateins), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1058,7 +1058,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_tract$privateins),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1078,8 +1078,8 @@ server <- function(input, output, session) {
       leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(socdem_tract$publicins), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1091,7 +1091,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(socdem_tract$publicins),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1129,8 +1129,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1142,7 +1142,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1167,8 +1167,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1180,7 +1180,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1205,8 +1205,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1218,7 +1218,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1243,8 +1243,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1256,7 +1256,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1281,8 +1281,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1294,7 +1294,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1319,8 +1319,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1332,7 +1332,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1357,8 +1357,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1370,7 +1370,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1397,8 +1397,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1410,7 +1410,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1438,8 +1438,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_total),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1451,7 +1451,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(olderadults$hhsixty_total),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1476,8 +1476,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1489,7 +1489,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(olderadults$hhsixty_fhh),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1514,8 +1514,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1527,7 +1527,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(olderadults$hhsixty_mhh),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1552,8 +1552,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1565,7 +1565,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(olderadults$hhsixty_nonfam),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1590,8 +1590,8 @@ server <- function(input, output, session) {
       leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(olderadults$hhsixty_marr),
-                    fillOpacity = 0.6,
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1603,7 +1603,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(olderadults$hhsixty_marr),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1663,7 +1663,7 @@ server <- function(input, output, session) {
         paste("<strong>Area: </strong>",
               connectivity$NAME.y,
               "<br />",
-              "<strong>% Population with",
+              "<strong>% Households with",
               device_spec,
               "access: </strong>",
               round(data, 2)),
@@ -1673,8 +1673,8 @@ server <- function(input, output, session) {
       leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -1686,7 +1686,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quintile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -1774,8 +1774,8 @@ server <- function(input, output, session) {
                                                  direction = "auto")))  %>%
         addLayersControl(
           position = "topright",
-          overlayGroups = c("15 Minute Isochrone",
-                            "10 Minute Isochrone",
+          overlayGroups = c("10 Minute Isochrone",
+                            "15 Minute Isochrone",
                             "Residential Properties"),
           options = layersControlOptions(collapsed = FALSE))
       m1 
@@ -1796,8 +1796,9 @@ server <- function(input, output, session) {
                          "Patrick Henry Community College Stuart Campus" = 10)
     
     table <- read.csv(paste0("data/isochrones/tables/wifi_iso_table_",data,".csv"))
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   # Wifi deserts
   output$allwifi <- renderLeaflet({
@@ -1935,8 +1936,9 @@ server <- function(input, output, session) {
   
   output$allwifitable <- renderTable({
     table <- read.csv("data/isochrones/tables/wifi_iso_table.csv")
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   # ems: done ------------------------------------------------------------
 
@@ -2053,8 +2055,9 @@ server <- function(input, output, session) {
     
     
     table <- read.csv(paste0("data/isochrones/tables/ems_iso_table_",data,".csv"))
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   # EMS deserts
   output$allems <- renderLeaflet({
@@ -2233,8 +2236,9 @@ server <- function(input, output, session) {
   
   output$allemstable <- renderTable({
     table <- read.csv("data/isochrones/tables/ems_iso_table.csv")
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   
   # usda - lahunv10share  -----------------------------------------------------------
@@ -2277,8 +2281,8 @@ server <- function(input, output, session) {
       leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
         addProviderTiles(providers$CartoDB.Positron) %>%
         addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.6, 
-                    stroke = FALSE,
+                    fillOpacity = 0.7, 
+                    stroke = TRUE, weight = 0.5, color = "#202020",
                     label = labels,
                     labelOptions = labelOptions(direction = "bottom",
                                                 style = list(
@@ -2290,7 +2294,7 @@ server <- function(input, output, session) {
                   pal = pal,
                   values =  ~(data),
                   title = "Percent by<br>Quartile Group",
-                  opacity = 0.6,
+                  opacity = 0.7,
                   labFormat = function(type, cuts, p) {
                     n = length(cuts)
                     paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
@@ -2389,8 +2393,9 @@ server <- function(input, output, session) {
                          "Poor Farmers Farm" = 7)
     
     table <- read.csv(paste0("data/isochrones/tables/grc_iso_table_",data,".csv"))
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   # Food deserts
   output$allgroc <- renderLeaflet({
@@ -2549,8 +2554,9 @@ server <- function(input, output, session) {
   
   output$allgrctable <- renderTable({
     table <- read.csv("data/isochrones/tables/grc_iso_table.csv")
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "l", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
 }
 

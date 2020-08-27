@@ -1,6 +1,10 @@
+library(dplyr)
+library(sf)
+library(readr)
+
 # coverage tables -------------------------------------------------
 
-residential <- readRDS("dashboard/patrick_dash/data/residential.Rds")
+residential <- readRDS("./patrickdash/data/residential.Rds")
 residential <- st_as_sf(residential, coords = c("longitude", "latitude"))
 st_crs(residential) <- "+proj=longlat +datum=WGS84"
 residential <- st_transform(residential, '+proj=longlat +datum=WGS84')

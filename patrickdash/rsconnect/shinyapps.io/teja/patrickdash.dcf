@@ -5,6 +5,6 @@ account: teja
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2650176
-bundleId: 3552634
+bundleId: 3552658
 url: https://teja.shinyapps.io/patrickdash/
-when: 1598300152.69948
+when: 1598300673.46749
