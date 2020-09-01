@@ -13,6 +13,7 @@ library(shinycssloaders)
 library(readxl)
 library(readr)
 library(stringr)
+library(shinyjs)
 
 prettyblue <- "#232D4B"
 navBarBlue <- '#427EDC'
@@ -136,35 +137,69 @@ ems_iso_12_7 <- readRDS("data/isochrones/ems/ems_iso_12_7.RDS")
 ems_iso_12_8 <- readRDS("data/isochrones/ems/ems_iso_12_8.RDS")
 ems_iso_12_9 <- readRDS("data/isochrones/ems/ems_iso_12_9.RDS")
 
+# CODE TO DETECT ORIGIN OF LINK AND CHANGE LOGO ACCORDINGLY
+jscode <- "var referer = document.referrer;
+           var n = referer.includes('economic');
+           var x = document.getElementsByClassName('navbar-brand');
+           if (n != true) {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/events/symposium2020/poster-sessions\">' +
+                              '<img src=\"DSPG_black-01.png\", alt=\"DSPG 2020 Symposium Proceedings\", style=\"height:42px;\">' +
+                              '</a></div>';
+           } else {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights\">' +
+                              '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
+                              '</a></div>';
+           }
+           "
 
 # user -------------------------------------------------------------
-ui <- navbarPage(selected = "home",
+ui <- navbarPage(title = "I'm a title!",
+                 selected = "overview",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
+                 useShinyjs(),
                  # main -----------------------------------------------------------
-                 tabPanel("Home", value = "home",
-                          fluidRow(style = "margin: 6px;",
-                                   align = "center",
-                                   br("", style = "padding-top:10px;"),
-                                   img(src = "uva-dspg-logo.jpg", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                   br(""),
-                                   h2(strong("Addressing Barriers to Health in Patrick County, Virginia"),
-                                   br(""),
-                                   h4("Data Science for the Public Good Program"),
-                                   h4("University of Virginia"),
-                                   h4("Biocomplexity Insititute"),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   p(tags$small(em('Last updated: August 2020')))
-                                   )
-                          )
-                 ),
+                 # tabPanel("Home", value = "home",
+                 #          fluidRow(style = "margin: 6px;",
+                 #                   align = "center",
+                 #                   br("", style = "padding-top:10px;"),
+                 #                   img(src = "uva-dspg-logo.jpg", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                 #                   br(""),
+                 #                   h2(strong("Addressing Barriers to Health in Patrick County, Virginia"),
+                 #                   br(""),
+                 #                   h4("Data Science for the Public Good Program"),
+                 #                   h4("University of Virginia"),
+                 #                   h4("Biocomplexity Insititute"),
+                 #                   br(),
+                 #                   br(),
+                 #                   br(),
+                 #                   br(),
+                 #                   br(),
+                 #                   p(tags$small(em('Last updated: August 2020')))
+                 #                   )
+                 #          )
+                 # ),
                  
                  # main -----------------------------------------------------------
                  tabPanel("Overview", value = "overview",
+                          fluidRow(style = "margin: 2px;",
+                                   align = "center",
+                                   # br("", style = "padding-top:2px;"),
+                                   # img(src = "uva-dspg-logo.jpg", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                   br(""),
+                                   h1(strong("Addressing Barriers to Health in Patrick County, Virginia"),
+                                      br(""),
+                                      h4("Data Science for the Public Good Program"),
+                                      h4("University of Virginia"),
+                                      h4("Biocomplexity Insititute"),
+                                      br(),
+                                      br(),
+                                      br(),
+                                      br(),
+                                      br(),
+                                      p(tags$small(em('Last updated: August 2020')))
+                                   )
+                          ),
                           fluidRow(style = "margin: 6px;",
                                    column(4,
                                           h2(strong("Project Background")),
@@ -655,6 +690,8 @@ ui <- navbarPage(selected = "home",
 
 # server -----------------------------------------------------------
 server <- function(input, output, session) {
+  # Run JavaScript Code
+  runjs(jscode)
   
   # socio plots: done -----------------------------------------------------
   
