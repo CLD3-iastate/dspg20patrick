@@ -40,12 +40,12 @@ vignettes/*.pdf
 .Rproj.user
 *.Rproj
 
-.Rds
-*.Rds
-*.RDS
-.RDS
+#.Rds
+#*.Rds
+#*.RDS
+#.RDS
 
-*.xlsx
-.xlsx
+#*.xlsx
+#.xlsx
 
 /patrickdash/data/*
