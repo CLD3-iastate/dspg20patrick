@@ -192,12 +192,7 @@ ui <- navbarPage(title = "I'm a title!",
                                       h4("Data Science for the Public Good Program"),
                                       h4("University of Virginia"),
                                       h4("Biocomplexity Insititute"),
-                                      br(),
-                                      br(),
-                                      br(),
-                                      br(),
-                                      br(),
-                                      p(tags$small(em('Last updated: August 2020')))
+                                      br()
                                    )
                           ),
                           fluidRow(style = "margin: 6px;",
@@ -257,7 +252,9 @@ ui <- navbarPage(title = "I'm a title!",
                                           p(strong("State government representatives in the Virginia Department of Health and the State Office of Rural Health."), "These and similar stakeholders may 
                                             need small or rural area-specific insights that Centers for Disease Control and other county-level datasets cannot provide.")
                                    )
-                          )
+                          ),
+                          fluidRow(align = "center",
+                                   p(tags$small(em('Last updated: August 2020'))))
                  ),
                           
                  # socio -----------------------------------------------------------
