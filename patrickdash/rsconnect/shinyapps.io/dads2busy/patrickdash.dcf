@@ -1,0 +1,12 @@
+name: patrickdash
+title: patrickdash
+username:
+account: dads2busy
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2735133
+bundleId: 3639992
+url: https://dads2busy.shinyapps.io/patrickdash/
+when: 1600351409.20801
+asMultiple: FALSE
+asStatic: FALSE
